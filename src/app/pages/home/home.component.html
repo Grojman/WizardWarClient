@@ -1,0 +1,48 @@
+<div class="home-container">
+
+  <h1 class="title">
+    Wizard War
+  </h1>
+
+  <!-- LISTADO DE MAZOS -->
+
+
+  <div class="deck-list">
+
+    <app-deck
+      *ngFor="let deck of decks"
+      [deck]="deck"
+      [selected]="deck === selectedDeck"
+      (click)="selectDeck(deck)"
+    />
+
+  </div>
+
+  <!-- NOMBRE -->
+
+  <input
+    type="text"
+    [(ngModel)]="username"
+    (change)="onUsernameChange()"
+    placeholder="Introduce tu nombre"
+    class="username-input"
+  />
+
+  <!-- BOTÓN -->
+
+  <button
+    class="search-button"
+    [disabled]="!canSearch()"
+    (click)="toggleSearch()"
+  >
+
+    {{ searching ? 'Cancelar' : 'Buscar partida' }}
+
+    <span
+      *ngIf="searching"
+      class="spinner"
+    ></span>
+
+  </button>
+
+</div>

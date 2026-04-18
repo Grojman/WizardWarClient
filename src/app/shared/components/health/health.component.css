@@ -1,0 +1,72 @@
+.health-animate-enter {
+  animation: popEnter 400ms ease-out;
+}
+
+.health-animate-exit {
+  animation: popExit 400ms ease-in;
+}
+
+/* Entrada desde arriba */
+
+@keyframes popEnter {
+
+  0% {
+    transform: translateY(-3vw);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+}
+
+/* Salida hacia abajo */
+
+@keyframes popExit {
+
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(3vw);
+    opacity: 0;
+  }
+
+}
+
+/* Color si pierde vida */
+
+.life-text.negative {
+  color: red;
+}
+
+.rival-health-background,
+.player-health-background
+{
+  display: flex;
+  width: 5vw;
+  height: 5vw;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.rival-health-background
+{
+  background-image: url('/images/board/rival_life_container.svg')
+}
+
+.player-health-background
+{
+  background-image: url('/images/board/player_life_container.svg')
+}
+
+.life-text
+{
+  margin: auto;
+  font-size: xx-large;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}

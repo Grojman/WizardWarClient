@@ -1,0 +1,73 @@
+.home-container {
+
+  height: 100vh;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 20px;
+
+  text-align: center;
+
+}
+
+.title {
+
+  font-size: 64px;
+  font-weight: bold;
+
+}
+
+.deck-list {
+
+  display: flex;
+
+  gap: 20px;
+
+}
+
+.username-input {
+
+  padding: 10px;
+
+  font-size: 18px;
+
+  width: 250px;
+
+}
+
+.search-button {
+
+  padding: 12px 24px;
+
+  font-size: 18px;
+
+  cursor: pointer;
+
+}
+
+.spinner {
+
+  margin-left: 10px;
+
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid white;
+  border-top: 2px solid transparent;
+
+  border-radius: 50%;
+
+  animation: spin 1s linear infinite;
+
+}
+
+@keyframes spin {
+
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+
+}

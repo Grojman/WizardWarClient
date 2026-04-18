@@ -1,0 +1,18 @@
+<div
+  [ngClass]="[
+    rival ? 'rival-health-background' : 'player-health-background'
+  ]"
+>
+
+  <span
+    class="life-text"
+    [ngClass]="{
+      'health-animate-exit': health.animationState === 'exit',
+      'health-animate-enter': health.animationState === 'enter',
+      'negative': health.negative
+    }"
+  >
+    {{ health.displayHealth }}
+  </span>
+
+</div>

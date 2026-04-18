@@ -1,0 +1,191 @@
+.card-wrapper {
+
+  perspective: 400px;
+
+}
+
+/* CARTA */
+
+.card {
+
+
+  position: relative;
+
+  width: 8vw;
+  height: 24vh;
+
+  transition: transform 0.2s ease-out;
+
+  transform: rotateX(10deg);
+
+}
+
+
+/* ROTACIÓN HOVER */
+
+.card:hover {
+
+  transform:
+
+    rotateX(var(--x-rotation))
+
+    rotateY(var(--y-rotation))
+    translateY(-5vh)
+    
+    scale(1.1);
+    
+
+}
+
+/* INNER */
+
+.card-inner {
+
+  width: 100%;
+  height: 100%;
+
+  position: relative;
+
+  transform-style: preserve-3d;
+
+  transition: transform 0.6s;
+
+}
+
+/* FLIP */
+
+.card-inner.flipped {
+
+  transform: rotateY(180deg);
+
+}
+
+/* FRONT / BACK */
+
+.card-front,
+.card-back {
+  position: absolute;
+
+  width: 100%;
+  height: 100%;
+
+  backface-visibility: hidden;
+
+  border-radius: 10px;
+
+}
+
+/* FRONT */
+
+.card-front {
+
+  display: flex;
+  flex-direction: column;
+
+  background: #fffde8;
+
+  color: #01a977;
+
+}
+
+.card-name
+{
+  text-align: center;
+}
+
+/* BACK */
+
+.card-back {
+
+  transform: rotateY(180deg);
+
+  background:
+
+    linear-gradient(
+      135deg,
+      #2c2c54,
+      #40407a
+    );
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-weight: bold;
+
+  color: white;
+
+}
+
+/* ARTE */
+
+.card-art {
+
+  border-radius: 8px;
+
+  flex-grow: 1;
+
+  background-size: cover;
+
+}
+
+/* FOOTER */
+
+.card-footer {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  font-size: 12px;
+
+}
+
+/* BRILLO */
+
+.shine {
+
+  pointer-events: none;
+
+  position: absolute;
+
+  inset: 0;
+
+}
+
+/* EFECTO LUZ */
+
+.card:hover .shine {
+
+  background:
+
+    radial-gradient(
+
+      at var(--x) var(--y),
+
+      rgba(255,255,255,0.3) 20%,
+
+      transparent 80%
+
+    );
+
+}
+
+.glow
+{
+  box-shadow: 0 0 10px #ff00ff, 0 0 20px #ff00ff, 0 0 30px #ff00ff,
+    0 0 40px #ff00ff;
+  animation: glow-frames 1.5s infinite alternate;
+}
+
+@keyframes glow-frames {
+ from {
+   box-shadow: 0 0 5px #ff00ff, 0 0 5px #ff00ff, 0 0 5px #ff00ff,
+     0 0 5px #ff00ff;
+ }
+ to {
+   box-shadow: 0 0 15px #5dade2, 0 0 15px #5dade2, 0 0 15px #5dade2,
+     0 0 15px #5dade2;
+ }
+}

@@ -1,0 +1,61 @@
+<div class="card-wrapper">
+
+  <div
+    class="card"
+
+    (mouseenter)="onMouseEnter($event)"
+    (mouseleave)="onMouseLeave()"
+    (mousemove)="onMouseMove($event)"
+  >
+
+    <div
+      class="card-inner"
+      [class.glow]="selected"
+      [class.flipped]="flipped || faceDown"
+    >
+      <div class="card-front">
+
+        <figure
+          class="card-art"
+          [style.backgroundImage]="'url(' + card?.imageUrl + ')'"
+        ></figure>
+
+        <div class="card-info">
+
+          <p class="card-name">
+            {{ card?.name }}
+          </p>
+
+        </div>
+
+        <footer class="card-footer" *ngIf="card?.type == 'Unit'">
+
+          <span class="attack">
+            ⚔ {{ card?.attack }}
+          </span>
+
+          <span class="health">
+            ❤ {{ card?.health }}
+          </span>
+
+        </footer>
+
+      </div>
+
+      <div class="card-back">
+
+        <div class="card-back-design">
+
+          Wizard War
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="shine"></div>
+
+  </div>
+
+</div>

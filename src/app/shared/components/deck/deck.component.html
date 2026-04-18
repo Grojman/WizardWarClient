@@ -1,0 +1,32 @@
+<div
+  class="deck"
+  [class.selected]="selected"
+>
+
+  <div
+    class="deck-image"
+    [ngStyle]="{
+      'background-image': 'url(' + getImagePath() + ')'
+    }"
+  >
+    <span class="descriptiontext">
+      <p
+      *ngIf="deck.description !== ''"
+      >
+        {{ deck.description }}
+      </p>
+
+      <p
+      *ngIf="deck.description === ''"
+      >
+        {{ deck.cardAmount }}
+        
+      </p>
+    </span>
+  </div>
+
+  <p class="deck-name">
+    {{ deck.name }}
+  </p>
+
+</div>

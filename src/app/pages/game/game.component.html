@@ -1,0 +1,134 @@
+<div class="game-layout">
+
+
+  <div class="board-column">
+
+    <div class="enemy-hand">
+
+      <app-card
+        *ngFor="let card of [].constructor(gameState.Rival.HandSize)"
+        [animate.enter]="enterClass()"
+        [animate.leave]="leaveClass()"
+      />
+    </div>
+
+    <div class="enemy-board">
+
+      <app-health 
+      [health]="rivalHealth"
+      (click)="rivalTargetSelected()"
+      [rival]="true">
+
+      </app-health>
+
+      <div class="board-row">
+
+        <app-dock
+          *ngFor="let card of gameState.Rival.Board"
+          [card]="card"
+          (contextmenu)="onRightClick($event, card)"
+          (click)="rivalBoardCardSelected(card)"
+          [rival]="true"
+        />
+
+        <hr class="separator">
+
+        <app-dock
+          [card]="rivalLastSpellPlayed"
+          (contextmenu)="rivalLastSpellPlayed"
+          [rival]="true"
+        ></app-dock>
+
+      </div>
+
+
+      <app-deck class="enemy-deck" [deck]="gameState.Rival.Deck">
+
+      </app-deck>
+
+    </div>
+
+    <div class="player-board">
+
+      <app-health 
+      [health]="userHealth"
+      (click)="playerTargetSelected()"
+      ></app-health>
+
+      <div class="board-row">
+
+        <app-dock
+          *ngFor="let card of gameState.Me.Board; index as i"
+          [card]="card"
+          [selected]="card !== null && card?.id === selectedCard?.id"
+          [enhanced]="unitSelected"
+          [isAttackingCard]="card !== null && card.id === attackingUnit?.id"
+          (contextmenu)="onRightClick($event, card)"
+          (click)="dockSelected(i)"
+          (onCardClick)="attackingUnitSelected(card)"
+          [rival]="false"
+        />
+
+        <hr class="separator">
+
+        <app-dock
+        [card]="playerLastSpellPlayed"
+        (contextmenu)="cardSelected(playerLastSpellPlayed)"
+        [rival]="false"
+        >
+        </app-dock>
+
+      </div>
+
+      <app-deck 
+      class="player-deck" 
+      [deck]="gameState.Me.Deck"
+      (click)="deckSelected()"
+      ></app-deck>
+
+    </div>
+
+    <div class="player-hand">
+
+      <app-card
+        *ngFor="let card of gameState.Me.HandData; let i = index"
+        [card]="card"
+        (click)="cardSelected(card)"
+        [selected]="card.id === selectedCard?.id"
+        (contextmenu)="onRightClick($event, card)"
+        [animate.enter]="enterClass()"
+        [animate.leave]="leaveClass()"
+      />
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="side-panel"
+    [class.open]="showSidePanel"
+  >
+
+    <app-card
+      *ngIf="selectedCardInfo"
+      [card]="selectedCardInfo"
+      [canBeSelected]="false"
+      class="information-card"
+    />
+
+  </div>
+
+
+  <button
+    class="toggle-panel"
+    (click)="togglePanel()"
+  >
+    ☰
+  </button>
+
+  <div class="animation-layer">
+    <app-card *ngIf="drawnCard" id="drawn-card" [card]="drawnCard" class="floating-card"></app-card>
+  </div>
+
+</div>

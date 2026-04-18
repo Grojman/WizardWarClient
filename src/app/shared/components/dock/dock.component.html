@@ -1,0 +1,16 @@
+<div class="dock" 
+    [class.selected]="selected"
+    [class.enhanced]="enhanced"
+    [class.attacking]="isAttackingCard"
+    [ngClass]="{
+        'rival-background': rival,
+        'player-background': !rival
+    }"
+    >
+    <app-card
+        *ngIf="card"
+        [card]="card"
+        (click)="cardClicked()"
+        class="contained-card"
+    />
+</div>
