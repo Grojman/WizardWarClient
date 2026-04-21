@@ -147,6 +147,11 @@ async createProyectile(source: string, target: string)
 
   proyectile.style.display = "none";
 }
+  getDeckId(id: string): string {
+    return id === this.gameState.Me.Id ?
+            "player-deck" :
+            "rival-deck"
+  } 
   
   playEvent(event: any): Promise<void> {
     return new Promise(async resolve => {
@@ -154,9 +159,7 @@ async createProyectile(source: string, target: string)
         case "CardDrawnEvent":
           var player = this.getPlayer(event.PlayerSource);
           await this.createProyectile(event.Source, 
-            player.Id === this.gameState.Me.Id ?
-            "player-deck" :
-            "rival-deck"
+            this.getDeckId(player.Id)
           );
         player.HandData.push(
           Card.fromJSON(event.Card));
@@ -232,7 +235,15 @@ async createProyectile(source: string, target: string)
           this.playerLastSpellPlayed = Card.fromJSON(event.Spell);
         }
         break;
-        
+
+        case "AddedCardToDeck":
+          var player = this.getPlayer(event.PlayerSource);
+          await this.createProyectile(player.Id, this.getDeckId(event.TargetedPlayer));
+          break;
+        case "DeckModifiedStats":
+          var player = this.getPlayer(event.PlayerSource);
+          await this.createProyectile(player.Id, this.getDeckId(event.TargetedPlayer));
+          break;
         default:
         resolve();
       }

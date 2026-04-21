@@ -21,7 +21,6 @@ export class CardComponent implements OnChanges, OnInit {
   ngOnInit(): void {
     console.log("Mi carta: ", this.card);
     this.faceDown = this.card === null;
-    this.flipped = this.faceDown;
   }
 
   @Input()
@@ -36,9 +35,6 @@ export class CardComponent implements OnChanges, OnInit {
   @Input()
   selected = false;
 
-  @Input()
-  flipped = false;
-
   private boundingRect?: DOMRect;
 
   ngOnChanges(
@@ -47,7 +43,6 @@ export class CardComponent implements OnChanges, OnInit {
     console.log("a")
     this.faceDown = changes['card'] &&
                     this.card === undefined;
-    this.flipped = this.faceDown;
   }
 
   onMouseEnter(event: MouseEvent) {
@@ -63,50 +58,50 @@ export class CardComponent implements OnChanges, OnInit {
   }
 
   onMouseMove(event: MouseEvent) {
-    // if (!this.boundingRect) return;
+    if (!this.boundingRect) return;
 
-    // const element =
-    //   event.currentTarget as HTMLElement;
+    const element =
+      event.currentTarget as HTMLElement;
 
-    // const x =
-    //   event.clientX -
-    //   this.boundingRect.left;
+    const x =
+      event.clientX -
+      this.boundingRect.left;
 
-    // const y =
-    //   event.clientY -
-    //   this.boundingRect.top;
+    const y =
+      event.clientY -
+      this.boundingRect.top;
 
-    // const xPercentage =
-    //   x / this.boundingRect.width;
+    const xPercentage =
+      x / this.boundingRect.width;
 
-    // const yPercentage =
-    //   y / this.boundingRect.height;
+    const yPercentage =
+      y / this.boundingRect.height;
 
-    // const xRotation =
-    //   (xPercentage - 0.5) * 20;
+    const xRotation =
+      (xPercentage - 0.5) * 20;
 
-    // const yRotation =
-    //   (0.5 - yPercentage) * 20;
+    const yRotation =
+      (0.5 - yPercentage) * 20;
 
-    // element.style.setProperty(
-    //   '--x-rotation',
-    //   `${yRotation}deg`
-    // );
+    element.style.setProperty(
+      '--x-rotation',
+      `${yRotation}deg`
+    );
 
-    // element.style.setProperty(
-    //   '--y-rotation',
-    //   `${xRotation}deg`
-    // );
+    element.style.setProperty(
+      '--y-rotation',
+      `${xRotation}deg`
+    );
 
-    // element.style.setProperty(
-    //   '--x',
-    //   `${xPercentage * 100}%`
-    // );
+    element.style.setProperty(
+      '--x',
+      `${xPercentage * 100}%`
+    );
 
-    // element.style.setProperty(
-    //   '--y',
-    //   `${yPercentage * 100}%`
-    // );
+    element.style.setProperty(
+      '--y',
+      `${yPercentage * 100}%`
+    );
 
   }
 

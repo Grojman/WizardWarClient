@@ -1,8 +1,3 @@
-<div class="card-wrapper"
-  [animate.enter]="'enter-animation'"
-  [animate.leave]="'leave-animation'"
->
-
   <div
     class="card"
     [class.selected]="selected"
@@ -10,55 +5,49 @@
     (mouseleave)="onMouseLeave()"
     (mousemove)="onMouseMove($event)"
     [attr.data-game-id]="card?.id"
+    [animate.enter]="'enter-animation'"
+    [animate.leave]="'leave-animation'"
+    [class.card-front]="!faceDown"
+    [class.card-back]="faceDown"
   >
+    <figure
+    *ngIf="!faceDown"
+      class="card-art"
+      [style.backgroundImage]="'url(' + card?.imageUrl + ')'"
+    ></figure>
 
-    <div
-      class="card-inner"
-      [class.flipped]="flipped || faceDown"
+    <div class="card-info"
+    *ngIf="!faceDown"
     >
-      <div class="card-front">
 
-        <figure
-          class="card-art"
-          [style.backgroundImage]="'url(' + card?.imageUrl + ')'"
-        ></figure>
-
-        <div class="card-info">
-
-          <p class="card-name">
-            {{ card?.name }}
-          </p>
-
-        </div>
-
-        <footer class="card-footer" *ngIf="card?.type == 'Unit'">
-
-          <span class="attack">
-            ⚔ {{ card?.attack }}
-          </span>
-
-          <span class="health">
-            ❤ {{ card?.health }}
-          </span>
-
-        </footer>
-
-      </div>
-
-      <div class="card-back">
-
-        <div class="card-back-design">
-
-          Wizard War
-
-        </div>
-
-      </div>
+      <p class="card-name">
+        {{ card?.name }}
+      </p>
 
     </div>
+
+    <footer class="card-footer" *ngIf="card?.type == 'Unit' && !faceDown">
+
+      <span class="attack">
+        ⚔ {{ card?.attack }}
+      </span>
+
+      <span class="health">
+        ❤ {{ card?.health }}
+      </span>
+
+    </footer>
+
+
+    <div class="card-back-design"
+    *ngIf="faceDown"
+    >
+
+      Wizard War
+
+    </div>
+
 
     <div class="shine"></div>
 
   </div>
-
-</div>
