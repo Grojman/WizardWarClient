@@ -1,9 +1,9 @@
 .health-animate-enter {
-  animation: popEnter 400ms ease-out;
+  animation: popEnter 500ms ease-out;
 }
 
 .health-animate-exit {
-  animation: popExit 400ms ease-in;
+  animation: popExit 500ms ease-in;
 }
 
 /* Entrada desde arriba */
@@ -69,4 +69,18 @@
   margin: auto;
   font-size: xx-large;
   font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.health-container-active
+{
+    animation: glow 1s infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px 7px #aef4af;
+  }
+  to {
+    box-shadow: 0 0 10px 10px #aef4af;
+  }
 }

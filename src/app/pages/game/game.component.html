@@ -7,8 +7,6 @@
 
       <app-card
         *ngFor="let card of [].constructor(gameState.Rival.HandSize)"
-        [animate.enter]="enterClass()"
-        [animate.leave]="leaveClass()"
       />
     </div>
 
@@ -17,7 +15,10 @@
       <app-health 
       [health]="rivalHealth"
       (click)="rivalTargetSelected()"
-      [rival]="true">
+      [rival]="true"
+      [myTurn]="!gameState.IsMyTurn"
+      [attr.data-game-id]="gameState.Rival.Id"
+      >
 
       </app-health>
 
@@ -35,14 +36,18 @@
 
         <app-dock
           [card]="rivalLastSpellPlayed"
-          (contextmenu)="rivalLastSpellPlayed"
+          (contextmenu)="onRightClick($event, rivalLastSpellPlayed)"
           [rival]="true"
         ></app-dock>
 
       </div>
 
 
-      <app-deck class="enemy-deck" [deck]="gameState.Rival.Deck">
+      <app-deck
+       class="enemy-deck" 
+       [small]="true" 
+       [deck]="storedGameState.Rival.Deck"
+       [attr.data-game-id]="'rival-deck'">
 
       </app-deck>
 
@@ -51,7 +56,9 @@
     <div class="player-board">
 
       <app-health 
+      [myTurn]="gameState.IsMyTurn"
       [health]="userHealth"
+      [attr.data-game-id]="gameState.Me.Id"
       (click)="playerTargetSelected()"
       ></app-health>
 
@@ -73,7 +80,7 @@
 
         <app-dock
         [card]="playerLastSpellPlayed"
-        (contextmenu)="cardSelected(playerLastSpellPlayed)"
+        (contextmenu)="onRightClick($event, playerLastSpellPlayed)"
         [rival]="false"
         >
         </app-dock>
@@ -82,7 +89,9 @@
 
       <app-deck 
       class="player-deck" 
-      [deck]="gameState.Me.Deck"
+      [small]="true"
+      [deck]="storedGameState.Me.Deck"
+      [attr.data-game-id]="'player-deck'"
       (click)="deckSelected()"
       ></app-deck>
 
@@ -96,8 +105,6 @@
         (click)="cardSelected(card)"
         [selected]="card.id === selectedCard?.id"
         (contextmenu)="onRightClick($event, card)"
-        [animate.enter]="enterClass()"
-        [animate.leave]="leaveClass()"
       />
 
     </div>
@@ -117,6 +124,10 @@
       class="information-card"
     />
 
+    <p *ngIf="selectedCardInfo">
+      {{  selectedCardInfo.description }}
+    </p>
+
   </div>
 
 
@@ -128,7 +139,9 @@
   </button>
 
   <div class="animation-layer">
-    <app-card *ngIf="drawnCard" id="drawn-card" [card]="drawnCard" class="floating-card"></app-card>
+    <div class="proyectile">
+
+    </div>
   </div>
 
 </div>

@@ -29,4 +29,9 @@ export class DockComponent {
 
   @Input()
   rival: boolean = false;
+
+  trackById(index: number, card: Card)
+  {
+    return card.id;
+  }
 }

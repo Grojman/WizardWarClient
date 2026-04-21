@@ -2,6 +2,7 @@ export class Card {
 
   id: string = "";
   name: string = "";
+  description: string = "";
   attack?: number = 0;
   health?: number = 0;
   imageUrl?: string = "";

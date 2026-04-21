@@ -20,6 +20,8 @@ export class Health {
       // Cambiar valor real
       this.health += amount;
 
+      this.negative = false;
+
       // Actualizar lo que se muestra
       this.displayHealth = this.health;
 

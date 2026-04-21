@@ -1,4 +1,5 @@
 <div
+  [class.health-container-active]="myTurn"
   [ngClass]="[
     rival ? 'rival-health-background' : 'player-health-background'
   ]"

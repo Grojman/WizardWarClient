@@ -21,8 +21,6 @@ export class GameComponent implements OnInit {
     private router : Router
   )
   {
-    this.visualDrawnCard = document.querySelector("#drawn-card") as HTMLElement;
-    this.animationLayer = document.querySelector(".animation-layer") as HTMLElement;
     this.gameState = {
       IsMyTurn: false,
       Me: {
@@ -82,8 +80,9 @@ export class GameComponent implements OnInit {
       this.gameState.IsMyTurn = this.storedGameState.IsMyTurn;
       if(this.gameState.Rival.Id === "" || this.gameState.Me.Id === "")
       {
-        this.gameState.Rival.Id = this.gameState.Rival.Id;
-        this.gameState.Me.Id = this.gameState.Me.Id;
+        this.gameState.Rival.Id = this.storedGameState.Rival.Id;
+        this.gameState.Me.Id = this.storedGameState.Me.Id;
+
         this.gameState.Rival.Name = this.storedGameState.Rival.Name;
         this.gameState.Me.Name = this.storedGameState.Me.Name;
       }
@@ -104,32 +103,86 @@ export class GameComponent implements OnInit {
 
     return false;
   }
+
+
+
+async createProyectile(source: string, target: string)
+{
+  if (source === target) return;
+  await this.nextFrame();
+  const proyectile = document.querySelector(".proyectile") as HTMLElement;
+
+  const vsource = this.findElement(source);
+  const vtarget = this.findElement(target);
+
+  if(!vsource || !vtarget)
+  {
+    console.error("No puedo crear proyectil");
+    return;
+  }
+
+  const start = this.getCenter(vsource);
+  const end = this.getCenter(vtarget);
+
+  proyectile.style.position = "fixed";
+  proyectile.style.left = `${start.x}px`;
+  proyectile.style.top = `${start.y}px`;
+  proyectile.style.display = "block";
+
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+
+  const animation = proyectile.animate(
+  [
+    { transform: "translate(0px, 0px)" },
+    { transform: `translate(${dx}px, ${dy}px)` }
+  ],
+  {
+    duration: 400,
+    easing: "ease-out",
+    fill: "forwards"
+  });
+
+  await animation.finished;
+
+  proyectile.style.display = "none";
+}
   
   playEvent(event: any): Promise<void> {
     return new Promise(async resolve => {
       switch (event.$type) {
         case "CardDrawnEvent":
-        var player = this.getPlayer(event.PlayerSource);
+          var player = this.getPlayer(event.PlayerSource);
+          await this.createProyectile(event.Source, 
+            player.Id === this.gameState.Me.Id ?
+            "player-deck" :
+            "rival-deck"
+          );
         player.HandData.push(
           Card.fromJSON(event.Card));
         player.HandSize++;
         break;
         case "PlayerHealthChanged":
+        await this.createProyectile(event.Source, event.PlayerSource);
         var health = this.getPlayerHealth(event.PlayerSource)
-        health.changeHealth(event.Amount, 1000);
+        health.changeHealth(event.Amount, this.changeHealthAnimationDuration);
         break;
         case "UnitHealthChanged":
         var arrayToFind = this.getPlayer(event.PlayerSource).Board;
+        await this.createProyectile(event.Source, event.Card);
         
         arrayToFind.forEach(n => {
           if (n && n.id === event.Card)
             {
-            n.changeHealth(event.Amount, 1000);
+              
+            n.changeHealth(event.Amount, this.changeHealthAnimationDuration);
             return;
           }
         })
         break;
         case "UnitDamageChanged":
+        await this.createProyectile(event.Source, event.Card);
+
         var arrayToFind = this.getPlayer(event.PlayerSource).Board;
         
         arrayToFind.forEach(n => {
@@ -218,15 +271,18 @@ getCenter(el: HTMLElement) {
 }
 
 findElement(id: string): HTMLElement{
-  return document.querySelector(`[data-game-id=${id}]`) as HTMLElement;
+  console.log("Buscando elemento: ", id);
+  return document.querySelector(`[data-game-id="${id}"]`) as HTMLElement;
 }
 
 ngOnInit(): void {
+  this.animationLayer = document.querySelector(".animation-layer") as HTMLElement;
   this.ws.subscribe(this.processMessage)
 }
-leaveClass = signal('leave-animation');
-enterClass = signal('enter-animation');
 showSidePanel = false;
+
+changeHealthAnimationDuration: number = 500;
+
 
 rivalHealth: Health = new Health();
 userHealth: Health = new Health();
@@ -240,9 +296,7 @@ storedGameState: Game;
 gameEvents: any[] = [];
 eventQueue: any[] = [];
 isAnimating: boolean = false;
-animationLayer: HTMLElement;
-drawnCard?: Card;
-visualDrawnCard: HTMLElement;
+animationLayer: HTMLElement | null = null;
 unitSelected: boolean = false;
 
 attackingUnit: Card | null = null;
@@ -277,10 +331,13 @@ onRightClick(
   
   event.preventDefault();
   
+  if (!card) return;
+  
   this.selectedCardInfo = card;
   
   this.showSidePanel = true;
 }
+
 
 isRival(id: string): boolean {
   return this.storedGameState.Me.Id !== id;

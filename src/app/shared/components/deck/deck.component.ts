@@ -15,6 +15,8 @@ export class DeckComponent {
   @Input()
   selected = false;
 
+  @Input()
+  small = false;
 
   getImagePath() : string
   {

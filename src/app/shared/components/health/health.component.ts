@@ -13,4 +13,7 @@ export class HealthComponent {
 
   @Input()
   rival: boolean = false;
+
+  @Input()
+  myTurn: boolean = false; 
 }

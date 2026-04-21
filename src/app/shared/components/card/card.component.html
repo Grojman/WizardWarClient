@@ -1,16 +1,19 @@
-<div class="card-wrapper">
+<div class="card-wrapper"
+  [animate.enter]="'enter-animation'"
+  [animate.leave]="'leave-animation'"
+>
 
   <div
     class="card"
-
+    [class.selected]="selected"
     (mouseenter)="onMouseEnter($event)"
     (mouseleave)="onMouseLeave()"
     (mousemove)="onMouseMove($event)"
+    [attr.data-game-id]="card?.id"
   >
 
     <div
       class="card-inner"
-      [class.glow]="selected"
       [class.flipped]="flipped || faceDown"
     >
       <div class="card-front">

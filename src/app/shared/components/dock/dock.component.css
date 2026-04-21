@@ -1,9 +1,10 @@
 .dock
 {
-    width: 10vw;
-    height: 26vh;
+    width: 8vw;
+    height: 20vh;
     background-size: cover;
     background-repeat: no-repeat;
+    background-position: center;
 }
 
 .selected

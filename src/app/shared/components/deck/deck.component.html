@@ -1,6 +1,7 @@
 <div
   class="deck"
   [class.selected]="selected"
+  [class.small]="small"
 >
 
   <div
@@ -17,7 +18,7 @@
       </p>
 
       <p
-      *ngIf="deck.description === ''"
+      *ngIf="deck.cardAmount"
       >
         {{ deck.cardAmount }}
         
