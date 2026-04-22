@@ -5,6 +5,7 @@
 
   position: relative;
 
+  padding: 0 4rem;
 }
 
 .board-column {
@@ -39,8 +40,6 @@
   align-items: center;
 
   display: flex;
-
-  border: 1px solid gray;
 
   padding: 0.25rem;
 
@@ -131,7 +130,6 @@
 .information-card
 {
   transform: scale(2);
-  margin: auto;
 }
 
 .separator

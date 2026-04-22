@@ -19,9 +19,6 @@ export class DockComponent {
   card: Card | null = null
 
   @Input()
-  selected: boolean = false;
-
-  @Input()
   enhanced: boolean = false;
 
   @Input()
@@ -30,8 +27,4 @@ export class DockComponent {
   @Input()
   rival: boolean = false;
 
-  trackById(index: number, card: Card)
-  {
-    return card.id;
-  }
 }

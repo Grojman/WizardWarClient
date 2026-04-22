@@ -1,7 +1,12 @@
 .card {
 
+  --x-rotation: 0deg;
+  --y-rotation: 0deg;
+  --y-translate: 0;
+
   perspective: 1000px;
 
+  border-radius: 10px;
 
   width: 7vw;
   height: 21vh;
@@ -9,6 +14,11 @@
   transition: transform 0.2s ease-out;
 }
 
+.card-can-be-selected
+{
+  --y-translate: -5vh !important;
+
+}
 
 .card:not(.selected):hover {
 
@@ -17,7 +27,7 @@
     rotateX(var(--x-rotation))
 
     rotateY(var(--y-rotation))
-    translateY(-5vh)
+    translateY(var(--y-translate))
     
     scale(1.1);
     
@@ -37,7 +47,6 @@
 
   transition: transform 0.6s;
 
-  border-radius: 10px;
 }
 
 
@@ -99,6 +108,8 @@
 
   font-size: 12px;
 
+  padding: 0.25rem 1rem;
+
 }
 
 
@@ -146,12 +157,15 @@
 @keyframes slide-fade {
   from {
     opacity: 0.3;
-    transform: translateY(-200px);
-    transform: rotateZ(-45deg);
+    transform:
+      translateY(-200px)
+      rotateZ(-45deg);
   }
+
   to {
     opacity: 1;
-    transform: translateY(0);
-    transform: rotateZ(0);
+    transform:
+      translateY(0)
+      rotateZ(0);
   }
 }

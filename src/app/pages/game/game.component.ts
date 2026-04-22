@@ -88,12 +88,18 @@ export class GameComponent implements OnInit {
       }
       break;
       case "end_game":
-        alert("Partida terminada");
-        if (msg.Content.forced)
-          {
-            alert("El juego ha terminado antes de tiempo porque el otro jugador ha abandonado la partida, o se ha producido un fallo con el servidor");
-          }
-          this.router.navigateByUrl("/");
+        let message = "";
+
+        if(msg.Content.forced)
+        {
+          message = `${this.gameState.Rival.Name} ha salido de la aplicación y ha abandonado la partida.`
+        } else {
+          message = `Partida terminada, victoria para ${this.isRival(msg.Content.winner) ? this.gameState.Rival.Name : this.gameState.Me.Name}.`
+        }
+        
+        alert(message);
+
+        this.router.navigateByUrl("/");
       break;
       default:
       console.error("Unknown message!!!");

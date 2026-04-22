@@ -9,6 +9,7 @@
     [animate.leave]="'leave-animation'"
     [class.card-front]="!faceDown"
     [class.card-back]="faceDown"
+    [class.card-can-be-selected]="canBeSelected"
   >
     <figure
     *ngIf="!faceDown"

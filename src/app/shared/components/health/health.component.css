@@ -40,6 +40,12 @@
 
 /* Color si pierde vida */
 
+.enhanced
+{
+      box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+
+}
+
 .life-text.negative {
   color: red;
 }
