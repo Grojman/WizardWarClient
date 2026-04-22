@@ -135,17 +135,11 @@
     [class.open]="showSidePanel"
   >
 
-    <app-card
-      *ngIf="selectedCardInfo"
-      [card]="selectedCardInfo"
-      [canBeSelected]="false"
-      class="information-card"
-    />
-
-    <p *ngIf="selectedCardInfo">
-      {{  selectedCardInfo.description }}
-    </p>
-
+  <app-cardvisualizer
+  class="information-card"
+  [card]="selectedCardInfo"
+  *ngIf="selectedCardInfo">
+</app-cardvisualizer>
   </div>
 
 

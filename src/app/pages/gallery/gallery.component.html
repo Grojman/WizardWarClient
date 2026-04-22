@@ -1,0 +1,15 @@
+
+<h1>Galería de cartas</h1>
+<h2>Explora aquí todas las cartas que tiene el juego y sus efectos</h2>
+
+<a routerLink="/">Volver a inicio</a>
+
+<div class="cards-container">
+
+    <app-cardvisualizer
+    *ngFor="let card of cards"
+    [card]="card"
+    >
+
+    </app-cardvisualizer>
+</div>

@@ -1,0 +1,37 @@
+.container
+{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    align-items: center;
+}
+
+.card-info
+{
+    background-color: bisque;
+    border-radius: 5px;
+    padding: 0.5rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card-description,
+.card-families
+{
+    text-align: center;
+
+    font-size: smaller;
+}
+
+.card-families
+{
+    font-weight: bolder;
+}
+
+.card-description
+{
+    font-style: italic;
+}

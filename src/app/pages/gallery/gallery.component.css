@@ -1,0 +1,6 @@
+.cards-container
+{
+    margin: 1rem;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto;
+}

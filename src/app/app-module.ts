@@ -16,6 +16,8 @@ import { GameComponent } from './pages/game/game.component';
 import { ErrorComponent } from './pages/error/error.component';
 import { DockComponent } from './shared/components/dock/dock.component';
 import { HealthComponent } from './shared/components/health/health.component';
+import { GalleryComponent } from './pages/gallery/gallery.component';
+import { CardvisualizerComponent } from './shared/components/cardvisualizer/cardvisualizer.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,8 @@ import { HealthComponent } from './shared/components/health/health.component';
     GameComponent,
     ErrorComponent,
     HealthComponent,
+    GalleryComponent,
+    CardvisualizerComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [

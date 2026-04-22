@@ -7,6 +7,7 @@ export class Card {
   health?: number = 0;
   imageUrl?: string = "";
   type?: string = "";
+  families?: string[] = [];
 
   attackChanged?: boolean = false;
   healthChanged?: boolean = false;

@@ -1,0 +1,24 @@
+<div class="container">
+    <app-card
+        [card]="card"
+        [canBeSelected]="false"
+    >
+    </app-card>
+
+    <div class="card-info"
+    >
+        <p
+        class="card-families"
+        *ngIf="card.families?.length !== 0"
+        >
+            {{ card.families?.join() }}
+        </p>
+
+        <p
+        *ngIf="card.description"
+        class="card-description"
+        >
+            {{ card.description }}
+        </p>
+    </div>
+</div>
