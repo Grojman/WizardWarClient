@@ -1,1 +1,32 @@
-<p>error.component works!</p>
+<div class="error-container">
+
+    <div class="error-card">
+
+      <div class="icon">
+        ⚡
+      </div>
+
+      <h1>
+        Conexión perdida con el servidor
+      </h1>
+
+      <p class="message">
+        Lo sentimos, parece que se ha perdido la conexión con el servidor.
+      </p>
+
+      <p class="sub-message">
+        Nuestro equipo ya puede estar trabajando en solucionarlo.
+        Por favor, vuelve a intentarlo más adelante.
+      </p>
+
+      <button (click)="tryReload()" class="retry-button">
+        Reintentar conexión
+      </button>
+
+      <p class="footer">
+        Gracias por tu paciencia.
+      </p>
+
+    </div>
+
+  </div>

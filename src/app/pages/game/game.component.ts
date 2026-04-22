@@ -141,7 +141,8 @@ async createProyectile(source: string, target: string)
   const animation = proyectile.animate(
   [
     { transform: "translate(0px, 0px)" },
-    { transform: `translate(${dx}px, ${dy}px)` }
+    { transform: `translate(${dx}px, ${dy}px)` },
+    { trasnform: "rotate(1080deg)" }
   ],
   {
     duration: 400,

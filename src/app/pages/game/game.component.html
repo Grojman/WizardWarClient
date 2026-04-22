@@ -12,16 +12,22 @@
 
     <div class="enemy-board">
 
-      <app-health 
+      <div class="player-info">
+          <app-health 
       [health]="rivalHealth"
       (click)="rivalTargetSelected()"
       [rival]="true"
       [myTurn]="!gameState.IsMyTurn"
       [attr.data-game-id]="gameState.Rival.Id"
       [enhanced]="attackingUnit !== null"
-      >
+      ></app-health>
 
-      </app-health>
+      <p class="player-name">
+        {{ gameState.Rival.Name }}
+      </p>
+      </div>
+
+      
 
       <div class="board-row">
 
@@ -57,13 +63,21 @@
 
     <div class="player-board">
 
-      <app-health 
-      [myTurn]="gameState.IsMyTurn"
-      [health]="userHealth"
-      [attr.data-game-id]="gameState.Me.Id"
-      (click)="playerTargetSelected()"
-      [enhanced]="attackingUnit !== null"
-      ></app-health>
+      <div class="player-info">
+        <app-health 
+        [myTurn]="gameState.IsMyTurn"
+        [health]="userHealth"
+        [attr.data-game-id]="gameState.Me.Id"
+        (click)="playerTargetSelected()"
+        [enhanced]="attackingUnit !== null"
+        ></app-health>
+
+        <p class="player-name">
+        {{ gameState.Rival.Name }}
+      </p>
+      </div>
+
+      
 
       <div class="board-row">
 

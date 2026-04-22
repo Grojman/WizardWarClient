@@ -1,12 +1,8 @@
 <div class="home-container">
 
   <h1 class="title">
-    Wizard War
+    Guerra de Magos
   </h1>
-
-  <!-- LISTADO DE MAZOS -->
-
-
   <div class="deck-list">
 
     <app-deck
@@ -18,8 +14,6 @@
 
   </div>
 
-  <!-- NOMBRE -->
-
   <input
     type="text"
     [(ngModel)]="username"
@@ -27,8 +21,6 @@
     placeholder="Introduce tu nombre"
     class="username-input"
   />
-
-  <!-- BOTÓN -->
 
   <button
     class="search-button"
@@ -44,5 +36,29 @@
     ></span>
 
   </button>
+
+
+  <h2>¿En qué consiste la Guerra de Magos?</h2>
+
+  <p>
+    Guerra de Magos es un juego de cartas online que busca ser rápido y sencillo, para echarte unas partidas cortas y distraerte de tus obligaciones y quehaceres del día a día. Tan solo tienes que escoger un nombre de usuario y mazo con el que quieras jugar, y pronto te encontraremos con un rival con el que batirte en duelo.
+  </p>
+
+  <p>
+    El funcionamiento es muy sencillo: cada jugador tiene 20 puntos de vida, quien llegue primero a 0 o se quede sin cartas que robar pierde. Tienes una mano y una mesa con cuatro espacios donde colocar tus unidades. Hay dos tipos de cartas, una ya te la he dicho: unidades y hechizos. Los hechizos tan solo realizan efectos en la partida, mientras que las unidades se pueden colocar en mesa, y disponen de daño y vida.
+  </p>
+
+  <p>
+    En cada ronda solo puedes hacer tres acciones diferentes:
+  </p>
+  <ul>
+    <li>Robar una carta de tu mazo.</li>
+    <li>Jugar una carta de tu mano. Si es un hechizo, se hará su efecto instantáneamente, y se colocará en un hueco especial en mesa reservado para el último hechizo jugado. Tú y tu rival disponéis de uno de estos huecos, para que podáis ver los hechizos y, mediante el click derecho, inspeccionar la carta para ver lo que hacen.</li>
+    <li>Si tienes una unidad en mesa, puedes elegirla para atacar otra unidad, o a uno de los jugadores (incluído tú mismo)</li>
+  </ul>
+    
+  <p>
+    Poco más hay que explicar. Mucha suerte en tus partidas y ¡Que comience la guerra!
+  </p>
 
 </div>

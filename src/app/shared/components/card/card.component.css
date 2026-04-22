@@ -63,6 +63,7 @@
 .card-name
 {
   text-align: center;
+  font-size: small;
 }
 
 
@@ -88,10 +89,13 @@
 
 }
 
+.card-back-design
+{
+  text-align: center;
+}
+
 
 .card-art {
-
-  border-radius: 8px;
 
   flex-grow: 1;
 
@@ -106,9 +110,9 @@
 
   justify-content: space-between;
 
-  font-size: 12px;
+  font-size: normal;
 
-  padding: 0.25rem 1rem;
+  padding: 0.25rem;
 
 }
 
