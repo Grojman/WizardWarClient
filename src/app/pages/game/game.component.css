@@ -129,13 +129,6 @@
 
 }
 
-
-/* ARREGLAR */
-.information-card app-card
-{
-  transform: scale(2);
-}
-
 .separator
 {
   width: 0.25rem;

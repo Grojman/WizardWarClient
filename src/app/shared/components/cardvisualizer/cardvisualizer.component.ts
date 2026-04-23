@@ -10,4 +10,7 @@ import { Card } from '../../../models/card.model';
 export class CardvisualizerComponent {
   @Input()
   card!: Card;
+
+  @Input()
+  large: boolean = true;
 }

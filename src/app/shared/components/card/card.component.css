@@ -99,7 +99,13 @@
 
   flex-grow: 1;
 
-  background-size: cover;
+  border-radius: 10px 10px 0 0;
+  background-size:auto;
+  background-repeat: no-repeat;
+  background-position: center;
+
+
+  margin: 0;
 
 }
 
