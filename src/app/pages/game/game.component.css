@@ -130,7 +130,8 @@
 }
 
 
-.information-card
+/* ARREGLAR */
+.information-card app-card
 {
   transform: scale(2);
 }
