@@ -1,3 +1,39 @@
+@font-face {
+  font-family: Title;
+  src: url("/fonts/Chokokutai-Regular.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Subtitle Font";
+  src: url("/fonts/GeostarFill-Regular.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Text Font";
+  src: url("/fonts/Geo-Regular.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+
+h1, .title
+{
+    font-family: "Title";
+}
+
+h2, .subtitle
+{
+    font-family: "Subtitle Font";
+}
+
+p, .text
+{
+    font-family: "Text Font";
+}
+
 body {
     margin: 0;
 }

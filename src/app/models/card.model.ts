@@ -8,6 +8,9 @@ export class Card {
   imageUrl?: string = "";
   type?: string = "";
   families?: string[] = [];
+  canPlay?: boolean = true;
+  hasEffect?: boolean = false;
+  effectTimes?: number = 0;
 
   attackChanged?: boolean = false;
   healthChanged?: boolean = false;
@@ -24,6 +27,8 @@ export class Card {
   static fromJSON(data: any): Card {
     return new Card(data);
   }
+
+
 
   changeHealth(amount: number, durationAnimation: number)
   {

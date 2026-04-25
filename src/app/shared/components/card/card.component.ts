@@ -105,4 +105,32 @@ export class CardComponent implements OnChanges, OnInit {
 
   }
 
+  stringToColor(str: string): string {
+    let hash = 0;
+
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 31) - hash);
+    }
+
+    const hue = Math.abs(hash) % 360;
+    const saturation = 65;
+    const lightness = 55;
+
+    return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  }
+
+  familiesToGradient(families: string[]): string {
+    if (families.length === 0) {
+      return "hsl(0, 0%, 60%)"; // gris por defecto
+    }
+
+    const colors = families.map(f => this.stringToColor(f));
+
+    if (colors.length === 1) {
+      return colors[0];
+    }
+
+    return `linear-gradient(135deg, ${colors.join(", ")})`;
+  }
+
 }

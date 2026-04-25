@@ -10,6 +10,7 @@
     [class.card-front]="!faceDown"
     [class.card-back]="faceDown"
     [class.card-can-be-selected]="canBeSelected"
+    [style.background]="familiesToGradient(card?.families ?? [])"
   >
     <figure
     *ngIf="!faceDown"
