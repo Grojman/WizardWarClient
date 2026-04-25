@@ -54,7 +54,7 @@
   display: flex;
   flex-direction: column;
 
-  background: #7b7855;
+  background-color: #7b7855;
 
   color: #c3faea;
 
@@ -136,7 +136,7 @@
 
 .card:hover .shine {
 
-  background:
+  background-color:
 
     radial-gradient(
 
@@ -148,6 +148,13 @@
 
     );
 
+}
+
+.card-info
+{
+  display: flex;
+  gap: 0.1rem;
+  justify-content: center;
 }
 
 .selected
@@ -178,4 +185,72 @@
       translateY(0)
       rotateZ(0);
   }
+}
+
+.cannot-play
+{
+  background-image: url("/images/board/cannot_play.svg");
+  background-size: contain;
+  background-position: center;
+  background-repeat:  no-repeat;
+}
+
+.attack,
+.health {
+  position: relative;
+}
+
+
+.floating-number {
+
+  position: absolute;
+
+  left: 50%;
+  bottom: 100%;
+
+  transform: translateX(-50%);
+
+  font-weight: bold;
+
+  font-size: 1rem;
+
+  pointer-events: none;
+
+  animation: floatUpFade 1s ease-out forwards;
+
+}
+
+
+.floating-number.positive {
+  color: #2ecc71; /* verde */
+}
+
+.floating-number.negative {
+  color: #e74c3c; /* rojo */
+}
+
+
+@keyframes floatUpFade {
+
+  0% {
+    opacity: 1;
+    transform:
+      translate(-50%, 0px)
+      scale(1);
+  }
+
+  50% {
+    opacity: 1;
+    transform:
+      translate(-50%, -20px)
+      scale(1.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform:
+      translate(-50%, -40px)
+      scale(1);
+  }
+
 }

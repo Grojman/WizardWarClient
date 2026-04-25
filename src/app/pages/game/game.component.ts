@@ -110,7 +110,133 @@ export class GameComponent implements OnInit {
     return false;
   }
 
+getTargetElement(
+  index: number,
+  type: "RIVAL" | "PLAYER" | "ENEMY_BOARD" | "OWN_BOARD",
+  isRival: boolean
+): HTMLElement | null {
 
+  switch (type) {
+
+    case "RIVAL":
+      return this.findElement( isRival ? this.gameState.Me.Id : this.gameState.Rival.Id);
+
+    case "PLAYER":
+      return this.findElement(isRival ? this.gameState.Rival.Id : this.gameState.Me.Id);
+
+    case "ENEMY_BOARD": {
+      const card =
+        (isRival ? this.gameState.Me.Board : this.gameState.Rival.Board)[index];
+
+      return card
+        ? this.findElement(card.id)
+        : null;
+    }
+
+    case "OWN_BOARD": {
+      const card =
+        (isRival ? this.gameState.Rival.Board : this.gameState.Me.Board)[index];
+
+      return card
+        ? this.findElement(card.id)
+        : null;
+    }
+
+    default:
+      return null;
+  }
+}
+
+async animateAttack(
+  playerId: string,
+  attackerId: string,
+  targetIndex: number,
+  targetType: "RIVAL" | "PLAYER" | "ENEMY_BOARD" | "OWN_BOARD",
+  attackerDamage: number,
+  defenderDamage: number
+): Promise<void> {
+  
+  await this.nextFrame();
+
+  var isRival = this.isRival(playerId);
+
+  const attackerEl = this.findElement(attackerId);
+  const targetEl = this.getTargetElement(targetIndex, targetType, isRival);
+
+  if (!attackerEl || !targetEl) {
+    console.error("No se encontró atacante o objetivo");
+    return;
+  }
+
+  attackerEl.style.transformOrigin = "50% 100%";
+  targetEl.style.transformOrigin = "50% 100%";
+
+  const targetAnim = targetEl.animate(
+    [
+      { transform: "rotate(0deg) translateY(0px)" },
+
+      { transform: "rotate(-45deg) translateY(-10px)" },
+
+      { transform: "rotate(0deg) translateY(0px)" }
+    ],
+    {
+      duration: 500,
+      easing: "ease-out"
+    }
+  );
+
+  const attackerAnim = attackerEl.animate(
+    [
+      { transform: "rotate(0deg) translateY(0px)" },
+
+      { transform: "rotate(45deg) translateY(-10px)" },
+
+      { transform: "rotate(0deg) translateY(0px)" }
+    ],
+    {
+      duration: 500,
+      easing: "ease-out"
+    }
+  );
+
+  await new Promise(resolve =>
+    setTimeout(resolve, 250)
+  );
+
+  switch (targetType)
+  {
+    case "RIVAL":
+      (isRival ? this.userHealth : this.rivalHealth).changeHealth(-attackerDamage, 500);  
+      break;
+    case "PLAYER":
+      (isRival ? this.rivalHealth : this.userHealth).changeHealth(-attackerDamage, 500);  
+      break;
+    case "ENEMY_BOARD":
+      var board = (isRival ? this.gameState.Me.Board :this.gameState.Rival.Board);
+      board[targetIndex]?.changeHealth(-attackerDamage, 500);
+      var enemyBoard = (isRival ? this.gameState.Rival.Board :this.gameState.Me.Board);
+      var attackerIndex = enemyBoard.findIndex(n => n?.id === attackerId);
+      if (attackerIndex !== -1)
+      {
+        enemyBoard[attackerIndex]?.changeHealth(-defenderDamage, 500);
+      }
+      break;
+    case "OWN_BOARD":
+      var board = (isRival ? this.gameState.Rival.Board :this.gameState.Me.Board);
+      board[targetIndex]?.changeHealth(-attackerDamage, 500);
+      var attackerIndex = board.findIndex(n => n?.id === attackerId);
+      if (attackerIndex !== -1)
+      {
+        board[attackerIndex]?.changeHealth(-defenderDamage, 500);
+      }
+      break;
+  }
+
+  await Promise.all([
+    attackerAnim.finished,
+    targetAnim.finished
+  ]);
+}
 
 async createProyectile(source: string, target: string)
 {
@@ -163,6 +289,17 @@ async createProyectile(source: string, target: string)
   playEvent(event: any): Promise<void> {
     return new Promise(async resolve => {
       switch (event.$type) {
+        case "CardAttacked":
+          await this.animateAttack(
+            event.PlayerSource,
+            event.Attacker,
+            event.TargetIndex,
+            event.TargetType,
+            event.AttackerDamage,
+            event.DefenderDamage
+          );
+
+        break;
         case "CardDrawnEvent":
           var player = this.getPlayer(event.PlayerSource);
           await this.createProyectile(event.Source, 
@@ -369,7 +506,7 @@ cardSelected(card: Card | null)
   this.unitSelected = this.selectedCard?.type === "Unit";
   this.attackingUnit = null;
 
-  if(!this.unitSelected && this.selectedCard && card)
+  if(!this.unitSelected && this.selectedCard && card && card.canPlay)
   {
     this.selectedCard = null;
     this.ws.send({

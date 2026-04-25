@@ -10,7 +10,8 @@
     [class.card-front]="!faceDown"
     [class.card-back]="faceDown"
     [class.card-can-be-selected]="canBeSelected"
-    [style.background]="familiesToGradient(card?.families ?? [])"
+    [class.cannot-play]="!card?.canPlay && !faceDown"
+    [style.background-color]="familiesToGradient(card?.families ?? [])"
   >
     <figure
     *ngIf="!faceDown"
@@ -18,12 +19,30 @@
       [style.backgroundImage]="'url(' + card?.imageUrl + ')'"
     ></figure>
 
+    <p 
+    *ngIf="!faceDown"
+    class="card-name">
+      {{ card?.name }}
+    </p>
+
     <div class="card-info"
     *ngIf="!faceDown"
     >
 
-      <p class="card-name">
-        {{ card?.name }}
+      <i
+      *ngIf="card?.description !== ''"
+      class="fa-solid fa-circle-info"></i>
+
+      <i 
+      *ngIf="card?.hasEffect && card?.effectTimes || 0 > 0"
+      class="fa-solid fa-lightbulb"></i>
+
+      <i 
+      *ngIf="card?.hasEffect && card?.effectTimes === 0"
+      class="fa-regular fa-lightbulb"></i>
+
+      <p *ngIf="card?.hasEffect && card?.effectTimes !== -1">
+        {{ card?.effectTimes }}
       </p>
 
     </div>
@@ -31,11 +50,36 @@
     <footer class="card-footer" *ngIf="card?.type == 'Unit' && !faceDown">
 
       <span class="attack">
-        ⚔ {{ card?.attack }}
+        <i class="fa-solid fa-hand-fist"></i> 
+        {{ card?.attack }}
+
+        <span
+          *ngIf="card?.attackChanged"
+          class="floating-number attack-change"
+          [class.positive]="(card?.attackChangedAmount || 0) > 0"
+          [class.negative]="(card?.attackChangedAmount || 0) < 0"
+        >
+          {{ card?.attackChangedAmount || 0 > 0 ? '+' : '' }}
+          {{ card?.attackChangedAmount }}
+        </span>
+
       </span>
 
       <span class="health">
-        ❤ {{ card?.health }}
+
+        <i class="fa-solid fa-heart"></i>
+        {{ card?.health }}
+
+        <span
+          *ngIf="card?.healthChanged"
+          class="floating-number health-change"
+          [class.positive]="(card?.healthChangedAmount || 0) > 0"
+          [class.negative]="(card?.healthChangedAmount || 0) < 0"
+        >
+          {{ card?.healthChangedAmount || 0 > 0 ? '+' : '' }}
+          {{ card?.healthChangedAmount }}
+        </span>
+
       </span>
 
     </footer>
