@@ -271,7 +271,7 @@ async createProyectile(source: string, target: string)
     { trasnform: "rotate(1080deg)" }
   ],
   {
-    duration: 400,
+    duration: 800,
     easing: "ease-out",
     fill: "forwards"
   });
@@ -289,6 +289,17 @@ async createProyectile(source: string, target: string)
   playEvent(event: any): Promise<void> {
     return new Promise(async resolve => {
       switch (event.$type) {
+        case "CardEventPlayed":
+          var player = this.getPlayer(event.PlayerSource);
+
+          let i = player.Board.findIndex(n => n?.id === event.Card);
+          if(i !== -1)
+          {
+            player.Board[i]!.effectTimes! -= 1;
+          } else {
+            (this.isRival(event.PlayerSource) ? this.rivalLastSpellPlayed : this.playerLastSpellPlayed)!.effectTimes! -= 1;
+          }
+          break;
         case "CardAttacked":
           await this.animateAttack(
             event.PlayerSource,
@@ -381,12 +392,10 @@ async createProyectile(source: string, target: string)
         break;
 
         case "AddedCardToDeck":
-          var player = this.getPlayer(event.PlayerSource);
-          await this.createProyectile(player.Id, this.getDeckId(event.TargetedPlayer));
-          break;
+          await this.createProyectile(event.Source, this.getDeckId(event.TargetedPlayer));
+            break;
         case "DeckModifiedStats":
-          var player = this.getPlayer(event.PlayerSource);
-          await this.createProyectile(player.Id, this.getDeckId(event.TargetedPlayer));
+          await this.createProyectile(event.Source, this.getDeckId(event.TargetedPlayer));
           break;
         default:
         resolve();
@@ -519,7 +528,7 @@ cardSelected(card: Card | null)
 
 dockSelected(position: number)
 {
-  if (!this.gameState.IsMyTurn || !this.selectedCard || !this.unitSelected) return;
+  if (!this.gameState.IsMyTurn || !this.selectedCard || !this.selectedCard.canPlay || !this.unitSelected) return;
 
     this.ws.send({
       "$type": "PlayCardAction",
@@ -542,8 +551,19 @@ attackingUnitSelected(card: Card | null)
 {
   if(!this.gameState.IsMyTurn) return;
 
-  this.attackingUnit = this.attackingUnit?.id === card?.id ? null : card;
   this.selectedCard = null;
+  if(this.attackingUnit?.id === card?.id && this.attackingUnit?.hasEffect && this.attackingUnit.effectTimes || 0 > 0)
+  {
+    let index = this.gameState.Me.Board.findIndex(n => n?.id === card?.id);
+    this.ws.send({
+      "$type" : "CardEffectActivated",
+      "CardIndex" : index
+    })
+    this.attackingUnit = null;
+    return;
+  }
+
+  this.attackingUnit = this.attackingUnit?.id === card?.id ? null : card;
 }
 
 rivalTargetSelected()
