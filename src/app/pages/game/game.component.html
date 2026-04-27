@@ -153,6 +153,28 @@
     <div class="proyectile" style="display: none;">
 
     </div>
+
+    <ng-container
+    *ngFor="let msg of floatingMessages; let i = index"
+    >
+
+      <p
+        class="speech-bubble"
+        [style.left.px]="msg.x"
+        [style.bottom.px]="msg.bottom"
+        [style.--float-height.px]="msg.height"
+        [style.animation-duration.ms]="msg.duration"
+        [style.transform]="'translateX(-50%) translateY(' + (-i * 30) + 'px)'"
+      >
+        {{ msg.text }}
+      </p>
+
+    </ng-container>
   </div>
 
 </div>
+
+<app-message-dialog
+  #dialog
+  (messageSent)="onMessageSent($event)"
+></app-message-dialog>

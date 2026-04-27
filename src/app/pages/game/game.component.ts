@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, HostListener, OnInit, signal, ViewChild } from '@angular/core';
 
 import { Card } from '../../models/card.model';
 
@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { Game } from '../../models/game.model';
 import { Health } from '../../models/health.model';
 import { Player } from '../../models/player.model';
+import { MessageDialogComponent } from '../../ui/message-dialog/message-dialog.component';
 
 
 @Component({
@@ -71,6 +72,9 @@ export class GameComponent implements OnInit {
   processMessage = (msg: any): boolean => {
     switch(msg.Type)
     {
+      case "text_message":
+      this.createFloatingMessage(msg.Content.message, msg.Content.player);
+      break;
       case "game_events":
       this.gameEvents = msg.Content;
       this.handleGameEvents(this.gameEvents);
@@ -436,6 +440,7 @@ getCenter(el: HTMLElement) {
 
 findElement(id: string): HTMLElement{
   console.log("Buscando elemento: ", id);
+  console.log(document.querySelector(`[data-game-id="${id}"]`))
   return document.querySelector(`[data-game-id="${id}"]`) as HTMLElement;
 }
 
@@ -462,8 +467,45 @@ eventQueue: any[] = [];
 isAnimating: boolean = false;
 animationLayer: HTMLElement | null = null;
 unitSelected: boolean = false;
-
 attackingUnit: Card | null = null;
+
+floatingMessages: FloatingMessage[] = [];
+
+createFloatingMessage(
+  text: string,
+  playerId: string
+)
+{
+  let userHealht = this.findElement(this.isRival(playerId) ? this.gameState.Me.Id : this.gameState.Rival.Id).getBoundingClientRect();
+  const randomHeight =
+    80 + Math.random() * 120;
+
+  const duration = 3000;
+
+  const message: FloatingMessage = {
+
+    text,
+
+    x: userHealht.x + userHealht.width / 2,
+    bottom: userHealht.bottom + userHealht.height,
+
+    height: randomHeight,
+    duration
+
+  };
+
+  this.floatingMessages.push(message);
+
+
+  setTimeout(() => {
+
+    this.floatingMessages =
+      this.floatingMessages
+        .filter(m => m != message);
+
+  }, duration);
+
+}
 
 async handleGameEvents(events: any[]) {
   
@@ -619,4 +661,28 @@ rivalBoardCardSelected(card: Card | null)
 
 //   return `rotate(${rotation}deg) translateY(${offsetY}px)`;
 // }
+
+@ViewChild('dialog')
+dialog!: MessageDialogComponent;
+
+// Detecta teclas globalmente
+
+@HostListener('window:keydown', ['$event'])
+handleKeyboardEvent(event: KeyboardEvent) {
+
+  if (event.key === 'Tab') {
+
+    event.preventDefault(); 
+
+    this.dialog.open();
+
+  }
+}
+
+onMessageSent(text: string) {
+  this.ws.send({
+    "$type" : "TextMessage",
+    "Message" : text
+  });
+}
 }

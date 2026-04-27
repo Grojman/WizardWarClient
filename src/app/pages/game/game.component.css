@@ -164,3 +164,71 @@
 {
   text-align: center;
 }
+
+.speech-bubble {
+
+  padding: 0.25rem;
+  min-width: 5vw;
+  max-width: 20vw;
+  position: absolute;
+  text-align: center;
+  overflow-wrap: anywhere;
+
+  background: white;
+
+  border-radius: 12px;
+
+  font-weight: bold;
+
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+
+  transition: transform 0.25s ease-out,
+              opacity 0.25s ease-out;
+  opacity: 0;
+  animation: floatUp 0.4s ease-out forwards;
+  margin: 0;
+
+}
+
+@keyframes floatUp {
+  50% {
+    transform: translateY(0) translateX(-50%);
+    opacity: 1;
+  }
+
+  90%
+  {
+    opacity: 1;
+  }
+  100%
+  {
+    opacity: 0;
+  }
+}
+
+/* Triángulo */
+
+.speech-bubble::after {
+
+  content: "";
+
+  position: absolute;
+
+  border-width: 8px;
+  bottom: -16px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+
+  border-style: solid;
+
+  border-color:
+    white
+    transparent
+    transparent
+    transparent;
+
+}

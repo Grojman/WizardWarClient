@@ -1,0 +1,26 @@
+<div
+  class="dialog-backdrop"
+  *ngIf="visible"
+  (click)="close()"
+>
+
+  <div
+    class="dialog-panel"
+    (click)="$event.stopPropagation()"
+  >
+
+    <input
+      type="text"
+      [(ngModel)]="message"
+      placeholder="Escribe un mensaje..."
+      (keyup.enter)="send()"
+      autofocus
+    />
+
+    <button (click)="send()">
+      Enviar
+    </button>
+
+  </div>
+
+</div>

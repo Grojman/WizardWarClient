@@ -1,0 +1,122 @@
+/* Fondo oscuro suave */
+
+.dialog-backdrop {
+
+  position: fixed;
+
+  inset: 0;
+
+  background: rgba(0,0,0,0.4);
+
+  backdrop-filter: blur(4px);
+
+  display: flex;
+
+  align-items: flex-end;
+
+  animation: fadeIn 0.2s ease;
+
+}
+
+/* Panel moderno full-width */
+
+.dialog-panel {
+
+  width: 100%;
+
+  background: white;
+
+  padding: 16px;
+
+  display: flex;
+
+  gap: 10px;
+
+  box-shadow:
+    0 -4px 20px rgba(0,0,0,0.2);
+
+  border-radius:
+    16px 16px 0 0;
+
+  animation:
+    slideUp 0.25s ease;
+
+}
+
+/* Input moderno */
+
+.dialog-panel input {
+
+  flex: 1;
+
+  padding: 12px;
+
+  border-radius: 10px;
+
+  border: 1px solid #ddd;
+
+  font-size: 16px;
+
+}
+
+/* Botón */
+
+.dialog-panel button {
+
+  padding: 12px 18px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background: #4a90e2;
+
+  color: white;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  transition: 0.15s;
+
+}
+
+.dialog-panel button:hover {
+
+  background: #357abd;
+
+}
+
+/* Animaciones */
+
+@keyframes slideUp {
+
+  from {
+
+    transform: translateY(100%);
+
+  }
+
+  to {
+
+    transform: translateY(0);
+
+  }
+
+}
+
+@keyframes fadeIn {
+
+  from {
+
+    opacity: 0;
+
+  }
+
+  to {
+
+    opacity: 1;
+
+  }
+
+}
