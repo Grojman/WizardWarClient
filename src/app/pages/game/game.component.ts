@@ -275,7 +275,7 @@ async createProyectile(source: string, target: string)
     { trasnform: "rotate(1080deg)" }
   ],
   {
-    duration: 800,
+    duration: 600,
     easing: "ease-out",
     fill: "forwards"
   });
