@@ -155,10 +155,10 @@
     </div>
 
     <ng-container
-    *ngFor="let msg of floatingMessages; let i = index"
+  *ngFor="let msg of floatingMessages; let i = index"
     >
 
-      <p
+      <div
         class="speech-bubble"
         [style.left.px]="msg.x"
         [style.bottom.px]="msg.bottom"
@@ -166,8 +166,22 @@
         [style.animation-duration.ms]="msg.duration"
         [style.transform]="'translateX(-50%) translateY(' + (-i * 30) + 'px)'"
       >
-        {{ msg.text }}
-      </p>
+
+
+        <img
+          *ngIf="isReaction(msg.text)"
+          [src]="getReactionPath(msg.text)"
+          class="reaction-image"
+          alt="reaction"
+        />
+
+        <span *ngIf="!isReaction(msg.text)">
+
+          {{ msg.text }}
+
+        </span>
+
+      </div>
 
     </ng-container>
   </div>

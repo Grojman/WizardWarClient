@@ -7,8 +7,8 @@
 
   padding: 0 4rem;
 
-  background: #a2bddb;
-  background: radial-gradient(circle,rgba(162, 189, 219, 1) 0%, rgba(180, 224, 193, 1) 50%, rgba(89, 102, 125, 1) 100%);
+    background:
+    radial-gradient(circle at top, #2b1055, #000);
 }
 
 .board-column {
@@ -230,5 +230,17 @@
     transparent
     transparent
     transparent;
+
+}
+
+.reaction-image {
+
+  width: 10vw;
+
+  height: 10vw;
+
+  object-fit: contain;
+
+  pointer-events: none;
 
 }

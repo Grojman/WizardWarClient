@@ -1,15 +1,51 @@
+<div class="gallery-container">
 
-<h1>Galería de cartas</h1>
-<h2>Explora aquí todas las cartas que tiene el juego y sus efectos</h2>
+  <!-- HEADER -->
 
-<a routerLink="/">Volver a inicio</a>
+  <div class="gallery-header">
 
-<div class="cards-container">
+    <h1 class="title glow">
 
-    <app-cardvisualizer
-    *ngFor="let card of cards"
-    [card]="card"
+      <i class="fa-solid fa-book-sparkles title-icon"></i>
+
+      Galería de Cartas
+
+    </h1>
+
+    <h2 class="subtitle">
+
+      <i class="fa-solid fa-scroll"></i>
+
+      Explora todas las cartas y descubre sus poderes
+
+    </h2>
+
+    <a
+      routerLink="/"
+      class="back-button"
     >
 
+      <i class="fa-solid fa-arrow-left"></i>
+
+      Volver a inicio
+
+    </a>
+
+  </div>
+
+
+
+  <!-- GRID DE CARTAS -->
+
+  <div class="cards-container">
+
+    <app-cardvisualizer
+      *ngFor="let card of cards"
+      [card]="card"
+      class="card-item"
+    >
     </app-cardvisualizer>
+
+  </div>
+
 </div>

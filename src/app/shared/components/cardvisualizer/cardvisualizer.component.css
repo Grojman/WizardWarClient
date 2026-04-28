@@ -12,6 +12,7 @@
     background-color: bisque;
     border-radius: 5px;
     padding: 0.5rem;
+    color: grey;
 
     display: flex;
     flex-direction: column;

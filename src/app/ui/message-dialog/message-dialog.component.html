@@ -9,17 +9,52 @@
     (click)="$event.stopPropagation()"
   >
 
-    <input
-      type="text"
-      [(ngModel)]="message"
-      placeholder="Escribe un mensaje..."
-      (keyup.enter)="send()"
-      autofocus
-    />
+    <!-- Header opcional -->
 
-    <button (click)="send()">
-      Enviar
-    </button>
+    <div class="dialog-header">
+
+      <i class="fa-solid fa-scroll"></i>
+
+      <span>Mensaje Arcano</span>
+
+      <button
+        class="close-button"
+        (click)="close()"
+      >
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <!-- Input -->
+
+    <div class="dialog-input-row">
+
+      <i class="fa-solid fa-feather-pointed input-icon"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="message"
+        placeholder="Escribe un mensaje..."
+        (keyup.enter)="send()"
+        autofocus
+      />
+
+      <button
+        class="send-button"
+        (click)="send()"
+      >
+
+        <i class="fa-solid fa-paper-plane"></i>
+
+        Enviar
+
+      </button>
+
+    </div>
 
   </div>
 

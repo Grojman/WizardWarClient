@@ -1,69 +1,170 @@
 <div class="home-container">
 
-  <h1 class="title">
-    Guerra de Magos
-  </h1>
+  <!-- HERO -->
 
-   <h2>
-    Mira las cartas del juego <a routerLink="/gallery">aquí</a>
-   </h2>
+  <div class="hero">
 
-  <div class="deck-list">
+    <h1 class="title glow">
 
-    <app-deck
-      *ngFor="let deck of decks"
-      [deck]="deck"
-      [selected]="deck === selectedDeck"
-      (click)="selectDeck(deck)"
-    />
+      <i class="fa-solid fa-hat-wizard title-icon"></i>
+
+      Guerra de Magos
+
+    </h1>
+
+    <h2 class="subtitle">
+
+      <i class="fa-solid fa-book-open"></i>
+
+      Mira las cartas del juego
+
+      <a routerLink="/gallery" class="gallery-link">
+
+        aquí
+
+      </a>
+
+    </h2>
 
   </div>
 
-  <input
-    type="text"
-    [(ngModel)]="username"
-    (change)="onUsernameChange()"
-    placeholder="Introduce tu nombre"
-    class="username-input"
-  />
-
-  <button
-    class="search-button"
-    [disabled]="!canSearch()"
-    (click)="toggleSearch()"
-  >
-
-    {{ searching ? 'Cancelar' : 'Buscar partida' }}
-
-    <span
-      *ngIf="searching"
-      class="spinner"
-    ></span>
-
-  </button>
 
 
-  <h2>¿En qué consiste la Guerra de Magos?</h2>
+  <!-- SELECCIÓN DE MAZO -->
 
-  <p>
-    Guerra de Magos es un juego de cartas online que busca ser rápido y sencillo, para echarte unas partidas cortas y distraerte de tus obligaciones y quehaceres del día a día. Tan solo tienes que escoger un nombre de usuario y mazo con el que quieras jugar, y pronto te encontraremos con un rival con el que batirte en duelo.
-  </p>
+  <div class="card-panel">
 
-  <p>
-    El funcionamiento es muy sencillo: cada jugador tiene 20 puntos de vida, quien llegue primero a 0 o se quede sin cartas que robar pierde. Tienes una mano y una mesa con cuatro espacios donde colocar tus unidades. Hay dos tipos de cartas, una ya te la he dicho: unidades y hechizos. Los hechizos tan solo realizan efectos en la partida, mientras que las unidades se pueden colocar en mesa, y disponen de daño y vida.
-  </p>
+    <h2 class="section-title">
 
-  <p>
-    En cada ronda solo puedes hacer tres acciones diferentes:
-  </p>
-  <ul>
-    <li>Robar una carta de tu mazo.</li>
-    <li>Jugar una carta de tu mano. Si es un hechizo, se hará su efecto instantáneamente, y se colocará en un hueco especial en mesa reservado para el último hechizo jugado. Tú y tu rival disponéis de uno de estos huecos, para que podáis ver los hechizos y, mediante el click derecho, inspeccionar la carta para ver lo que hacen.</li>
-    <li>Si tienes una unidad en mesa, puedes elegirla para atacar otra unidad, o a uno de los jugadores (incluído tú mismo)</li>
-  </ul>
-    
-  <p>
-    Poco más hay que explicar. Mucha suerte en tus partidas y ¡Que comience la guerra!
-  </p>
+      <i class="fa-solid fa-layer-group"></i>
+
+      Selecciona tu mazo
+
+    </h2>
+
+    <div class="deck-list">
+
+      <app-deck
+        *ngFor="let deck of decks"
+        [deck]="deck"
+        [selected]="deck === selectedDeck"
+        (click)="selectDeck(deck)"
+        class="deck-item"
+      />
+
+    </div>
+
+  </div>
+
+
+
+  <!-- LOGIN -->
+
+  <div class="card-panel">
+
+    <h2 class="section-title">
+
+      <i class="fa-solid fa-crosshairs"></i>
+
+      Preparado para el duelo
+
+    </h2>
+
+    <div class="input-wrapper">
+
+      <i class="fa-solid fa-user"></i>
+
+      <input
+        type="text"
+        [(ngModel)]="username"
+        (change)="onUsernameChange()"
+        placeholder="Introduce tu nombre"
+        class="username-input"
+      />
+
+    </div>
+
+    <button
+      class="search-button"
+      [disabled]="!canSearch()"
+      (click)="toggleSearch()"
+    >
+
+      <i
+        class="fa-solid"
+        [ngClass]="searching ? 'fa-xmark' : 'fa-magnifying-glass'"
+      ></i>
+
+      {{ searching ? 'Cancelar' : 'Buscar partida' }}
+
+      <span
+        *ngIf="searching"
+        class="spinner"
+      ></span>
+
+    </button>
+
+  </div>
+
+
+
+  <!-- INFO -->
+
+  <div class="info-panel">
+
+    <h2>
+
+      <i class="fa-solid fa-scroll"></i>
+
+      ¿En qué consiste la Guerra de Magos?
+
+    </h2>
+
+    <p>
+      Guerra de Magos es un juego de cartas online rápido y sencillo,
+      pensado para partidas cortas y entretenidas.
+    </p>
+
+    <p>
+      Cada jugador tiene 20 puntos de vida. Si llegan a 0 o se quedan
+      sin cartas, pierde la partida.
+    </p>
+
+    <ul class="rules-list">
+
+      <li>
+
+        <i class="fa-solid fa-hand"></i>
+
+        Robar una carta de tu mazo.
+
+      </li>
+
+      <li>
+
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+        Jugar una carta de tu mano.
+
+      </li>
+
+      <li>
+
+        <i class="fa-solid fa-swords"></i>
+
+        Atacar con tus unidades.
+
+      </li>
+
+    </ul>
+
+    <p class="final-text">
+
+      Mucha suerte en tus partidas y
+      <strong>¡Que comience la guerra!</strong>
+
+    </p>
+
+  </div>
 
 </div>

@@ -685,4 +685,24 @@ onMessageSent(text: string) {
     "Message" : text
   });
 }
+
+isReaction(text: string): boolean {
+
+  return /^:[a-zA-Z0-9_-]+:$/.test(text);
+
+}
+
+getReactionName(text: string): string {
+
+  return text.replace(/:/g, '');
+
+}
+
+getReactionPath(text: string): string {
+
+  const name = this.getReactionName(text);
+
+  return `/images/reactions/${name}.jpg`;
+
+}
 }
