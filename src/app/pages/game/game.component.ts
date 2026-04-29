@@ -275,7 +275,7 @@ async createProyectile(source: string, target: string)
     { trasnform: "rotate(1080deg)" }
   ],
   {
-    duration: 600,
+    duration: 500,
     easing: "ease-out",
     fill: "forwards"
   });
@@ -551,7 +551,7 @@ isRival(id: string): boolean {
 
 cardSelected(card: Card | null)
 {
-  if (!this.gameState.IsMyTurn) return;
+  if (!this.gameState.IsMyTurn && card && card.canPlay) return;
   
   this.selectedCard = this.selectedCard?.id === card?.id ? null : card;
   this.unitSelected = this.selectedCard?.type === "Unit";
