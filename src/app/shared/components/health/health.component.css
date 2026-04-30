@@ -74,9 +74,8 @@
 {
   margin: auto;
   font-size: xx-large;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-family: "Title";
 }
-
 .health-container-active
 {
     animation: glow 1s infinite alternate;

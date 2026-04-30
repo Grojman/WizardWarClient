@@ -519,6 +519,10 @@ async handleGameEvents(events: any[]) {
     const event = this.eventQueue.shift();
     await this.playEvent(event);
   }
+
+  this.storedGameState.Me.HandData.forEach((n, i) => {
+    this.gameState.Me.HandData[i].canPlay = n.canPlay;
+  })
   
   this.isAnimating = false;
 }
@@ -702,7 +706,7 @@ getReactionPath(text: string): string {
 
   const name = this.getReactionName(text);
 
-  return `/images/reactions/${name}.jpg`;
+  return `/images/reactions/${name}.${(name.startsWith('0') ? 'gif' : 'jpg')}`;
 
 }
 }

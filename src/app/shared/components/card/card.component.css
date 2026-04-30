@@ -198,21 +198,25 @@
 .attack,
 .health {
   position: relative;
+  overflow: visible;
 }
 
 
 .floating-number {
-
+  -webkit-text-stroke: 2px black;
+white-space: nowrap;
   position: absolute;
 
   left: 50%;
   bottom: 100%;
+  line-height: 1;
 
   transform: translateX(-50%);
 
   font-weight: bold;
 
-  font-size: 1rem;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 3rem;
 
   pointer-events: none;
 
@@ -222,11 +226,13 @@
 
 
 .floating-number.positive {
-  color: #2ecc71; /* verde */
+  color: #2ecc71;
+  text-shadow: 0 0 10px #2ecc71;
 }
 
 .floating-number.negative {
-  color: #e74c3c; /* rojo */
+  color: #e74c3c;
+  text-shadow: 0 0 10px #e74c3c;
 }
 
 

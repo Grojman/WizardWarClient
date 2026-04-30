@@ -59,7 +59,7 @@
           [class.positive]="(card?.attackChangedAmount || 0) > 0"
           [class.negative]="(card?.attackChangedAmount || 0) < 0"
         >
-          {{ card?.attackChangedAmount || 0 > 0 ? '+' : '' }}
+          {{ (card?.attackChangedAmount || 0) > 0 ? '+' : '' }}
           {{ card?.attackChangedAmount }}
         </span>
 
@@ -76,7 +76,7 @@
           [class.positive]="(card?.healthChangedAmount || 0) > 0"
           [class.negative]="(card?.healthChangedAmount || 0) < 0"
         >
-          {{ card?.healthChangedAmount || 0 > 0 ? '+' : '' }}
+          {{ (card?.healthChangedAmount || 0) > 0 ? '+' : '' }}
           {{ card?.healthChangedAmount }}
         </span>
 
