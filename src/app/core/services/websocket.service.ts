@@ -46,7 +46,7 @@ export class WebsocketService {
 
     this.socket =
       new WebSocket(
-        'ws://10.154.20.72:5182/ws'
+        'ws://localhost:5182/ws'
       );
 
 

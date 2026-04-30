@@ -80,6 +80,7 @@ export class GameComponent implements OnInit {
       this.handleGameEvents(this.gameEvents);
       break;
       case "game_state":
+      this.singleActionEvent = true;
       this.storedGameState = msg.Content;
       this.gameState.IsMyTurn = this.storedGameState.IsMyTurn;
       if(this.gameState.Rival.Id === "" || this.gameState.Me.Id === "")
@@ -333,27 +334,22 @@ async createProyectile(source: string, target: string)
         var arrayToFind = this.getPlayer(event.PlayerSource).Board;
         await this.createProyectile(event.Source, event.Card);
         
-        arrayToFind.forEach(n => {
-          if (n && n.id === event.Card)
-            {
-              
-            n.changeHealth(event.Amount, this.changeHealthAnimationDuration);
-            return;
-          }
-        })
+        const card = arrayToFind.find(n => n && n.id === event.Card);
+
+        if (card) {
+          card.changeHealth(event.Amount, this.changeHealthAnimationDuration);
+        }
         break;
         case "UnitDamageChanged":
         await this.createProyectile(event.Source, event.Card);
 
         var arrayToFind = this.getPlayer(event.PlayerSource).Board;
         
-        arrayToFind.forEach(n => {
-          if (n && n.id === event.Card)
-            {
-            n.changeDamage(event.Amount, 1000);
-            return;
-          }
-        })
+        const ard = arrayToFind.find(n => n && n.id === event.Card);
+
+        if (ard) {
+          ard.changeDamage(event.Amount, this.changeHealthAnimationDuration);
+        }
         break;
         case "UnitDeath":
         var arrayToFind = this.getPlayer(event.PlayerSource).Board;
@@ -468,6 +464,7 @@ isAnimating: boolean = false;
 animationLayer: HTMLElement | null = null;
 unitSelected: boolean = false;
 attackingUnit: Card | null = null;
+singleActionEvent: boolean = false;
 
 floatingMessages: FloatingMessage[] = [];
 
@@ -564,7 +561,7 @@ cardSelected(card: Card | null)
   if(!this.unitSelected && this.selectedCard && card && card.canPlay)
   {
     this.selectedCard = null;
-    this.ws.send({
+    this.safeSend({
       "$type": "PlayCardAction",
       "CardIndex": this.gameState.Me.HandData.findIndex((n: Card) => n.id == card.id),
       "BoardIndex": -1
@@ -576,7 +573,7 @@ dockSelected(position: number)
 {
   if (!this.gameState.IsMyTurn || !this.selectedCard || !this.selectedCard.canPlay || !this.unitSelected) return;
 
-    this.ws.send({
+    this.safeSend({
       "$type": "PlayCardAction",
       "CardIndex": this.gameState.Me.HandData.findIndex((n: Card) => n.id == this.selectedCard?.id),
       "BoardIndex": position
@@ -588,7 +585,7 @@ dockSelected(position: number)
 deckSelected() 
 {
   if (!this.gameState.IsMyTurn) return;
-  this.ws.send({
+  this.safeSend({
     "$type" : "DrawCardAction"
   })
 }
@@ -601,7 +598,7 @@ attackingUnitSelected(card: Card | null)
   if(this.attackingUnit?.id === card?.id && this.attackingUnit?.hasEffect && this.attackingUnit.effectTimes || 0 > 0)
   {
     let index = this.gameState.Me.Board.findIndex(n => n?.id === card?.id);
-    this.ws.send({
+    this.safeSend({
       "$type" : "CardEffectActivated",
       "CardIndex" : index
     })
@@ -615,7 +612,7 @@ attackingUnitSelected(card: Card | null)
 rivalTargetSelected()
 {
   if(!this.gameState.IsMyTurn || !this.attackingUnit) return;
-  this.ws.send({
+  this.safeSend({
     "$type" : "AttackAction",
     "AttackerIndex" : this.gameState.Me.Board.findIndex(n => n?.id === this.attackingUnit?.id),
     "TargetIndex" : -1,
@@ -628,7 +625,7 @@ rivalTargetSelected()
 playerTargetSelected()
 {
   if(!this.gameState.IsMyTurn || !this.attackingUnit) return;
-  this.ws.send({
+  this.safeSend({
     "$type" : "AttackAction",
     "AttackerIndex" : this.gameState.Me.Board.findIndex(n => n?.id === this.attackingUnit?.id),
     "TargetIndex" : -1,
@@ -643,7 +640,7 @@ playerTargetSelected()
 rivalBoardCardSelected(card: Card | null)
 {
   if(!this.gameState.IsMyTurn || !card || !this.attackingUnit) return;
-  this.ws.send({
+  this.safeSend({
     "$type" : "AttackAction",
     "AttackerIndex" : this.gameState.Me.Board.findIndex(n => n?.id === this.attackingUnit?.id),
     "TargetIndex" : this.gameState.Rival.Board.findIndex(n => n?.id === card?.id),
@@ -707,6 +704,18 @@ getReactionPath(text: string): string {
   const name = this.getReactionName(text);
 
   return `/images/reactions/${name}.${(name.startsWith('0') ? 'gif' : 'jpg')}`;
+
+}
+
+safeSend(payload: any): void {
+
+  if (!this.singleActionEvent || this.isAnimating) {
+    return;
+  }
+
+  this.ws.send(payload);
+
+  this.singleActionEvent = false;
 
 }
 }

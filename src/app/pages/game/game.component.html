@@ -166,15 +166,12 @@
         [style.animation-duration.ms]="msg.duration"
         [style.transform]="'translateX(-50%) translateY(' + (-i * 30) + 'px)'"
       >
-
-
         <img
           *ngIf="isReaction(msg.text)"
           [src]="getReactionPath(msg.text)"
           class="reaction-image"
           alt="reaction"
         />
-
         <span *ngIf="!isReaction(msg.text)">
 
           {{ msg.text }}

@@ -204,7 +204,7 @@
 
 .floating-number {
   -webkit-text-stroke: 2px black;
-white-space: nowrap;
+  white-space: nowrap;
   position: absolute;
 
   left: 50%;
@@ -216,11 +216,11 @@ white-space: nowrap;
   font-weight: bold;
 
   font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-  font-size: 3rem;
+  font-size: 2rem;
 
   pointer-events: none;
 
-  animation: floatUpFade 1s ease-out forwards;
+  animation: floatUpFade 0.75s ease-out forwards;
 
 }
 
