@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 
 import { Router } from '@angular/router';
+import { WebsocketService } from '../../core/services/websocket.service';
 
 @Component({
   selector: 'app-error.component',
@@ -10,10 +11,11 @@ import { Router } from '@angular/router';
 })
 export class ErrorComponent {
 
-  constructor(private r: Router) {}
+  constructor(private r: Router, private ws: WebsocketService) {}
 
   tryReload()
   {
-    this.r.navigateByUrl("/")
+    this.ws.disconnect();
+    this.r.navigateByUrl("/");
   }
 }

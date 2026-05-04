@@ -353,10 +353,22 @@ async createProyectile(source: string, target: string)
         break;
         case "UnitDeath":
         var arrayToFind = this.getPlayer(event.PlayerSource).Board;
-        
+        var visualElement = this.findElement(event.Unit);
         var index = arrayToFind.findIndex(n => n && n.id === event.Unit);
         if (index !== -1) {
           console.log("Setting to null")
+          const animation = visualElement.animate(
+            [
+              { opacity: 1, transform: 'scale(1)' },
+              { opacity: 0, transform: 'scale(0.8)' }
+            ],
+            {
+              duration: 300,
+              easing: 'ease-in',
+              fill: 'forwards'
+            }
+          );
+          await animation.finished;
           arrayToFind[index] = null;
         }
         break;
@@ -651,17 +663,17 @@ rivalBoardCardSelected(card: Card | null)
 
 }
 
-// getTransform(index: number, total: number): string {
-//   const middle = (total - 1) / 2;
+getTransform(index: number, total: number): string {
+  const middle = (total - 1) / 2;
 
-//   const rotationStep = 6; // grados
+  const rotationStep = 6; // grados
 
-//   const rotation = (index - middle) * rotationStep;
+  const rotation = (index - middle) * rotationStep;
 
-//   const offsetY = Math.abs(index - middle) * -5;
+  const offsetY = Math.abs(index - middle) * -5;
 
-//   return `rotate(${rotation}deg) translateY(${offsetY}px)`;
-// }
+  return `rotate(${rotation}deg) translateY(${offsetY}px)`;
+}
 
 @ViewChild('dialog')
 dialog!: MessageDialogComponent;

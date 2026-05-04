@@ -34,9 +34,11 @@ export class Card {
   {
     this.healthChanged = true;
     this.healthChangedAmount = amount;
-    if(this.health != null ) this.health += this.healthChangedAmount;
-
+    if(this.health != null ) {
+      this.health += this.healthChangedAmount;
+    }
     setTimeout(() => {
+      this.healthChanged = false;
     }, durationAnimation)
   }
 
@@ -44,7 +46,9 @@ export class Card {
   {
     this.attackChanged = true;
     this.attackChangedAmount = amount;
-    if(this.attack != null) this.attack += this.attackChangedAmount;
+    if(this.attack != null){
+      this.attack += this.attackChangedAmount;
+    } 
 
     setTimeout(() => {
       this.attackChanged = false;

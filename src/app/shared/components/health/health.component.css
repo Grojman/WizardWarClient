@@ -50,6 +50,11 @@
   color: red;
 }
 
+.life-text.positive
+{
+  color: green;
+}
+
 .rival-health-background,
 .player-health-background
 {

@@ -8,9 +8,12 @@ export class Health {
 
   negative: boolean = false;
 
+  positive: boolean = false;
+
   changeHealth(amount: number, duration: number) {
 
     this.negative = amount < 0;
+    this.positive = amount > 0;
 
     // Primero animar salida
     this.animationState = 'exit';
@@ -21,6 +24,7 @@ export class Health {
       this.health += amount;
 
       this.negative = false;
+      this.positive = false;
 
       // Actualizar lo que se muestra
       this.displayHealth = this.health;

@@ -1,9 +1,8 @@
   <div
+    *ngIf="card || faceDown"
     class="card"
     [class.selected]="selected"
-    (mouseenter)="onMouseEnter($event)"
-    (mouseleave)="onMouseLeave()"
-    (mousemove)="onMouseMove($event)"
+    [class.can-hover]="!selected && card?.canPlay"
     [attr.data-game-id]="card?.id"
     [animate.enter]="'enter-animation'"
     [animate.leave]="'leave-animation'"

@@ -27,7 +27,9 @@ export class HomeComponent implements OnInit {
     
   }
   ngOnInit(): void {
+    this.ws.connect();
     this.ws.subscribe(this.processMessage);
+    
     console.log("sending a message")
     this.ws.send({
       "$type" : "GetDecksAction"

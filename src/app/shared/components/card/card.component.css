@@ -20,7 +20,7 @@
 
 }
 
-.card:not(.selected):hover {
+.card.can-hover:hover {
 
   transform:
 
@@ -63,7 +63,7 @@
 .card-name
 {
   text-align: center;
-  font-size: small;
+  font-size: medium;
 }
 
 

@@ -6,7 +6,9 @@
     <div class="enemy-hand">
 
       <app-card
-        *ngFor="let card of [].constructor(gameState.Rival.HandSize)"
+      
+      *ngFor="let card of [].constructor(gameState.Rival.HandSize); let i = index"
+      [style.transform]="getTransform(i, gameState.Rival.HandSize)"
       />
     </div>
 
@@ -65,7 +67,7 @@
 
       <div class="player-info">
         <app-health 
-        [myTurn]="gameState.IsMyTurn"
+        [myTurn]="gameState.IsMyTurn && !isAnimating"
         [health]="userHealth"
         [attr.data-game-id]="gameState.Me.Id"
         (click)="playerTargetSelected()"
@@ -116,6 +118,7 @@
     <div class="player-hand">
 
       <app-card
+        [style.transform]="getTransform(i, gameState.Me.HandData.length)"
         *ngFor="let card of gameState.Me.HandData; let i = index"
         [card]="card"
         (click)="cardSelected(card)"
@@ -143,10 +146,11 @@
 
 
   <button
+    [class.open]="showSidePanel"
     class="toggle-panel"
     (click)="togglePanel()"
   >
-    ☰
+    <i class="fa-solid fa-arrow-right-long"></i>
   </button>
 
   <div class="animation-layer">
