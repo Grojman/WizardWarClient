@@ -99,6 +99,7 @@
         <app-dock
         [card]="playerLastSpellPlayed"
         (contextmenu)="onRightClick($event, playerLastSpellPlayed)"
+        (click)="lastSpellClicked()"
         [rival]="false"
         >
         </app-dock>

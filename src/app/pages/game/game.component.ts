@@ -675,6 +675,17 @@ getTransform(index: number, total: number): string {
   return `rotate(${rotation}deg) translateY(${offsetY}px)`;
 }
 
+lastSpellClicked()
+{
+  if(this.playerLastSpellPlayed)
+  {
+    this.safeSend({
+      "$type" : "CardEffectActivated",
+      "CardIndex" : 4
+    })
+  }
+}
+
 @ViewChild('dialog')
 dialog!: MessageDialogComponent;
 
