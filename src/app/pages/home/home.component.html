@@ -104,6 +104,26 @@
 
     </button>
 
+    <button
+      class="search-button"
+      [disabled]="!canSearch()"
+      (click)="startBotGame()"
+    >
+
+      <i
+        class="fa-solid"
+        [ngClass]="searching ? 'fa-xmark' : 'fa-magnifying-glass'"
+      ></i>
+
+      {{ searching ? 'Cancelar' : 'Empezar partida con BOT' }}
+
+      <span
+        *ngIf="searching"
+        class="spinner"
+      ></span>
+
+    </button>
+
   </div>
 
 

@@ -70,6 +70,14 @@ export class HomeComponent implements OnInit {
     return !!this.username && !!this.selectedDeck;
   }
 
+  startBotGame()
+  {
+    this.ws.send({
+      "$type" : "StartBotGameAction",
+      DeckId : this.selectedDeck?.id
+    })
+  }
+
   toggleSearch() {
     if (!this.searching) {
 
