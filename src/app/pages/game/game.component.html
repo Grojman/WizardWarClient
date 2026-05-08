@@ -1,5 +1,26 @@
 <div class="game-layout">
 
+  <div class="effects-column">
+    <div class="effects-section">
+        <h3 class="effects-title subtitle">Efectos:</h3>
+
+        <div class="effects">
+          <p class="effect" *ngFor="let e of this.gameState.Rival.GlobalEffects">
+            {{ e }}
+          </p>
+        </div>
+      </div>
+
+      <div class="effects-section">
+        <h3 class="effects-title subtitle">Efectos:</h3>
+
+        <div class="effects">
+          <p class="effect" *ngFor="let e of this.gameState.Me.GlobalEffects">
+            {{ e }}
+          </p>
+        </div>
+      </div>
+  </div>
 
   <div class="board-column">
 
@@ -13,6 +34,8 @@
     </div>
 
     <div class="enemy-board">
+
+      
 
       <div class="player-info">
           <app-health 

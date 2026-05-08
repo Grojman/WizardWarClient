@@ -9,5 +9,6 @@ export interface Player
     Health: number,
     HandSize: number,
     HandData: Card[],
-    Deck: Deck
+    Deck: Deck,
+    GlobalEffects: string[]
 }

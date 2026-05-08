@@ -41,7 +41,34 @@ export class GameComponent implements OnInit {
           name: "",
           description: "",
           cardAmount: 0          
-        }
+        },
+        GlobalEffects: [
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+          "Prueba",
+        ]
       },
       Rival: {
         Id: "",
@@ -62,7 +89,29 @@ export class GameComponent implements OnInit {
           name: "",
           description: "",
           cardAmount: 0          
-        }
+        },
+        GlobalEffects: [
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
+        ]
       }
     }
     
@@ -83,6 +132,8 @@ export class GameComponent implements OnInit {
       this.singleActionEvent = true;
       this.storedGameState = msg.Content;
       this.gameState.IsMyTurn = this.storedGameState.IsMyTurn;
+      this.gameState.Me.GlobalEffects = this.storedGameState.Me.GlobalEffects;
+      this.gameState.Rival.GlobalEffects = this.storedGameState.Rival.GlobalEffects;
       if(this.gameState.Rival.Id === "" || this.gameState.Me.Id === "")
       {
         this.gameState.Rival.Id = this.storedGameState.Rival.Id;
