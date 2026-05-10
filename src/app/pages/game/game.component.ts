@@ -43,31 +43,6 @@ export class GameComponent implements OnInit {
           cardAmount: 0          
         },
         GlobalEffects: [
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
-          "Prueba",
         ]
       },
       Rival: {
@@ -91,26 +66,6 @@ export class GameComponent implements OnInit {
           cardAmount: 0          
         },
         GlobalEffects: [
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
-          "fjdsalkñfjdklsañfjdklsañjfdlñksajfdlkasñjflñkdasjflñdsajflkñdsajflñkdsjalfñdjsalñfjdsklñajfdlkñsajflñdsajfñldsajfñlkdskajfñldsñajfdñkasjflkñdasjflñkdsak",
         ]
       }
     }

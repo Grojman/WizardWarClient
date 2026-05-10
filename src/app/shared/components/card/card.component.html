@@ -9,8 +9,9 @@
     [class.card-front]="!faceDown"
     [class.card-back]="faceDown"
     [class.card-can-be-selected]="canBeSelected"
+    [class.spell]="card?.type === 'Spell'"
     [class.cannot-play]="!card?.canPlay && !faceDown"
-    [style.background-color]="familiesToGradient(card?.families ?? [])"
+    [style.background]="familiesToGradient(card?.families ?? [])"
   >
     <figure
     *ngIf="!faceDown"

@@ -19,6 +19,7 @@ import { HealthComponent } from './shared/components/health/health.component';
 import { GalleryComponent } from './pages/gallery/gallery.component';
 import { CardvisualizerComponent } from './shared/components/cardvisualizer/cardvisualizer.component';
 import { MessageDialogComponent } from './ui/message-dialog/message-dialog.component';
+import { PlayerComponent } from './shared/components/player/player.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { MessageDialogComponent } from './ui/message-dialog/message-dialog.compo
     GalleryComponent,
     CardvisualizerComponent,
     MessageDialogComponent,
+    PlayerComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [

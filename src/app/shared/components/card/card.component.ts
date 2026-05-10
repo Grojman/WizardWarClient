@@ -109,19 +109,23 @@ export class CardComponent implements OnChanges, OnInit {
     let hash = 0;
 
     for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 31) - hash);
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      hash |= 0; // convertir a int32
     }
 
     const hue = Math.abs(hash) % 360;
-    const saturation = 65;
-    const lightness = 55;
+
+    // variación ligera para que no todos tengan misma intensidad
+    const saturation = 60 + (Math.abs(hash) % 20); // 60-79
+    const lightness = 45 + (Math.abs(hash >> 8) % 20); // 45-64
 
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
   }
 
   familiesToGradient(families: string[]): string {
+    console.log("me he llamado")
     if (families.length === 0) {
-      return "hsl(0, 0%, 60%)"; // gris por defecto
+      return "hsl(0, 0%, 60%)";
     }
 
     const colors = families.map(f => this.stringToColor(f));
@@ -130,7 +134,17 @@ export class CardComponent implements OnChanges, OnInit {
       return colors[0];
     }
 
-    return `linear-gradient(135deg, ${colors.join(", ")})`;
+    const step = 100 / colors.length;
+
+    const gradientStops = colors.map((color, index) => {
+      const start = index * step;
+      const end = (index + 1) * step;
+
+      return `${color} ${start}%, ${color} ${end}%`;
+    });
+
+    var result = `linear-gradient(135deg, ${gradientStops.join(", ")})`;
+    return result;
   }
 
 }
