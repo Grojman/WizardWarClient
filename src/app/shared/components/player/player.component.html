@@ -23,68 +23,68 @@
         *ngIf="visibleHand"
         >
         <app-card
-        [style.transform]="getTransform(i, gameState.Me.HandData.length)"
-        *ngFor="let card of gameState.Me.HandData; let i = index"
-        [card]="card"
-        (click)="cardSelected(card)"
-        [selected]="card.id === selectedCard?.id"
-        (contextmenu)="onRightClick($event, card)"
-        [canBeSelected]="true"
-        
+            [style.transform]="getTransform(i, player.HandData.length)"
+            *ngFor="let card of player.HandData; let i = index"
+            [card]="card"
+            (click)="cardSelected(card)"
+            [selected]="card.id === selectedCard?.id"
+            (contextmenu)="onRightClick($event, card)"
+            [canBeSelected]="true"
         />
         </div>
 
-<div class="board-section">
-    
-    <div class="player-info">
-        <app-health 
-        [myTurn]="gameState.IsMyTurn && !isAnimating"
-        [health]="userHealth"
-        [attr.data-game-id]="gameState.Me.Id"
-        (click)="playerTargetSelected()"
-        [enhanced]="attackingUnit !== null"
-        ></app-health>
-        
-        <p class="player-name">
-            {{ gameState.Me.Name }}
-        </p>
-    </div>
-    
-    
-    
-    <div class="board-row">
-        
-        <app-dock
-        *ngFor="let card of gameState.Me.Board; index as i"
-        [card]="card"
-        [enhanced]="(unitSelected && card === null) || (card !== null && attackingUnit !== null && card.id !== attackingUnit.id)"
-        [isAttackingCard]="card !== null && card.id === attackingUnit?.id"
-        (contextmenu)="onRightClick($event, card)"
-        (click)="dockSelected(i)"
-        (onCardClick)="attackingUnitSelected(card)"
-        [rival]="false"
-        />
-        
-        <hr class="separator">
-        
-        <app-dock
-        [card]="playerLastSpellPlayed"
-        (contextmenu)="onRightClick($event, playerLastSpellPlayed)"
-        (click)="lastSpellClicked()"
-        [rival]="false"
-        >
-    </app-dock>
-    
-</div>
+        <div class="board-section">
+            
+            <div class="player-info">
+                <app-health 
+                [myTurn]="player.IsMyTurn && !isAnimating"
+                [health]="player.Health"
+                [rival]="!visibleHand"
+                [attr.data-game-id]="player.Id"
+                (click)="playerTargetSelected()"
+                [enhanced]="showHealthAsTarget"
+                ></app-health>
+                
+                <p class="player-name">
+                    {{ player.Name }}
+                </p>
+            </div>
+            
+            
+            
+            <div class="board-row">
+                
+                <app-dock
+                *ngFor="let card of player.Board; index as i"
+                [card]="card"
+                [enhanced]="(unitSelected && card === null) || (card !== null && attackingUnit !== null && card.id !== attackingUnit.id)"
+                [isAttackingCard]="card !== null && card.id === attackingUnit?.id"
+                (contextmenu)="onRightClick($event, card)"
+                (click)="dockSelected(i)"
+                (onCardClick)="attackingUnitSelected(card)"
+                [rival]="false"
+                />
+                
+                <hr class="separator">
+                
+                <app-dock
+                [card]="player.LastSpellPlayed"
+                (contextmenu)="onRightClick($event, player.LastSpellPlayed)"
+                (click)="lastSpellClicked()"
+                [rival]="!visibleHand"
+                >
+            </app-dock>
+            
+        </div>
 
-<app-deck 
-class="player-deck" 
-[small]="true"
-[deck]="storedGameState.Me.Deck"
-[attr.data-game-id]="'player-deck'"
-(click)="deckSelected()"
-></app-deck>
-</div>
-</div>
+        <app-deck 
+        class="player-deck"
+        [small]="true"
+        [deck]="player.Deck"
+        [attr.data-game-id]="player.Id + '-deck'"
+        (click)="deckSelected()"
+        ></app-deck>
+        </div>
+    </div>
 
 </div>

@@ -9,6 +9,7 @@ import { Health } from '../../models/health.model';
 import { Player } from '../../models/player.model';
 import { MessageDialogComponent } from '../../ui/message-dialog/message-dialog.component';
 
+//TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
 @Component({
   selector: 'app-game',
@@ -23,9 +24,11 @@ export class GameComponent implements OnInit {
   )
   {
     this.gameState = {
-      IsMyTurn: false,
       Me: {
+        TargetPlayer: "",
         Id: "",
+        IsMyTurn: false,
+        LastSpellPlayed: null,
         Name: "",
         Board: [
           null,
@@ -33,7 +36,7 @@ export class GameComponent implements OnInit {
           null,
           null,
         ],
-        Health: 0,
+        Health: new Health(),
         HandSize: 0,
         HandData: [],
         Deck: {
@@ -45,7 +48,10 @@ export class GameComponent implements OnInit {
         GlobalEffects: [
         ]
       },
-      Rival: {
+      Rivals: [{
+        TargetPlayer: "",
+        IsMyTurn: false,
+        LastSpellPlayed: null,
         Id: "",
         Name: "",
         Board: [
@@ -54,7 +60,7 @@ export class GameComponent implements OnInit {
           null,
           null,
         ],
-        Health: 0,
+        Health: new Health(),
         HandSize: 0,
         HandData: [
           
@@ -67,10 +73,22 @@ export class GameComponent implements OnInit {
         },
         GlobalEffects: [
         ]
-      }
+      }]
     }
     
     this.storedGameState = this.gameState;
+  }
+
+  //PONER AQUÍ LAS FUNCIONES QUE SE SALVAN
+
+  isUser(id: string): boolean
+  {
+    return this.gameState.Me.Id === id;
+  }
+
+  getPlayer(id: string) : Player
+  {
+    return this.isUser(id) ? this.gameState.Me : this.gameState.Rivals.find(n => n.Id === id)!!;
   }
   
   processMessage = (msg: any): boolean => {
@@ -86,26 +104,33 @@ export class GameComponent implements OnInit {
       case "game_state":
       this.singleActionEvent = true;
       this.storedGameState = msg.Content;
-      this.gameState.IsMyTurn = this.storedGameState.IsMyTurn;
-      this.gameState.Me.GlobalEffects = this.storedGameState.Me.GlobalEffects;
-      this.gameState.Rival.GlobalEffects = this.storedGameState.Rival.GlobalEffects;
-      if(this.gameState.Rival.Id === "" || this.gameState.Me.Id === "")
+      
+      //TODO: PROBAR Y CAMBIAR
+      if(this.gameState.Me.Id === "")
       {
-        this.gameState.Rival.Id = this.storedGameState.Rival.Id;
-        this.gameState.Me.Id = this.storedGameState.Me.Id;
-
-        this.gameState.Rival.Name = this.storedGameState.Rival.Name;
-        this.gameState.Me.Name = this.storedGameState.Me.Name;
+        var health = new Health();
+        health.health = health.displayHealth = msg.Content.Me.Health;
+        this.gameState = this.storedGameState;
+        this.gameState.Me.Health = health;
+        this.gameState.Me.HandData = [];
+        this.gameState.Me.HandSize = 0;
+        this.gameState.Rivals.forEach((n,i) => {
+          var health = new Health();
+          health.health = health.displayHealth = msg.Content.Rivals[i].Health;
+          n.Health = health;
+          n.HandSize = 0;
+        })
       }
+
       break;
       case "end_game":
         let message = "";
 
         if(msg.Content.forced)
         {
-          message = `${this.gameState.Rival.Name} ha salido de la aplicación y ha abandonado la partida.`
+          message = `Un jugador ha salido de la aplicación y ha abandonado la partida.`
         } else {
-          message = `Partida terminada, victoria para ${this.isRival(msg.Content.winner) ? this.gameState.Rival.Name : this.gameState.Me.Name}.`
+          message = `Partida terminada, victoria para ${this.getPlayer(msg.Content.winner).Name}.`
         }
         
         alert(message);
@@ -123,31 +148,17 @@ export class GameComponent implements OnInit {
 
 getTargetElement(
   index: number,
-  type: "RIVAL" | "PLAYER" | "ENEMY_BOARD" | "OWN_BOARD",
-  isRival: boolean
+  type: "BOARD" | "PLAYER",
+  targetPlayerId: string,
 ): HTMLElement | null {
 
+  var targetPlayer = this.getPlayer(targetPlayerId)
   switch (type) {
-
-    case "RIVAL":
-      return this.findElement( isRival ? this.gameState.Me.Id : this.gameState.Rival.Id);
-
     case "PLAYER":
-      return this.findElement(isRival ? this.gameState.Rival.Id : this.gameState.Me.Id);
+      return this.findElement(targetPlayer.Id);
 
-    case "ENEMY_BOARD": {
-      const card =
-        (isRival ? this.gameState.Me.Board : this.gameState.Rival.Board)[index];
-
-      return card
-        ? this.findElement(card.id)
-        : null;
-    }
-
-    case "OWN_BOARD": {
-      const card =
-        (isRival ? this.gameState.Rival.Board : this.gameState.Me.Board)[index];
-
+    case "BOARD": {
+      const card = targetPlayer.Board[index];
       return card
         ? this.findElement(card.id)
         : null;
@@ -160,19 +171,18 @@ getTargetElement(
 
 async animateAttack(
   playerId: string,
+  targetPlayerId: string,
   attackerId: string,
   targetIndex: number,
-  targetType: "RIVAL" | "PLAYER" | "ENEMY_BOARD" | "OWN_BOARD",
+  targetType: "BOARD" | "PLAYER",
   attackerDamage: number,
   defenderDamage: number
 ): Promise<void> {
   
   await this.nextFrame();
-
-  var isRival = this.isRival(playerId);
-
   const attackerEl = this.findElement(attackerId);
-  const targetEl = this.getTargetElement(targetIndex, targetType, isRival);
+  const targetEl = this.getTargetElement(targetIndex, targetType, targetPlayerId);
+  const targetPlayer = this.getPlayer(targetPlayerId);
 
   if (!attackerEl || !targetEl) {
     console.error("No se encontró atacante o objetivo");
@@ -216,29 +226,16 @@ async animateAttack(
 
   switch (targetType)
   {
-    case "RIVAL":
-      (isRival ? this.userHealth : this.rivalHealth).changeHealth(-attackerDamage, 500);  
-      break;
     case "PLAYER":
-      (isRival ? this.rivalHealth : this.userHealth).changeHealth(-attackerDamage, 500);  
+      targetPlayer.Health.changeHealth(-attackerDamage, 500);  
       break;
-    case "ENEMY_BOARD":
-      var board = (isRival ? this.gameState.Me.Board :this.gameState.Rival.Board);
-      board[targetIndex]?.changeHealth(-attackerDamage, 500);
-      var enemyBoard = (isRival ? this.gameState.Rival.Board :this.gameState.Me.Board);
-      var attackerIndex = enemyBoard.findIndex(n => n?.id === attackerId);
+    case "BOARD":
+      targetPlayer.Board[targetIndex]?.changeHealth(-attackerDamage, 500);
+      var attackerPlayer = this.getPlayer(playerId);
+      var attackerIndex = attackerPlayer.Board.findIndex(n => n?.id === attackerId);
       if (attackerIndex !== -1)
       {
-        enemyBoard[attackerIndex]?.changeHealth(-defenderDamage, 500);
-      }
-      break;
-    case "OWN_BOARD":
-      var board = (isRival ? this.gameState.Rival.Board :this.gameState.Me.Board);
-      board[targetIndex]?.changeHealth(-attackerDamage, 500);
-      var attackerIndex = board.findIndex(n => n?.id === attackerId);
-      if (attackerIndex !== -1)
-      {
-        board[attackerIndex]?.changeHealth(-defenderDamage, 500);
+        attackerPlayer.Board[attackerIndex]?.changeHealth(-defenderDamage, 500);
       }
       break;
   }
@@ -291,29 +288,36 @@ async createProyectile(source: string, target: string)
 
   proyectile.style.display = "none";
 }
-  getDeckId(id: string): string {
-    return id === this.gameState.Me.Id ?
-            "player-deck" :
-            "rival-deck"
-  } 
-  
+
+getDeckId(id: string): string {
+  return id + '-deck'
+} 
+
+cardEventPlayed(cardId: string, playerId: string)
+{
+  const player = this.getPlayer(playerId);
+  const i = player.Board.findIndex(n => n?.id === cardId);
+
+  if(i !== -1)
+  {
+    player.Board[i]!.effectTimes! -= 1;
+  } else {
+    player.LastSpellPlayed!.effectTimes! -= 1;
+  }
+}
+
+
+
   playEvent(event: any): Promise<void> {
     return new Promise(async resolve => {
       switch (event.$type) {
         case "CardEventPlayed":
-          var player = this.getPlayer(event.PlayerSource);
-
-          let i = player.Board.findIndex(n => n?.id === event.Card);
-          if(i !== -1)
-          {
-            player.Board[i]!.effectTimes! -= 1;
-          } else {
-            (this.isRival(event.PlayerSource) ? this.rivalLastSpellPlayed : this.playerLastSpellPlayed)!.effectTimes! -= 1;
-          }
+          this.cardEventPlayed(event.Card, event.PlayerSource);  
           break;
         case "CardAttacked":
           await this.animateAttack(
             event.PlayerSource,
+            event.PlayerTarget,
             event.Attacker,
             event.TargetIndex,
             event.TargetType,
@@ -327,13 +331,13 @@ async createProyectile(source: string, target: string)
           await this.createProyectile(event.Source, 
             this.getDeckId(player.Id)
           );
-        player.HandData.push(
-          Card.fromJSON(event.Card));
-        player.HandSize++;
+          player.HandData.push(
+            Card.fromJSON(event.Card));
+          player.HandSize++;
         break;
         case "PlayerHealthChanged":
         await this.createProyectile(event.Source, event.PlayerSource);
-        var health = this.getPlayerHealth(event.PlayerSource)
+        var health = this.getPlayer(event.PlayerSource).Health;
         health.changeHealth(event.Amount, this.changeHealthAnimationDuration);
         break;
         case "UnitHealthChanged":
@@ -402,11 +406,7 @@ async createProyectile(source: string, target: string)
           player.HandSize--;
           console.log("Se ha cortado la carta: ", player.HandData)
         }
-        if (this.isRival(event.PlayerSource)) {
-          this.rivalLastSpellPlayed = Card.fromJSON(event.Spell);
-        } else {
-          this.playerLastSpellPlayed = Card.fromJSON(event.Spell);
-        }
+        player.LastSpellPlayed = Card.fromJSON(event.Spell);
         break;
 
         case "AddedCardToDeck":
@@ -434,16 +434,6 @@ async createProyectile(source: string, target: string)
   );
 }
 
-getPlayerHealth(id: string)
-{
-  return this.isRival(id) ? this.rivalHealth : this.userHealth;
-}
-
-getPlayer(id: string) : Player
-{
-  return this.isRival(id) ? this.gameState.Rival : this.gameState.Me;
-}
-
 getCenter(el: HTMLElement) {
   const rect = el.getBoundingClientRect();
   return {
@@ -462,15 +452,9 @@ ngOnInit(): void {
   this.animationLayer = document.querySelector(".animation-layer") as HTMLElement;
   this.ws.subscribe(this.processMessage)
 }
+
 showSidePanel = false;
-
 changeHealthAnimationDuration: number = 500;
-
-
-rivalHealth: Health = new Health();
-userHealth: Health = new Health();
-rivalLastSpellPlayed: Card | null = null;
-playerLastSpellPlayed: Card | null = null;
 
 selectedCard: Card | null = null;
 selectedCardInfo: Card | null = null;
@@ -491,7 +475,7 @@ createFloatingMessage(
   playerId: string
 )
 {
-  let userHealht = this.findElement(this.isRival(playerId) ? this.gameState.Me.Id : this.gameState.Rival.Id).getBoundingClientRect();
+  let userHealht = this.findElement(playerId).getBoundingClientRect();
   const randomHeight =
     80 + Math.random() * 120;
 
@@ -543,10 +527,8 @@ async handleGameEvents(events: any[]) {
 }
 
 togglePanel() {
-  
   this.showSidePanel =
   !this.showSidePanel;
-  
 }
 
 onRightClick(
@@ -563,14 +545,9 @@ onRightClick(
   this.showSidePanel = true;
 }
 
-
-isRival(id: string): boolean {
-  return this.storedGameState.Me.Id !== id;
-}
-
 cardSelected(card: Card | null)
 {
-  if (!this.gameState.IsMyTurn && card && card.canPlay) return;
+  if (!this.gameState.Me.IsMyTurn && card && card.canPlay) return;
   
   this.selectedCard = this.selectedCard?.id === card?.id ? null : card;
   this.unitSelected = this.selectedCard?.type === "Unit";
@@ -589,7 +566,7 @@ cardSelected(card: Card | null)
 
 dockSelected(position: number)
 {
-  if (!this.gameState.IsMyTurn || !this.selectedCard || !this.selectedCard.canPlay || !this.unitSelected) return;
+  if (!this.gameState.Me.IsMyTurn || !this.selectedCard || !this.selectedCard.canPlay || !this.unitSelected) return;
 
     this.safeSend({
       "$type": "PlayCardAction",
@@ -602,7 +579,11 @@ dockSelected(position: number)
 
 deckSelected() 
 {
-  if (!this.gameState.IsMyTurn) return;
+  console.error("I entered");
+  console.log(this.gameState.Me.IsMyTurn);
+  if (!this.gameState.Me.IsMyTurn) return;
+  console.error("sending...");
+
   this.safeSend({
     "$type" : "DrawCardAction"
   })
@@ -610,7 +591,7 @@ deckSelected()
 
 attackingUnitSelected(card: Card | null)
 {
-  if(!this.gameState.IsMyTurn) return;
+  if(!this.gameState.Me.IsMyTurn) return;
 
   this.selectedCard = null;
   if(this.attackingUnit?.id === card?.id && this.attackingUnit?.hasEffect && this.attackingUnit.effectTimes || 0 > 0)
@@ -627,63 +608,37 @@ attackingUnitSelected(card: Card | null)
   this.attackingUnit = this.attackingUnit?.id === card?.id ? null : card;
 }
 
-rivalTargetSelected()
+rivalTargetSelected(rival: Player)
 {
-  if(!this.gameState.IsMyTurn || !this.attackingUnit) return;
+  if(!this.gameState.Me.IsMyTurn || !this.attackingUnit) return;
   this.safeSend({
     "$type" : "AttackAction",
     "AttackerIndex" : this.gameState.Me.Board.findIndex(n => n?.id === this.attackingUnit?.id),
     "TargetIndex" : -1,
-    "TargetType": "RIVAL"
+    "TargetType": "PLAYER",
+    "PlayerTarget" : rival.Id
   })
 
   this.attackingUnit = null;
 }
 
-playerTargetSelected()
+rivalBoardCardSelected(rival: Player, card: Card | null)
 {
-  if(!this.gameState.IsMyTurn || !this.attackingUnit) return;
+  if(!this.gameState.Me.IsMyTurn || !card || !this.attackingUnit) return;
   this.safeSend({
     "$type" : "AttackAction",
     "AttackerIndex" : this.gameState.Me.Board.findIndex(n => n?.id === this.attackingUnit?.id),
-    "TargetIndex" : -1,
-    "TargetType": "PLAYER"
+    "TargetIndex" : rival.Board.findIndex(n => n?.id === card?.id),
+    "TargetType": "BOARD",
+    "PlayerTarget": rival.Id
   })
 
   this.attackingUnit = null;
-
-}
-
-
-rivalBoardCardSelected(card: Card | null)
-{
-  if(!this.gameState.IsMyTurn || !card || !this.attackingUnit) return;
-  this.safeSend({
-    "$type" : "AttackAction",
-    "AttackerIndex" : this.gameState.Me.Board.findIndex(n => n?.id === this.attackingUnit?.id),
-    "TargetIndex" : this.gameState.Rival.Board.findIndex(n => n?.id === card?.id),
-    "TargetType": "ENEMY_BOARD"
-  })
-
-  this.attackingUnit = null;
-
-}
-
-getTransform(index: number, total: number): string {
-  const middle = (total - 1) / 2;
-
-  const rotationStep = 6; // grados
-
-  const rotation = (index - middle) * rotationStep;
-
-  const offsetY = Math.abs(index - middle) * -5;
-
-  return `rotate(${rotation}deg) translateY(${offsetY}px)`;
 }
 
 lastSpellClicked()
 {
-  if(this.playerLastSpellPlayed)
+  if(this.gameState.Me.LastSpellPlayed)
   {
     this.safeSend({
       "$type" : "CardEffectActivated",
@@ -741,6 +696,8 @@ safeSend(payload: any): void {
   if (!this.singleActionEvent || this.isAnimating) {
     return;
   }
+
+  console.log("Sending message to server")
 
   this.ws.send(payload);
 

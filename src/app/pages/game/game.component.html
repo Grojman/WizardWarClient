@@ -1,161 +1,31 @@
 <div class="game-layout">
+  <app-player
+    *ngFor="let player of this.gameState.Rivals"
+    [player]="player"
+    [visibleHand]="false"
+    [isAnimating]="isAnimating"
+    [showHealthAsTarget]="this.attackingUnit !== null"
+    (onCardRightClick)="onRightClick($event.event, $event.card)"
+    (onDockSelected)="rivalBoardCardSelected(player, player.Board[$event])"
+    (onPlayerTargetSelected)="rivalTargetSelected(player)"
+  >
 
-  <div class="effects-column">
-    <div class="effects-section">
-        <h3 class="effects-title subtitle">Efectos:</h3>
+  </app-player>
 
-        <div class="effects">
-          <p class="effect" *ngFor="let e of this.gameState.Rival.GlobalEffects">
-            {{ e }}
-          </p>
-        </div>
-      </div>
+  <app-player
+    [player]="this.gameState.Me"
+    [visibleHand]="true"
+    [isAnimating]="isAnimating"
+    [showHealthAsTarget]="this.attackingUnit !== null"
+    (onDeckSelected)="deckSelected()"
+    (onCardRightClick)="onRightClick($event.event, $event.card)"
+    (onDockSelected)="dockSelected($event)"
+    (onAttackingUnitSelected)="attackingUnitSelected($event)"
+    (onLastSpellClicked)="lastSpellClicked()"
+    (onCardSelected)="cardSelected($event)"
+  >
 
-      <div class="effects-section">
-        <h3 class="effects-title subtitle">Efectos:</h3>
-
-        <div class="effects">
-          <p class="effect" *ngFor="let e of this.gameState.Me.GlobalEffects">
-            {{ e }}
-          </p>
-        </div>
-      </div>
-  </div>
-
-  <div class="board-column">
-
-    <div class="enemy-hand">
-
-      <app-card
-      
-      *ngFor="let card of [].constructor(gameState.Rival.HandSize); let i = index"
-      [style.transform]="getTransform(i, gameState.Rival.HandSize)"
-      />
-    </div>
-
-    <div class="enemy-board">
-
-      
-
-      <div class="player-info">
-          <app-health 
-      [health]="rivalHealth"
-      (click)="rivalTargetSelected()"
-      [rival]="true"
-      [myTurn]="!gameState.IsMyTurn"
-      [attr.data-game-id]="gameState.Rival.Id"
-      [enhanced]="attackingUnit !== null"
-      ></app-health>
-
-      <p class="player-name">
-        {{ gameState.Rival.Name }}
-      </p>
-      </div>
-
-      
-
-      <div class="board-row">
-
-        <app-dock
-          *ngFor="let card of gameState.Rival.Board"
-          [card]="card"
-          (contextmenu)="onRightClick($event, card)"
-          (click)="rivalBoardCardSelected(card)"
-          [enhanced]="attackingUnit !== null && card !== null"
-          [rival]="true"
-        />
-
-        <hr class="separator">
-
-        <app-dock
-          [card]="rivalLastSpellPlayed"
-          (contextmenu)="onRightClick($event, rivalLastSpellPlayed)"
-          [rival]="true"
-        ></app-dock>
-
-      </div>
-
-
-      <app-deck
-       class="enemy-deck" 
-       [small]="true" 
-       [deck]="storedGameState.Rival.Deck"
-       [attr.data-game-id]="'rival-deck'">
-
-      </app-deck>
-
-    </div>
-
-    <div class="player-board">
-
-      <div class="player-info">
-        <app-health 
-        [myTurn]="gameState.IsMyTurn && !isAnimating"
-        [health]="userHealth"
-        [attr.data-game-id]="gameState.Me.Id"
-        (click)="playerTargetSelected()"
-        [enhanced]="attackingUnit !== null"
-        ></app-health>
-
-        <p class="player-name">
-        {{ gameState.Me.Name }}
-      </p>
-      </div>
-
-      
-
-      <div class="board-row">
-
-        <app-dock
-          *ngFor="let card of gameState.Me.Board; index as i"
-          [card]="card"
-          [enhanced]="(unitSelected && card === null) || (card !== null && attackingUnit !== null && card.id !== attackingUnit.id)"
-          [isAttackingCard]="card !== null && card.id === attackingUnit?.id"
-          (contextmenu)="onRightClick($event, card)"
-          (click)="dockSelected(i)"
-          (onCardClick)="attackingUnitSelected(card)"
-          [rival]="false"
-        />
-
-        <hr class="separator">
-
-        <app-dock
-        [card]="playerLastSpellPlayed"
-        (contextmenu)="onRightClick($event, playerLastSpellPlayed)"
-        (click)="lastSpellClicked()"
-        [rival]="false"
-        >
-        </app-dock>
-
-      </div>
-
-      <app-deck 
-      class="player-deck" 
-      [small]="true"
-      [deck]="storedGameState.Me.Deck"
-      [attr.data-game-id]="'player-deck'"
-      (click)="deckSelected()"
-      ></app-deck>
-
-    </div>
-
-    <div class="player-hand">
-
-      <app-card
-        [style.transform]="getTransform(i, gameState.Me.HandData.length)"
-        *ngFor="let card of gameState.Me.HandData; let i = index"
-        [card]="card"
-        (click)="cardSelected(card)"
-        [selected]="card.id === selectedCard?.id"
-        (contextmenu)="onRightClick($event, card)"
-        [canBeSelected]="true"
-        
-      />
-
-    </div>
-
-  </div>
-
+  </app-player>
 
   <div
     class="side-panel"
@@ -173,8 +43,8 @@
     [class.open]="showSidePanel"
     class="toggle-panel"
     (click)="togglePanel()"
-  >
-    <i class="fa-solid fa-arrow-right-long"></i>
+    >
+<i class="fa-solid fa-arrow-right-long"></i>
   </button>
 
   <div class="animation-layer">
@@ -210,7 +80,6 @@
 
     </ng-container>
   </div>
-
 </div>
 
 <app-message-dialog

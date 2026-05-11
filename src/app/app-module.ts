@@ -20,6 +20,7 @@ import { GalleryComponent } from './pages/gallery/gallery.component';
 import { CardvisualizerComponent } from './shared/components/cardvisualizer/cardvisualizer.component';
 import { MessageDialogComponent } from './ui/message-dialog/message-dialog.component';
 import { PlayerComponent } from './shared/components/player/player.component';
+import { TargetPlayerComponent } from './shared/components/target-player/target-player.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { PlayerComponent } from './shared/components/player/player.component';
     CardvisualizerComponent,
     MessageDialogComponent,
     PlayerComponent,
+    TargetPlayerComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [

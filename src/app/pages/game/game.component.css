@@ -1,7 +1,10 @@
 
 .game-layout {
 
+  height: 100vh;
   display: flex;
+
+  flex-direction: column;
 
   position: relative;
 
@@ -23,40 +26,19 @@
 
 }
 
-.enemy-hand,
-.player-hand {
 
-  display: flex;
-
-  height: 100%;
-
-  justify-content: center;
-  align-items: center;
-
-  gap: 2rem;
-
-  padding: 0.25rem;
-
-}
-
-.enemy-board,
-.player-board {
-
-  gap: 3rem;
-  align-items: center;
-  justify-content: center;
-
-  display: flex;
-
-  padding: 0.25rem;
-
-}
 
 /* PANEL */
 
 .side-panel {
 
+  background-color: rgba(0,0,0,0.2);
+  position: absolute;
+  right: 0;
+  top: 0;
+
   width: 0;
+  height: 100vh;
 
   overflow: hidden;
 
@@ -72,7 +54,7 @@
 
 .side-panel.open {
 
-  width: 300px;
+  width: 50vw;
 
 }
 
@@ -106,18 +88,7 @@
   transform: rotate(-180deg);
 }
 
-.board-row {
 
-
-  align-items: center;
-  display: flex;
-
-  justify-content: center;
-
-  gap: 10px;
-
-
-}
 
 .animation-layer {
 
@@ -151,14 +122,7 @@
 
 }
 
-.separator
-{
-  width: 0.25rem;
-  align-self: stretch;
-  border: 3px solid #ccc;
-  background-color: #ccc;
-  margin: 0 10px;
-}
+
 
 .proyectile {
   width: 25px;
@@ -175,20 +139,6 @@
 }
 
 
-.player-info
-{
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  width: 10vw;
-  align-items: center;
-}
-
-.player-name
-{
-  text-align: center;
-  color: whitesmoke;
-}
 
 .speech-bubble {
 
@@ -268,56 +218,4 @@
 
   pointer-events: none;
 
-}
-
-.effects-column
-{
-  width: 10vw;
-  display: flex;
-  flex-direction: column;
-}
-
-.effects-title
-{
-  color: white;
-}
-
-.effects-section
-{
-  height: 50vh;
-  max-height: 50vh;
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  
-}
-
-.effects{
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  max-width: 100%;
-  overflow-y:scroll;
-
-  gap: 1rem;
-  &::-webkit-scrollbar
-  {
-    display:none;
-  }
-}
-
-.effect
-{
-  max-width: 100%;
-  padding: 1rem;
-  border-radius: 5px;
-  background-color: salmon;
-  transition: transform 0.5s ease-in-out;
-  word-wrap: break-word;
-  text-align: center;
-  &:hover{
-    transform: scale(1.1);
-  }
 }
