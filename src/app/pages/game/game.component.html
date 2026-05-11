@@ -1,31 +1,46 @@
 <div class="game-layout">
-  <app-player
-    *ngFor="let player of this.gameState.Rivals"
-    [player]="player"
-    [visibleHand]="false"
-    [isAnimating]="isAnimating"
-    [showHealthAsTarget]="this.attackingUnit !== null"
-    (onCardRightClick)="onRightClick($event.event, $event.card)"
-    (onDockSelected)="rivalBoardCardSelected(player, player.Board[$event])"
-    (onPlayerTargetSelected)="rivalTargetSelected(player)"
+<div class="table-container">
+
+  <!-- Rivales -->
+  <div
+    class="player-slot rival"
+    *ngFor="let player of gameState.Rivals; let i = index"
+    [ngStyle]="getRivalStyle(i)"
   >
+    <app-player
+      [player]="player"
+      [visibleHand]="false"
+      [isAnimating]="isAnimating"
+      [reverseOrder]="true"
+      [showHealthAsTarget]="attackingUnit !== null"
+      (onCardRightClick)="onRightClick($event.event, $event.card)"
+      (onDockSelected)="rivalBoardCardSelected(player, player.Board[$event])"
+      (onPlayerTargetSelected)="rivalTargetSelected(player)"
+    >
+    </app-player>
+  </div>
 
-  </app-player>
+  <!-- Yo -->
+  <div class="player-slot me">
+    <app-player
+      [player]="gameState.Me"
+      [visibleHand]="true"
+      [isAnimating]="isAnimating"
+      [showHealthAsTarget]="attackingUnit !== null"
+      (onDeckSelected)="deckSelected()"
+      (onCardRightClick)="onRightClick($event.event, $event.card)"
+      (onDockSelected)="dockSelected($event)"
+      (onAttackingUnitSelected)="attackingUnitSelected($event)"
+      (onLastSpellClicked)="lastSpellClicked()"
+      (onCardSelected)="cardSelected($event)"
+      [selectedCard]="selectedCard"
+      [unitSelected]="unitSelected"
+      [attackingUnit]="attackingUnit"
+    >
+    </app-player>
+  </div>
 
-  <app-player
-    [player]="this.gameState.Me"
-    [visibleHand]="true"
-    [isAnimating]="isAnimating"
-    [showHealthAsTarget]="this.attackingUnit !== null"
-    (onDeckSelected)="deckSelected()"
-    (onCardRightClick)="onRightClick($event.event, $event.card)"
-    (onDockSelected)="dockSelected($event)"
-    (onAttackingUnitSelected)="attackingUnitSelected($event)"
-    (onLastSpellClicked)="lastSpellClicked()"
-    (onCardSelected)="cardSelected($event)"
-  >
-
-  </app-player>
+</div>
 
   <div
     class="side-panel"

@@ -44,13 +44,16 @@ export class PlayerComponent {
   isAnimating!: boolean;
 
   @Input()
+  reverseOrder!: boolean;
+
+  @Input()
   showHealthAsTarget!: boolean;
 
   @Input()
   selectedCard: (Card | null) = null;
   
   @Input()
-  unitSelected: (Card | null) = null;
+  unitSelected: boolean = false;
 
   @Input()
   attackingUnit: (Card | null) = null;

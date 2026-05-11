@@ -1,7 +1,7 @@
 
 .game-layout {
 
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
 
   flex-direction: column;
@@ -12,6 +12,7 @@
 
     background:
     radial-gradient(circle at top, #2b1055, #000);
+  background-size: contain;
 }
 
 .board-column {
@@ -218,4 +219,30 @@
 
   pointer-events: none;
 
+}
+.table-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.player-slot {
+  position: absolute;
+  transform-origin: center center;
+  transition:
+    left 300ms ease,
+    top 300ms ease,
+    transform 300ms ease;
+}
+
+.player-slot.me {
+  left: 50%;
+  bottom: 0;
+
+  transform: translateX(-50%);
+}
+
+.player-slot {
+  will-change: transform;
 }

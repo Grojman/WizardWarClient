@@ -19,7 +19,6 @@ import { Card } from '../../../models/card.model';
 })
 export class CardComponent implements OnChanges, OnInit {
   ngOnInit(): void {
-    console.log("Mi carta: ", this.card);
     this.faceDown = this.card === null;
   }
 
@@ -40,7 +39,6 @@ export class CardComponent implements OnChanges, OnInit {
   ngOnChanges(
     changes: SimpleChanges
   ) {
-    console.log("a")
     this.faceDown = changes['card'] &&
                     this.card === undefined;
   }
@@ -123,7 +121,6 @@ export class CardComponent implements OnChanges, OnInit {
   }
 
   familiesToGradient(families: string[]): string {
-    console.log("me he llamado")
     if (families.length === 0) {
       return "hsl(0, 0%, 60%)";
     }

@@ -122,6 +122,15 @@ export class GameComponent implements OnInit {
         })
       }
 
+      this.gameState.Me.GlobalEffects = this.storedGameState.Me.GlobalEffects;
+      this.gameState.Me.IsMyTurn = this.storedGameState.Me.IsMyTurn;
+
+      this.gameState.Rivals.forEach((n, i) => {
+        n.GlobalEffects = this.storedGameState.Rivals[i].GlobalEffects;
+        n.IsMyTurn = this.storedGameState.Rivals[i].IsMyTurn;
+      })
+
+
       break;
       case "end_game":
         let message = "";
@@ -366,7 +375,6 @@ cardEventPlayed(cardId: string, playerId: string)
         var visualElement = this.findElement(event.Unit);
         var index = arrayToFind.findIndex(n => n && n.id === event.Unit);
         if (index !== -1) {
-          console.log("Setting to null")
           const animation = visualElement.animate(
             [
               { opacity: 1, transform: 'scale(1)' },
@@ -390,11 +398,9 @@ cardEventPlayed(cardId: string, playerId: string)
         if (cardIndex !== -1) {
           player.HandData.splice(cardIndex, 1);
           player.HandSize--;
-          console.log("Se ha cortado la carta: ", player.HandData);
         }
         if (event.Unit) {
           player.Board[event.BoardPosition] = Card.fromJSON(event.Unit);
-          console.log("Se ha colocado la carta: ", player.Board);
         }
         break;
         
@@ -404,7 +410,6 @@ cardEventPlayed(cardId: string, playerId: string)
         if (cardIndex !== -1) {
           player.HandData.splice(cardIndex, 1);
           player.HandSize--;
-          console.log("Se ha cortado la carta: ", player.HandData)
         }
         player.LastSpellPlayed = Card.fromJSON(event.Spell);
         break;
@@ -579,10 +584,7 @@ dockSelected(position: number)
 
 deckSelected() 
 {
-  console.error("I entered");
-  console.log(this.gameState.Me.IsMyTurn);
   if (!this.gameState.Me.IsMyTurn) return;
-  console.error("sending...");
 
   this.safeSend({
     "$type" : "DrawCardAction"
@@ -697,11 +699,119 @@ safeSend(payload: any): void {
     return;
   }
 
-  console.log("Sending message to server")
 
   this.ws.send(payload);
 
   this.singleActionEvent = false;
 
+}
+
+getPlayerPosition(index: number) {
+  const rivals = this.gameState.Rivals.length;
+
+  // Centro pantalla
+  const centerX = 50;
+  const centerY = 50;
+
+  // Radio del círculo
+  const radius = 38;
+
+  /**
+   * Queremos repartir a los rivales
+   * en la parte superior del círculo.
+   *
+   * 180º -> izquierda
+   * 0º -> derecha
+   *
+   * Me está en 90º abajo.
+   */
+
+  let angle: number;
+
+  if (rivals === 1) {
+    angle = -90;
+  } else {
+    angle = -180 + (180 / (rivals - 1)) * index;
+  }
+
+  const radians = angle * (Math.PI / 180);
+
+  const x = centerX + radius * Math.cos(radians);
+  const y = centerY + radius * Math.sin(radians);
+
+  return { x, y, angle };
+}
+
+getRivalStyle(index: number) {
+  const rivals = this.gameState.Rivals.length;
+
+  /**
+   * Tamaño aproximado visual de un player.
+   * Ajusta esto según tu componente real.
+   */
+  const playerWidth = 600;
+
+  /**
+   * Anchura disponible.
+   */
+  const screenWidth = window.innerWidth;
+
+  /**
+   * Separación mínima deseada.
+   */
+  const spacing = 40;
+
+  /**
+   * Cuánto espacio necesita cada rival.
+   */
+  const requiredWidth = rivals * (playerWidth + spacing);
+
+  /**
+   * Radio dinámico:
+   * cuantos más jugadores,
+   * más lejos del centro.
+   */
+  const radius = Math.max(
+    350,
+    requiredWidth / 2
+  );
+
+  /**
+   * Arco superior.
+   */
+  const arc = Math.min(160, 40 * rivals);
+
+  /**
+   * Distribución angular.
+   */
+  const startAngle = -90 - arc / 2;
+
+  const step =
+    rivals > 1
+      ? arc / (rivals - 1)
+      : 0;
+
+  const angle = startAngle + step * index;
+
+  const rad = angle * Math.PI / 180;
+
+  /**
+   * Centro desplazado hacia abajo.
+   * MUY importante.
+   */
+  const centerX = screenWidth / 2;
+  const centerY = window.innerHeight * 0.75;
+
+  const x = centerX + radius * Math.cos(rad);
+  const y = centerY + radius * Math.sin(rad);
+
+  return {
+    left: `${x}px`,
+    top: `${y}px`,
+    transform: `
+      translate(-50%, -50%)
+      rotate(${angle + 90}deg)
+    `
+  };
 }
 }

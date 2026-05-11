@@ -9,30 +9,10 @@
         </div>
     </div>
     
-    <div class="info-section">
-        <div class="hand"
-        *ngIf="!visibleHand"
-        >
-            <app-card
-            *ngFor="let card of [].constructor(player.HandSize); let i = index"
-            [style.transform]="getTransform(i, player.HandSize)"
-            />
-        </div>
-    
-        <div class="hand"
-        *ngIf="visibleHand"
-        >
-        <app-card
-            [style.transform]="getTransform(i, player.HandData.length)"
-            *ngFor="let card of player.HandData; let i = index"
-            [card]="card"
-            (click)="cardSelected(card)"
-            [selected]="card.id === selectedCard?.id"
-            (contextmenu)="onRightClick($event, card)"
-            [canBeSelected]="true"
-        />
-        </div>
-
+    <div class="info-section"
+    [class.reverse]="reverseOrder"
+    >
+        
         <div class="board-section">
             
             <div class="player-info">
@@ -85,6 +65,30 @@
         (click)="deckSelected()"
         ></app-deck>
         </div>
+
+        <div class="hand"
+        *ngIf="!visibleHand"
+        >
+            <app-card
+            *ngFor="let card of [].constructor(player.HandSize); let i = index"
+            [style.transform]="getTransform(i, player.HandSize)"
+            />
+        </div>
+    
+        <div class="hand"
+        *ngIf="visibleHand"
+        >
+        <app-card
+            [style.transform]="getTransform(i, player.HandData.length)"
+            *ngFor="let card of player.HandData; let i = index"
+            [card]="card"
+            (click)="cardSelected(card)"
+            [selected]="card.id === selectedCard?.id"
+            (contextmenu)="onRightClick($event, card)"
+            [canBeSelected]="true"
+        />
+        </div>
+
     </div>
 
 </div>

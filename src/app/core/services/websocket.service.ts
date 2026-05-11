@@ -30,9 +30,6 @@ export class WebsocketService {
   }
 
   connect() {
-
-    /* Evitar duplicados */
-
     if (
       this.isConnected ||
       this.isConnecting
