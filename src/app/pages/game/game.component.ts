@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, signal, ViewChild } from '@angular/core';
 
 import { Card } from '../../models/card.model';
 
@@ -8,6 +8,9 @@ import { Game } from '../../models/game.model';
 import { Health } from '../../models/health.model';
 import { Player } from '../../models/player.model';
 import { MessageDialogComponent } from '../../ui/message-dialog/message-dialog.component';
+import { ChatComponent } from '../../shared/components/chat/chat.component';
+import { Message } from '../../models/message.model';
+import { GameCardCheckComponent } from '../../shared/components/game-card-check/game-card-check.component';
 
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
@@ -120,6 +123,9 @@ export class GameComponent implements OnInit {
           n.Health = health;
           n.HandSize = 0;
         })
+          this.playerBoardX = this.playerRef.nativeElement.getBoundingClientRect().width;
+          this.playerBoardY = this.playerRef.nativeElement.getBoundingClientRect().height;
+        this.prepareTableGame();
       }
 
       this.gameState.Me.GlobalEffects = this.storedGameState.Me.GlobalEffects;
@@ -257,6 +263,7 @@ async animateAttack(
 
 async createProyectile(source: string, target: string)
 {
+  return;
   if (source === target) return;
   await this.nextFrame();
   const proyectile = document.querySelector(".proyectile") as HTMLElement;
@@ -458,11 +465,9 @@ ngOnInit(): void {
   this.ws.subscribe(this.processMessage)
 }
 
-showSidePanel = false;
 changeHealthAnimationDuration: number = 500;
 
 selectedCard: Card | null = null;
-selectedCardInfo: Card | null = null;
 gameState: Game;
 storedGameState: Game;
 gameEvents: any[] = [];
@@ -480,34 +485,41 @@ createFloatingMessage(
   playerId: string
 )
 {
-  let userHealht = this.findElement(playerId).getBoundingClientRect();
-  const randomHeight =
-    80 + Math.random() * 120;
+  let playerName = this.getPlayer(playerId).Name;
+  let message = new Message();
+  message.text = text;
+  message.playerName = playerName;
 
-  const duration = 3000;
+  this.chat.addMessage(message);
 
-  const message: FloatingMessage = {
+  // let userHealht = this.findElement(playerId).getBoundingClientRect();
+  // const randomHeight =
+  //   80 + Math.random() * 120;
 
-    text,
+  // const duration = 3000;
 
-    x: userHealht.x + userHealht.width / 2,
-    bottom: userHealht.bottom + userHealht.height,
+  // const message: FloatingMessage = {
 
-    height: randomHeight,
-    duration
+  //   text,
 
-  };
+  //   x: userHealht.x + userHealht.width / 2,
+  //   bottom: userHealht.bottom + userHealht.height,
 
-  this.floatingMessages.push(message);
+  //   height: randomHeight,
+  //   duration
+
+  // };
+
+  // this.floatingMessages.push(message);
 
 
-  setTimeout(() => {
+  // setTimeout(() => {
 
-    this.floatingMessages =
-      this.floatingMessages
-        .filter(m => m != message);
+  //   this.floatingMessages =
+  //     this.floatingMessages
+  //       .filter(m => m != message);
 
-  }, duration);
+  // }, duration);
 
 }
 
@@ -531,11 +543,6 @@ async handleGameEvents(events: any[]) {
   this.isAnimating = false;
 }
 
-togglePanel() {
-  this.showSidePanel =
-  !this.showSidePanel;
-}
-
 onRightClick(
   event: MouseEvent,
   card: Card | null
@@ -545,9 +552,7 @@ onRightClick(
   
   if (!card) return;
   
-  this.selectedCardInfo = card;
-  
-  this.showSidePanel = true;
+  this.cardCheck.open(card);
 }
 
 cardSelected(card: Card | null)
@@ -652,6 +657,12 @@ lastSpellClicked()
 @ViewChild('dialog')
 dialog!: MessageDialogComponent;
 
+@ViewChild('chat')
+chat!: ChatComponent;
+
+@ViewChild('gamecheck')
+cardCheck!: GameCardCheckComponent;
+
 // Detecta teclas globalmente
 
 @HostListener('window:keydown', ['$event'])
@@ -661,8 +672,15 @@ handleKeyboardEvent(event: KeyboardEvent) {
 
     event.preventDefault(); 
 
-    this.dialog.open();
-
+    if(this.dialog.visible && this.chat.isOpen)
+    {
+      this.dialog.close();
+    } else if(this.chat.isOpen) {
+      this.chat.close();
+    } else {
+      this.dialog.open();
+      this.chat.open();
+    }
   }
 }
 
@@ -673,25 +691,7 @@ onMessageSent(text: string) {
   });
 }
 
-isReaction(text: string): boolean {
 
-  return /^:[a-zA-Z0-9_-]+:$/.test(text);
-
-}
-
-getReactionName(text: string): string {
-
-  return text.replace(/:/g, '');
-
-}
-
-getReactionPath(text: string): string {
-
-  const name = this.getReactionName(text);
-
-  return `/images/reactions/${name}.${(name.startsWith('0') ? 'gif' : 'jpg')}`;
-
-}
 
 safeSend(payload: any): void {
 
@@ -706,112 +706,148 @@ safeSend(payload: any): void {
 
 }
 
-getPlayerPosition(index: number) {
-  const rivals = this.gameState.Rivals.length;
 
-  // Centro pantalla
-  const centerX = 50;
-  const centerY = 50;
 
-  // Radio del círculo
-  const radius = 38;
+ngAfterViewInit() {
+  const viewport = this.viewportRef.nativeElement;
 
-  /**
-   * Queremos repartir a los rivales
-   * en la parte superior del círculo.
-   *
-   * 180º -> izquierda
-   * 0º -> derecha
-   *
-   * Me está en 90º abajo.
-   */
+  viewport.scrollLeft =
+    (viewport.scrollWidth - viewport.clientWidth) / 2;
 
-  let angle: number;
+  viewport.scrollTop =
+    (viewport.scrollHeight - viewport.clientHeight) / 2;
+}
 
-  if (rivals === 1) {
-    angle = -90;
-  } else {
-    angle = -180 + (180 / (rivals - 1)) * index;
+calculateApotema(): number
+{
+  const playerX = this.playerBoardX;
+  const numPlayers = this.gameState.Rivals.length + 1;
+
+  // Ángulo en radianes
+  const angle = Math.PI / numPlayers;
+
+  return playerX / (2 * Math.tan(angle));
+}
+
+calculateRotationDegrees() : number
+{
+  const numPlayers = this.gameState.Rivals.length +1;
+  
+  return 360 / numPlayers;
+}
+
+
+@ViewChild('viewport')
+viewportRef!: ElementRef<HTMLDivElement>;
+
+@ViewChild('playerboard')
+playerRef!: ElementRef<HTMLDivElement>;
+
+distance: number = 0;
+rotation: number = 0;
+
+viewPortCenterY: number = 0;
+viewPortCenterX: number = 0;
+
+boardSizeY: number = 0;
+boardSizeX: number = 0;
+
+
+playerBoardX: number = 1300;  //TODO: SUSTITUIRLO POR EL VALOR REAL
+playerBoardY: number = 350;  //TODO: SUSTITUIRLO POR EL VALOR REAL
+
+extraMargin: number = 150;
+
+extraOffSetY: number = 0;
+extraOffSetX: number = 0;
+
+shoudlRotatePlayers = false;
+
+getCircumradius(): number
+{
+  const side = this.playerBoardX;
+  const numPlayers = this.gameState.Rivals.length + 1;
+
+  return side / (2 * Math.sin(Math.PI / numPlayers));
+}
+
+prepareTableGame()
+{
+
+  this.rotation = this.calculateRotationDegrees();
+  if(this.gameState.Rivals.length === 1)
+  {
+    this.extraMargin = 0;
+    this.shoudlRotatePlayers = true;
+    this.rotation = 0;
   }
 
-  const radians = angle * (Math.PI / 180);
+  this.distance = this.calculateApotema() + this.extraMargin;
 
-  const x = centerX + radius * Math.cos(radians);
-  const y = centerY + radius * Math.sin(radians);
+  // boardSize está en px
+  this.boardSizeX = (this.getCircumradius() + this.extraMargin) * 2;
+  this.boardSizeY = (this.getCircumradius() + this.extraMargin) * 2;
 
-  return { x, y, angle };
+  if(this.shoudlRotatePlayers)
+  {
+    this.boardSizeY = this.playerBoardY * 2;
+  }
+
+  this.viewPortCenterY = this.boardSizeY / 2;
+  this.viewPortCenterX = this.boardSizeX / 2;
+
+
+
+  // grados por jugador
 }
 
-getRivalStyle(index: number) {
-  const rivals = this.gameState.Rivals.length;
+getRivalStyle(index: number)
+{
+  // Rotación total del rival
+  const rotationDeg = this.rotation * index;
+
+  // Conversión a radianes
+  const rotationRad = rotationDeg * (Math.PI / 180);
 
   /**
-   * Tamaño aproximado visual de un player.
-   * Ajusta esto según tu componente real.
+   * Centro del viewport
    */
-  const playerWidth = 600;
+  const centerX = this.viewPortCenterX;
+  const centerY = this.viewPortCenterY + this.extraOffSetY;
+  /**
+   * Descomposición del apotema
+   */
+  let offsetX = Math.sin(rotationRad) * this.distance;
+  let offsetY = Math.cos(rotationRad) * this.distance;
+
+  if(this.gameState.Rivals.length === 1)
+  {
+    offsetY += this.playerBoardY / 2 * (index === 1 ? -1 : 1);
+  }
+
+  console.log("Para ", index)
+  console.log("offsetX: ", offsetX);
+  console.log("offsetY: ", offsetY);
 
   /**
-   * Anchura disponible.
+   * Posición final del centro del tablero rival
    */
-  const screenWidth = window.innerWidth;
+  const rivalCenterX = centerX + (-1* offsetX);
+  const rivalCenterY = centerY + (1 * offsetY);
 
   /**
-   * Separación mínima deseada.
+   * Convertimos de centro a top-left
    */
-  const spacing = 40;
-
-  /**
-   * Cuánto espacio necesita cada rival.
-   */
-  const requiredWidth = rivals * (playerWidth + spacing);
-
-  /**
-   * Radio dinámico:
-   * cuantos más jugadores,
-   * más lejos del centro.
-   */
-  const radius = Math.max(
-    350,
-    requiredWidth / 2
-  );
-
-  /**
-   * Arco superior.
-   */
-  const arc = Math.min(160, 40 * rivals);
-
-  /**
-   * Distribución angular.
-   */
-  const startAngle = -90 - arc / 2;
-
-  const step =
-    rivals > 1
-      ? arc / (rivals - 1)
-      : 0;
-
-  const angle = startAngle + step * index;
-
-  const rad = angle * Math.PI / 180;
-
-  /**
-   * Centro desplazado hacia abajo.
-   * MUY importante.
-   */
-  const centerX = screenWidth / 2;
-  const centerY = window.innerHeight * 0.75;
-
-  const x = centerX + radius * Math.cos(rad);
-  const y = centerY + radius * Math.sin(rad);
+  const x = rivalCenterX - (this.playerBoardX / 2);
+  const y = rivalCenterY - (this.playerBoardY / 2);
 
   return {
+    position: 'absolute',
     left: `${x}px`,
     top: `${y}px`,
-    transform: `
-      translate(-50%, -50%)
-      rotate(${angle + 90}deg)
-    `
+    transform: `rotate(${rotationDeg}deg)`
   };
 }
+
+
 }

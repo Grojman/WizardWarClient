@@ -1,27 +1,14 @@
 <div class="game-layout">
-<div class="table-container">
-
-  <!-- Rivales -->
-  <div
-    class="player-slot rival"
-    *ngFor="let player of gameState.Rivals; let i = index"
-    [ngStyle]="getRivalStyle(i)"
-  >
-    <app-player
-      [player]="player"
-      [visibleHand]="false"
-      [isAnimating]="isAnimating"
-      [reverseOrder]="true"
-      [showHealthAsTarget]="attackingUnit !== null"
-      (onCardRightClick)="onRightClick($event.event, $event.card)"
-      (onDockSelected)="rivalBoardCardSelected(player, player.Board[$event])"
-      (onPlayerTargetSelected)="rivalTargetSelected(player)"
-    >
-    </app-player>
-  </div>
+<div class="table-container" #viewport
+  [style.width.px]="boardSizeX"
+    [style.height.px]="boardSizeY">
+>
 
   <!-- Yo -->
-  <div class="player-slot me">
+  <div class="player-slot me"
+    [ngStyle]="getRivalStyle(0)"
+      #playerboard
+  >
     <app-player
       [player]="gameState.Me"
       [visibleHand]="true"
@@ -39,63 +26,46 @@
     >
     </app-player>
   </div>
-
-</div>
-
+  <!-- Rivales -->
   <div
-    class="side-panel"
-    [class.open]="showSidePanel"
+    class="player-slot rival"
+    *ngFor="let player of gameState.Rivals; let i = index"
+    [ngStyle]="getRivalStyle(i + 1)"
   >
-
-  <app-cardvisualizer
-  [card]="selectedCardInfo"
-  *ngIf="selectedCardInfo">
-</app-cardvisualizer>
+    <app-player
+      [player]="player"
+      [visibleHand]="false"
+      [isAnimating]="isAnimating"
+      [reverseOrder]="shoudlRotatePlayers"
+      [showHealthAsTarget]="attackingUnit !== null"
+      (onCardRightClick)="onRightClick($event.event, $event.card)"
+      (onDockSelected)="rivalBoardCardSelected(player, player.Board[$event])"
+      (onPlayerTargetSelected)="rivalTargetSelected(player)"
+    >
+    </app-player>
   </div>
 
 
-  <button
-    [class.open]="showSidePanel"
-    class="toggle-panel"
-    (click)="togglePanel()"
-    >
-<i class="fa-solid fa-arrow-right-long"></i>
-  </button>
+</div>
 
   <div class="animation-layer">
     <div class="proyectile" style="display: none;">
 
     </div>
-
-    <ng-container
-  *ngFor="let msg of floatingMessages; let i = index"
-    >
-
-      <div
-        class="speech-bubble"
-        [style.left.px]="msg.x"
-        [style.bottom.px]="msg.bottom"
-        [style.--float-height.px]="msg.height"
-        [style.animation-duration.ms]="msg.duration"
-        [style.transform]="'translateX(-50%) translateY(' + (-i * 30) + 'px)'"
-      >
-        <img
-          *ngIf="isReaction(msg.text)"
-          [src]="getReactionPath(msg.text)"
-          class="reaction-image"
-          alt="reaction"
-        />
-        <span *ngIf="!isReaction(msg.text)">
-
-          {{ msg.text }}
-
-        </span>
-
-      </div>
-
-    </ng-container>
   </div>
 </div>
+
+<app-game-card-check
+#gamecheck
+>
+
+</app-game-card-check>
+
+<app-chat
+#chat
+>
+
+</app-chat>
 
 <app-message-dialog
   #dialog

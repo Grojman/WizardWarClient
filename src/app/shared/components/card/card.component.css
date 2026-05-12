@@ -194,6 +194,7 @@
 
 .cannot-play
 {
+  height: 100%;
   background-image: url("/images/board/cannot_play.svg");
   background-size: contain;
   background-position: center;

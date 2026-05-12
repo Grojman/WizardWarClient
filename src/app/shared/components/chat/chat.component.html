@@ -1,0 +1,38 @@
+<!-- chat.component.html -->
+
+<div class="chat-container" *ngIf="isOpen">
+<div class="chat">
+
+    <div class="chat-header">
+      <span class="title">Chat</span>
+  
+      <button
+        class="close-btn"
+        type="button"
+        (click)="close()">
+        ✕
+      </button>
+    </div>
+  
+    <div class="chat-messages">
+  
+      <div
+        class="message"
+        *ngFor="let message of messages">
+  
+        <div class="player-name">
+          {{ message.playerName }}
+        </div>
+  
+        <div class="message-text" *ngIf="!isReaction(message.text)">
+          {{ message.text }}
+        </div>
+
+        <img class="reaction-image" *ngIf="isReaction(message.text)" src="{{getReactionPath(message.text)}}" />
+  
+      </div>
+  
+    </div>
+</div>
+
+</div>

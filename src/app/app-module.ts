@@ -21,6 +21,8 @@ import { CardvisualizerComponent } from './shared/components/cardvisualizer/card
 import { MessageDialogComponent } from './ui/message-dialog/message-dialog.component';
 import { PlayerComponent } from './shared/components/player/player.component';
 import { TargetPlayerComponent } from './shared/components/target-player/target-player.component';
+import { ChatComponent } from './shared/components/chat/chat.component';
+import { GameCardCheckComponent } from './shared/components/game-card-check/game-card-check.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,8 @@ import { TargetPlayerComponent } from './shared/components/target-player/target-
     MessageDialogComponent,
     PlayerComponent,
     TargetPlayerComponent,
+    ChatComponent,
+    GameCardCheckComponent,
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [

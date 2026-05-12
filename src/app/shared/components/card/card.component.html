@@ -10,7 +10,6 @@
     [class.card-back]="faceDown"
     [class.card-can-be-selected]="canBeSelected"
     [class.spell]="card?.type === 'Spell'"
-    [class.cannot-play]="!card?.canPlay && !faceDown"
     [style.background]="familiesToGradient(card?.families ?? [])"
   >
     <figure
@@ -94,6 +93,8 @@
     </div>
 
 
-    <div class="shine"></div>
+    <div 
+    *ngIf="!card?.canPlay && !faceDown"
+    class="cannot-play"></div>
 
   </div>
