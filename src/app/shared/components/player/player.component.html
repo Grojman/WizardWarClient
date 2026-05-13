@@ -1,4 +1,6 @@
-<div class="player-content">
+<div class="player-content"
+[class.dead]="player.Health.displayHealth <= 0"
+>
     <div class="effects-section">
         <h3 class="effects-title subtitle">Efectos:</h3>
         

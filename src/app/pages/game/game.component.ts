@@ -327,6 +327,10 @@ cardEventPlayed(cardId: string, playerId: string)
   playEvent(event: any): Promise<void> {
     return new Promise(async resolve => {
       switch (event.$type) {
+        case "PlayerDeath":
+          var player = this.getPlayer(event.PlayerSource)
+          player.Health.changeHealth(-player.Health.displayHealth, 500)
+          break;
         case "CardEventPlayed":
           this.cardEventPlayed(event.Card, event.PlayerSource);  
           break;
