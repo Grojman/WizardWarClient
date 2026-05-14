@@ -66,6 +66,8 @@
         [attr.data-game-id]="player.Id + '-deck'"
         (click)="deckSelected()"
         ></app-deck>
+
+        <app-target #target (click)="targetSelected()"></app-target>
         </div>
 
         <div class="hand"

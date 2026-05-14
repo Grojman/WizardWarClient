@@ -43,7 +43,7 @@ export class WebsocketService {
 
     this.socket =
       new WebSocket(
-        'ws://localhost:5182/ws'
+        'ws://10.154.20.72:5182/ws'
       );
 
 

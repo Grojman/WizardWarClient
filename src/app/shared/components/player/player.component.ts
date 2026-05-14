@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { Player } from '../../../models/player.model';
 import { Card } from '../../../models/card.model';
+import { TargetPlayerComponent } from '../target/target.component';
 
 @Component({
   selector: 'app-player',
@@ -8,7 +9,8 @@ import { Card } from '../../../models/card.model';
   templateUrl: './player.component.html',
   styleUrl: './player.component.css',
 })
-export class PlayerComponent {
+export class PlayerComponent implements OnChanges, AfterViewInit {
+  
   @Output()
   onDeckSelected: EventEmitter<any> = new EventEmitter();
 
@@ -17,6 +19,9 @@ export class PlayerComponent {
     card: Card | null,
     event: MouseEvent
   }> = new EventEmitter();
+
+  @Output()
+  onTargetSelected: EventEmitter<any> = new EventEmitter();
   
   @Output()
   onCardSelected: EventEmitter<(Card | null)> = new EventEmitter();
@@ -32,6 +37,18 @@ export class PlayerComponent {
 
   @Output()
   onPlayerTargetSelected: EventEmitter<any> = new EventEmitter();
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes['player'] && this.player.Id !== '')
+    {
+      this.player.Target = this.target
+      
+    }
+  }
+
+  ngAfterViewInit(): void {
+    this.player.Target = this.target;
+  }
 
 
   @Input()
@@ -58,6 +75,8 @@ export class PlayerComponent {
   @Input()
   attackingUnit: (Card | null) = null;
 
+  @ViewChild('target')
+  target!: TargetPlayerComponent;
 
   deckSelected()
   {
@@ -74,6 +93,11 @@ export class PlayerComponent {
         event
       }
     );
+  }
+
+  targetSelected()
+  {
+    this.onTargetSelected.emit();
   }
 
   dockSelected(position: number)

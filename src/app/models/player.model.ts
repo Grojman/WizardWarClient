@@ -1,3 +1,4 @@
+import { TargetPlayerComponent } from "../shared/components/target/target.component";
 import { Card } from "./card.model";
 import { Deck } from "./deck.model";
 import { Health } from "./health.model";
@@ -15,4 +16,5 @@ export interface Player
     IsMyTurn: boolean,
     LastSpellPlayed: (Card | null),
     TargetPlayer: string,
+    Target: (TargetPlayerComponent | null)
 }

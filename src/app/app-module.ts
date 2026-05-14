@@ -20,7 +20,7 @@ import { GalleryComponent } from './pages/gallery/gallery.component';
 import { CardvisualizerComponent } from './shared/components/cardvisualizer/cardvisualizer.component';
 import { MessageDialogComponent } from './ui/message-dialog/message-dialog.component';
 import { PlayerComponent } from './shared/components/player/player.component';
-import { TargetPlayerComponent } from './shared/components/target-player/target-player.component';
+import { TargetPlayerComponent } from './shared/components/target/target.component';
 import { ChatComponent } from './shared/components/chat/chat.component';
 import { GameCardCheckComponent } from './shared/components/game-card-check/game-card-check.component';
 

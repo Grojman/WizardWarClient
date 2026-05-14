@@ -11,6 +11,7 @@ import { MessageDialogComponent } from '../../ui/message-dialog/message-dialog.c
 import { ChatComponent } from '../../shared/components/chat/chat.component';
 import { Message } from '../../models/message.model';
 import { GameCardCheckComponent } from '../../shared/components/game-card-check/game-card-check.component';
+import { TargetPlayerComponent } from '../../shared/components/target/target.component';
 
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
@@ -49,7 +50,8 @@ export class GameComponent implements OnInit {
           cardAmount: 0          
         },
         GlobalEffects: [
-        ]
+        ],
+        Target : null,
       },
       Rivals: [{
         TargetPlayer: "",
@@ -75,7 +77,7 @@ export class GameComponent implements OnInit {
           cardAmount: 0          
         },
         GlobalEffects: [
-        ]
+        ], Target: null
       }]
     }
     
@@ -322,11 +324,17 @@ cardEventPlayed(cardId: string, playerId: string)
   }
 }
 
+firstime = true;
 
 
   playEvent(event: any): Promise<void> {
     return new Promise(async resolve => {
       switch (event.$type) {
+        case "TargetPlayerChanged":
+          var player = this.getPlayer(event.PlayerSource);
+          console.log("player encontrado", player)
+          player.Target?.apuntarAElemento(this.findElement(event.NewTarget))
+        break;
         case "PlayerDeath":
           var player = this.getPlayer(event.PlayerSource)
           player.Health.changeHealth(-player.Health.displayHealth, 500)
@@ -481,6 +489,7 @@ animationLayer: HTMLElement | null = null;
 unitSelected: boolean = false;
 attackingUnit: Card | null = null;
 singleActionEvent: boolean = false;
+targetSelected = false;
 
 floatingMessages: FloatingMessage[] = [];
 
@@ -495,36 +504,6 @@ createFloatingMessage(
   message.playerName = playerName;
 
   this.chat.addMessage(message);
-
-  // let userHealht = this.findElement(playerId).getBoundingClientRect();
-  // const randomHeight =
-  //   80 + Math.random() * 120;
-
-  // const duration = 3000;
-
-  // const message: FloatingMessage = {
-
-  //   text,
-
-  //   x: userHealht.x + userHealht.width / 2,
-  //   bottom: userHealht.bottom + userHealht.height,
-
-  //   height: randomHeight,
-  //   duration
-
-  // };
-
-  // this.floatingMessages.push(message);
-
-
-  // setTimeout(() => {
-
-  //   this.floatingMessages =
-  //     this.floatingMessages
-  //       .filter(m => m != message);
-
-  // }, duration);
-
 }
 
 async handleGameEvents(events: any[]) {
@@ -543,6 +522,16 @@ async handleGameEvents(events: any[]) {
   this.storedGameState.Me.HandData.forEach((n, i) => {
     this.gameState.Me.HandData[i].canPlay = n.canPlay;
   })
+
+  if(this.firstime)
+  {
+    this.firstime = false;
+    this.gameState.Me.Target?.apuntarAElemento(this.findElement(this.gameState.Me.TargetPlayer))
+    this.gameState.Rivals.forEach(n => {
+      console.log(n.Target)
+      n.Target?.apuntarAElemento(this.findElement(n.TargetPlayer))
+    })
+  }
   
   this.isAnimating = false;
 }
@@ -617,18 +606,36 @@ attackingUnitSelected(card: Card | null)
   }
 
   this.attackingUnit = this.attackingUnit?.id === card?.id ? null : card;
+  this.targetSelected = false;
+}
+
+targetSel() {
+  console.log('se ha hecho click')
+  this.targetSelected = true;
 }
 
 rivalTargetSelected(rival: Player)
 {
-  if(!this.gameState.Me.IsMyTurn || !this.attackingUnit) return;
-  this.safeSend({
+  if(!this.gameState.Me.IsMyTurn) return;
+  
+  if(this.attackingUnit)
+  {
+    this.safeSend({
     "$type" : "AttackAction",
     "AttackerIndex" : this.gameState.Me.Board.findIndex(n => n?.id === this.attackingUnit?.id),
     "TargetIndex" : -1,
     "TargetType": "PLAYER",
     "PlayerTarget" : rival.Id
   })
+  } else if (this.targetSelected && rival.Id != this.gameState.Me.TargetPlayer)
+  {
+    this.safeSend({
+      "$type" : "ChangeTarget",
+      "NewTarget" : rival.Id
+    })
+    this.targetSelected = false;
+  }
+  
 
   this.attackingUnit = null;
 }
@@ -647,6 +654,53 @@ rivalBoardCardSelected(rival: Player, card: Card | null)
   this.attackingUnit = null;
 }
 
+  async useFloatingTarget(source: string, targetId: string)
+{
+  var element = this.findElement(targetId);
+
+  if (this.currentTargetPos === source)
+  {
+    const sourceElement = this.findElement(source);
+    if (sourceElement) {
+      const rect = sourceElement.getBoundingClientRect();
+      this.visualTarget.style.left = rect.left + 'px';
+      this.visualTarget.style.top = rect.top + 'px';
+    }
+
+    var animation = this.visualTarget.animate(
+    [
+      { opacity: "0" },
+      { opacity: "1" },
+    ],
+    {
+      duration: 300,
+      easing: "ease-out"
+    }
+    
+  );
+    await animation.finished;
+  }
+
+  this.target.apuntarAElemento(element);
+  this.currentTargetPos = source;
+}
+
+  async hideTarget()
+{
+  var animation = this.visualTarget.animate(
+    [
+      { opacity: "1" },
+      { opacity: "0" },
+    ],
+    {
+      duration: 300,
+      easing: "ease-out"
+    }
+    
+  );
+    await animation.finished;
+}
+
 lastSpellClicked()
 {
   if(this.gameState.Me.LastSpellPlayed)
@@ -657,6 +711,14 @@ lastSpellClicked()
     })
   }
 }
+
+currentTargetPos : string = ""
+
+@ViewChild('visualtarget')
+visualTarget!: HTMLElement;
+
+@ViewChild('visualtarget')
+target!: TargetPlayerComponent;
 
 @ViewChild('dialog')
 dialog!: MessageDialogComponent;
@@ -801,9 +863,12 @@ prepareTableGame()
   this.viewPortCenterX = this.boardSizeX / 2;
 
 
-
-  // grados por jugador
+  for (let index = 0; index < this.gameState.Rivals.length + 1; index++) {
+    this.getRivalStyle(index);
+  }
 }
+
+styles: any[] = []
 
 getRivalStyle(index: number)
 {
@@ -845,7 +910,7 @@ getRivalStyle(index: number)
   const x = rivalCenterX - (this.playerBoardX / 2);
   const y = rivalCenterY - (this.playerBoardY / 2);
 
-  return {
+  this.styles[index] = {
     position: 'absolute',
     left: `${x}px`,
     top: `${y}px`,

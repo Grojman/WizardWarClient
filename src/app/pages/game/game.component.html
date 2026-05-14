@@ -6,7 +6,8 @@
 
   <!-- Yo -->
   <div class="player-slot me"
-    [ngStyle]="getRivalStyle(0)"
+      [ngStyle]="styles[0]"
+
       #playerboard
   >
     <app-player
@@ -20,6 +21,7 @@
       (onAttackingUnitSelected)="attackingUnitSelected($event)"
       (onLastSpellClicked)="lastSpellClicked()"
       (onCardSelected)="cardSelected($event)"
+      (onTargetSelected)="targetSel()"
       [selectedCard]="selectedCard"
       [unitSelected]="unitSelected"
       [attackingUnit]="attackingUnit"
@@ -30,7 +32,7 @@
   <div
     class="player-slot rival"
     *ngFor="let player of gameState.Rivals; let i = index"
-    [ngStyle]="getRivalStyle(i + 1)"
+    [ngStyle]="styles[i + 1]"
   >
     <app-player
       [player]="player"
@@ -49,6 +51,10 @@
 </div>
 
   <div class="animation-layer">
+    <app-target
+    #visualtarget
+    ></app-target>
+
     <div class="proyectile" style="display: none;">
 
     </div>
