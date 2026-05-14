@@ -362,6 +362,7 @@ firstime = true;
           player.HandData.push(
             Card.fromJSON(event.Card));
           player.HandSize++;
+          player.Deck.cardAmount--;
         break;
         case "PlayerHealthChanged":
         await this.createProyectile(event.Source, event.PlayerSource);
