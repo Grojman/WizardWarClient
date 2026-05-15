@@ -122,8 +122,8 @@
 
 
 .proyectile {
-  width: 25px;
-  height: 25px;
+  width: 3rem;
+  height: 3rem;
 
   background-image: url("/images/board/proyectile.svg");
   background-size: contain;
@@ -164,6 +164,17 @@
 #visualtarget
 {
   display: none;
+}
+
+.action-buttons
+{
+  position: fixed;
+  display: flex;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  justify-content: end;
+  gap: 1rem;
 }
 
 
@@ -218,7 +229,7 @@
 }
 
 /* Botón */
-.winner-board button {
+button {
   background: #ffd54a;
   color: #1a1a1a;
   border: none;
@@ -230,7 +241,7 @@
   transition: all 0.2s ease;
 }
 
-.winner-board button:hover {
+button:hover {
   background: #ffca28;
   transform: scale(1.05);
 }

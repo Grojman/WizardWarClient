@@ -46,14 +46,14 @@
     >
     </app-player>
   </div>
+</div>
 
-
+<div class="action-buttons">
+  <button (click)="openChat()">Abrir chat [TAB]</button>
+  <button (click)="prepareTableGame()">Recalcular tablero visual</button>
 </div>
 
   <div class="animation-layer">
-    <app-target
-    #visualtarget
-    ></app-target>
 
     <div class="proyectile" style="display: none;">
 
@@ -80,11 +80,8 @@
 
 <app-chat
 #chat
+(onMessageSent)="onMessageSent($event)"
 >
 
 </app-chat>
 
-<app-message-dialog
-  #dialog
-  (messageSent)="onMessageSent($event)"
-></app-message-dialog>

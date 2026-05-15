@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
 import { Message } from '../../../models/message.model';
+import { MessageDialogComponent } from '../../../ui/message-dialog/message-dialog.component';
 
 @Component({
   selector: 'app-chat',
@@ -8,6 +9,18 @@ import { Message } from '../../../models/message.model';
   styleUrl: './chat.component.css',
 })
 export class ChatComponent {
+
+  @Output()
+  onMessageSent: EventEmitter<string> = new EventEmitter();
+
+  @ViewChild(MessageDialogComponent)
+  set dialog(value: MessageDialogComponent | undefined) {
+
+    if (value) {
+      value.focus();
+    }
+  }
+
   isOpen = false;
 
   messages: Message[] = [];
@@ -45,5 +58,10 @@ getReactionPath(text: string): string {
 
   return `/images/reactions/${name}.${(name.startsWith('0') ? 'gif' : 'jpg')}`;
 
+}
+
+messageSent(m: string)
+{
+  this.onMessageSent.emit(m);
 }
 }

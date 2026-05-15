@@ -8,12 +8,20 @@
 
     <div class="card-info"
     >
+        <p>
+            Familias
+        </p>
+
+        <hr>
+
         <p
         class="card-families"
         *ngIf="card.families?.length !== 0"
         >
             {{ card.families?.join() }}
         </p>
+
+        <hr>
 
         <p
         *ngIf="card.description"

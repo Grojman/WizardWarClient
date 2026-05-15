@@ -11,7 +11,6 @@ import { MessageDialogComponent } from '../../ui/message-dialog/message-dialog.c
 import { ChatComponent } from '../../shared/components/chat/chat.component';
 import { Message } from '../../models/message.model';
 import { GameCardCheckComponent } from '../../shared/components/game-card-check/game-card-check.component';
-import { TargetPlayerComponent } from '../../shared/components/target/target.component';
 
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
@@ -51,7 +50,6 @@ export class GameComponent implements OnInit {
         },
         GlobalEffects: [
         ],
-        Target : null,
       },
       Rivals: [{
         TargetPlayer: "",
@@ -77,7 +75,7 @@ export class GameComponent implements OnInit {
           cardAmount: 0          
         },
         GlobalEffects: [
-        ], Target: null
+        ],
       }]
     }
     
@@ -128,6 +126,16 @@ export class GameComponent implements OnInit {
           this.playerBoardX = this.playerRef.nativeElement.getBoundingClientRect().width;
           this.playerBoardY = this.playerRef.nativeElement.getBoundingClientRect().height;
         this.prepareTableGame();
+      }
+
+      if(this.firstime)
+      {
+        this.firstime = false;
+        this.gameState.Me.TargetPlayer = this.getPlayer(this.gameState.Me.TargetPlayer).Name;
+
+        this.gameState.Rivals.forEach(n => {
+          n.TargetPlayer = this.getPlayer(n.TargetPlayer).Name;
+        })
       }
 
       this.gameState.Me.GlobalEffects = this.storedGameState.Me.GlobalEffects;
@@ -254,7 +262,6 @@ async animateAttack(
 
 async createProyectile(source: string, target: string)
 {
-  return;
   if (source === target) return;
   await this.nextFrame();
   const proyectile = document.querySelector(".proyectile") as HTMLElement;
@@ -281,12 +288,15 @@ async createProyectile(source: string, target: string)
 
   const animation = proyectile.animate(
   [
-    { transform: "translate(0px, 0px)" },
-    { transform: `translate(${dx}px, ${dy}px)` },
-    { trasnform: "rotate(1080deg)" }
+    {
+      transform: "translate(0px, 0px) rotate(0deg)"
+    },
+    {
+      transform: `translate(${dx}px, ${dy}px) rotate(1080deg)`
+    }
   ],
   {
-    duration: 500,
+    duration: 250,
     easing: "ease-out",
     fill: "forwards"
   });
@@ -321,9 +331,8 @@ firstime = true;
       switch (event.$type) {
         case "TargetPlayerChanged":
           var player = this.getPlayer(event.PlayerSource);
-          console.log("player encontrado", player)
-          player.TargetPlayer = event.NewTarget;
-          player.Target?.apuntarAElemento(this.findElement(event.NewTarget))
+          var newTarget = this.getPlayer(event.NewTarget);
+          player.TargetPlayer = newTarget.Name;
         break;
         case "PlayerDeath":
           var player = this.getPlayer(event.PlayerSource)
@@ -426,6 +435,7 @@ firstime = true;
 
         case "AddedCardToDeck":
           await this.createProyectile(event.Source, this.getDeckId(event.TargetedPlayer));
+          this.getPlayer(event.TargetedPlayer).Deck.cardAmount++;
             break;
         case "DeckModifiedStats":
           await this.createProyectile(event.Source, this.getDeckId(event.TargetedPlayer));
@@ -513,16 +523,6 @@ async handleGameEvents(events: any[]) {
   this.storedGameState.Me.HandData.forEach((n, i) => {
     this.gameState.Me.HandData[i].canPlay = n.canPlay;
   })
-
-  if(this.firstime)
-  {
-    this.firstime = false;
-    this.gameState.Me.Target?.apuntarAElemento(this.findElement(this.gameState.Me.TargetPlayer))
-    this.gameState.Rivals.forEach(n => {
-      console.log(n.Target)
-      n.Target?.apuntarAElemento(this.findElement(n.TargetPlayer))
-    })
-  }
   
   this.isAnimating = false;
 }
@@ -618,7 +618,7 @@ rivalTargetSelected(rival: Player)
     "TargetType": "PLAYER",
     "PlayerTarget" : rival.Id
   })
-  } else if (this.targetSelected && rival.Id != this.gameState.Me.TargetPlayer)
+  } else if (this.targetSelected)
   {
     this.safeSend({
       "$type" : "ChangeTarget",
@@ -645,56 +645,9 @@ rivalBoardCardSelected(rival: Player, card: Card | null)
   this.attackingUnit = null;
 }
 
-  async useFloatingTarget(source: string, targetId: string)
-{
-  var element = this.findElement(targetId);
-
-  if (this.currentTargetPos === source)
-  {
-    const sourceElement = this.findElement(source);
-    if (sourceElement) {
-      const rect = sourceElement.getBoundingClientRect();
-      this.visualTarget.style.left = rect.left + 'px';
-      this.visualTarget.style.top = rect.top + 'px';
-    }
-
-    var animation = this.visualTarget.animate(
-    [
-      { opacity: "0" },
-      { opacity: "1" },
-    ],
-    {
-      duration: 300,
-      easing: "ease-out"
-    }
-    
-  );
-    await animation.finished;
-  }
-
-  this.target.apuntarAElemento(element);
-  this.currentTargetPos = source;
-}
-
-  async hideTarget()
-{
-  var animation = this.visualTarget.animate(
-    [
-      { opacity: "1" },
-      { opacity: "0" },
-    ],
-    {
-      duration: 300,
-      easing: "ease-out"
-    }
-    
-  );
-    await animation.finished;
-}
-
 lastSpellClicked()
 {
-  if(this.gameState.Me.LastSpellPlayed)
+  if(this.gameState.Me.LastSpellPlayed && this.gameState.Me.LastSpellPlayed!.effectTimes || 0 > 0)
   {
     this.safeSend({
       "$type" : "CardEffectActivated",
@@ -704,12 +657,6 @@ lastSpellClicked()
 }
 
 currentTargetPos : string = ""
-
-@ViewChild('visualtarget')
-visualTarget!: HTMLElement;
-
-@ViewChild('visualtarget')
-target!: TargetPlayerComponent;
 
 @ViewChild('dialog')
 dialog!: MessageDialogComponent;
@@ -761,7 +708,6 @@ endGame(winner: string)
     {
       duration: 500,
       easing: 'ease-out',
-      fill: 'forwards'
     }
   );
 
@@ -773,6 +719,15 @@ endGame(winner: string)
 
 // Detecta teclas globalmente
 
+openChat() 
+{
+  if(this.chat.isOpen) {
+      this.chat.close();
+    } else {
+      this.chat.open();
+    }
+}
+
 @HostListener('window:keydown', ['$event'])
 handleKeyboardEvent(event: KeyboardEvent) {
 
@@ -780,15 +735,7 @@ handleKeyboardEvent(event: KeyboardEvent) {
 
     event.preventDefault(); 
 
-    if(this.dialog.visible && this.chat.isOpen)
-    {
-      this.dialog.close();
-    } else if(this.chat.isOpen) {
-      this.chat.close();
-    } else {
-      this.dialog.open();
-      this.chat.open();
-    }
+    this.openChat()
   }
 }
 

@@ -1,61 +1,48 @@
+
 <div
-  class="dialog-backdrop"
-  *ngIf="visible"
-  (click)="close()"
+  class="dialog-panel"
+  (click)="$event.stopPropagation()"
 >
 
-  <div
-    class="dialog-panel"
-    (click)="$event.stopPropagation()"
-  >
+  <!-- Header opcional -->
 
-    <!-- Header opcional -->
+  <div class="dialog-header">
 
-    <div class="dialog-header">
+    <i class="fa-solid fa-scroll"></i>
 
-      <i class="fa-solid fa-scroll"></i>
-
-      <span>Mensaje Arcano</span>
-
-      <button
-        class="close-button"
-        (click)="close()"
-      >
-
-        <i class="fa-solid fa-xmark"></i>
-
-      </button>
-
-    </div>
+    <span>Mensaje Arcano</span>
 
 
-    <!-- Input -->
+  </div>
 
-    <div class="dialog-input-row">
 
-      <i class="fa-solid fa-feather-pointed input-icon"></i>
+  <!-- Input -->
 
-      <input
-        type="text"
-        [(ngModel)]="message"
-        placeholder="Escribe un mensaje..."
-        (keyup.enter)="send()"
-        autofocus
-      />
+  <div class="dialog-input-row">
 
-      <button
-        class="send-button"
-        (click)="send()"
-      >
+    <i class="fa-solid fa-feather-pointed input-icon"></i>
 
-        <i class="fa-solid fa-paper-plane"></i>
+    <input
+    #messageinput
+      type="text"
+      [(ngModel)]="message"
+      placeholder="Escribe un mensaje..."
+      (keyup.enter)="send()"
+      autofocus
+    />
 
-        Enviar
+    <button
+      class="send-button"
+      (click)="send()"
+    >
 
-      </button>
+      <i class="fa-solid fa-paper-plane"></i>
 
-    </div>
+      Enviar
+
+    </button>
 
   </div>
 
 </div>
+

@@ -67,7 +67,11 @@
         (click)="deckSelected()"
         ></app-deck>
 
-        <app-target #target (click)="targetSelected()"></app-target>
+        <p class="target-player">
+            Jugador objetivo:
+            <br>
+            <span>{{ player.TargetPlayer }}</span>
+        </p>
         </div>
 
         <div class="hand"
