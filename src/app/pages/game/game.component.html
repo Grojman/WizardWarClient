@@ -61,6 +61,17 @@
   </div>
 </div>
 
+<div class="winner-overlay">
+  <div #winnerboard class="winner-board">
+    <p>
+      <span class="winner-name">Jugador 1</span>
+      es el ganador de la guerra.
+    </p>
+
+    <button (click)="leaveGame()">Aceptar</button>
+  </div>
+</div>
+
 <app-game-card-check
 #gamecheck
 >

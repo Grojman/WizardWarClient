@@ -141,18 +141,7 @@ export class GameComponent implements OnInit {
 
       break;
       case "end_game":
-        let message = "";
-
-        if(msg.Content.forced)
-        {
-          message = `Un jugador ha salido de la aplicación y ha abandonado la partida.`
-        } else {
-          message = `Partida terminada, victoria para ${this.getPlayer(msg.Content.winner).Name}.`
-        }
-        
-        alert(message);
-
-        this.router.navigateByUrl("/");
+        this.endGame(msg.Content.winner);
       break;
       default:
       console.error("Unknown message!!!");
@@ -333,6 +322,7 @@ firstime = true;
         case "TargetPlayerChanged":
           var player = this.getPlayer(event.PlayerSource);
           console.log("player encontrado", player)
+          player.TargetPlayer = event.NewTarget;
           player.Target?.apuntarAElemento(this.findElement(event.NewTarget))
         break;
         case "PlayerDeath":
@@ -729,6 +719,57 @@ chat!: ChatComponent;
 
 @ViewChild('gamecheck')
 cardCheck!: GameCardCheckComponent;
+
+
+
+@ViewChild('winnerboard')
+winnerboard!: ElementRef<HTMLElement>;
+
+leaveGame()
+{
+  this.ws.send({
+    "$type" : "LeaveGame"
+  })
+  this.router.navigateByUrl("/");
+}
+
+endGame(winner: string)
+{
+  const player = this.getPlayer(winner);
+
+  this.winnerboard.nativeElement
+    .querySelector('.winner-name')!
+    .textContent = player.Name;
+
+  const overlay =
+    this.winnerboard.nativeElement.parentElement as HTMLElement;
+
+  // Mostrar overlay antes de animar
+  overlay.style.display = 'flex';
+
+  const animation = this.winnerboard.nativeElement.animate(
+    [
+      {
+        opacity: 0,
+        transform: 'translateY(-10vh)'
+      },
+      {
+        opacity: 1,
+        transform: 'translateY(0)'
+      }
+    ],
+    {
+      duration: 500,
+      easing: 'ease-out',
+      fill: 'forwards'
+    }
+  );
+
+  animation.onfinish = () => {
+    animation.commitStyles();
+    animation.cancel();
+  };
+}
 
 // Detecta teclas globalmente
 
