@@ -1,7 +1,10 @@
 <div class="game-layout">
 <div class="table-container" #viewport
   [style.width.px]="boardSizeX"
-    [style.height.px]="boardSizeY">
+    [style.height.px]="boardSizeY"
+    [style.transform]="'rotate(' + boardRotation + 'deg)'"
+    (mousedown)="onMouseDown($event)"
+    >
 >
 
   <!-- Yo -->
@@ -49,6 +52,13 @@
 </div>
 
 <div class="action-buttons">
+  <button (click)="rotateBoardLeft()">
+    <i class="fa-solid fa-arrow-left"></i>
+  </button>
+  <button (click)="resetTransform()">YO</button>
+  <button (click)="rotateBoardRight()">
+    <i class="fa-solid fa-arrow-right"></i>
+  </button>
   <button (click)="openChat()">Abrir chat [TAB]</button>
   <button (click)="prepareTableGame()">Recalcular tablero visual</button>
 </div>

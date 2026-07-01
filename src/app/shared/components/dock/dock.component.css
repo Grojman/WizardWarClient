@@ -28,6 +28,12 @@
     background-image: url('/images/board/player_dock.svg')
 }
 
+.spell-background
+{
+    transform: scale(0.8);
+    filter: grayscale(80%);
+}
+
 .contained-card
 {
     width: fit-content;

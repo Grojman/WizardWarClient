@@ -24,10 +24,21 @@ export class ChatComponent {
   isOpen = false;
 
   messages: Message[] = [];
-
+  chat: HTMLElement | null = null;
   addMessage(m: Message)
   {
     this.messages.push(m);
+
+    if(!this.chat)
+    {
+      this.chat = document.querySelector('.chat-messages');
+    }
+
+
+    requestAnimationFrame(() => {
+      this.chat!!.scrollTop = this.chat!!.scrollHeight;
+    });
+
   }
 
   open()

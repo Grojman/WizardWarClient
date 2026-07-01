@@ -1,15 +1,16 @@
-<div class="container">
-    <app-card
+<div class="container"
+>
+<app-card
+[class.large]="large"
         [card]="card"
         [canBeSelected]="false"
-        [class.large]="large"
     >
     </app-card>
 
     <div class="card-info"
     >
         <p>
-            Familias
+            {{ card.type }}
         </p>
 
         <hr>
@@ -21,7 +22,7 @@
             {{ card.families?.join() }}
         </p>
 
-        <hr>
+        <hr *ngIf="card.families?.length !== 0">
 
         <p
         *ngIf="card.description"

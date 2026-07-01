@@ -21,6 +21,12 @@
 
 }
 
+@media (max-width: 768px) {
+  .deck {
+    width: 80vw;
+  }
+}
+
 /* Imagen del mazo */
 
 .deck-image {
@@ -116,6 +122,8 @@
   transition: opacity 0.2s ease;
 
   pointer-events: none;
+
+  z-index: 99;  
 
 }
 

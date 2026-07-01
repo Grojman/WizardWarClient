@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgZone } from '@angular/core';
+import { runtimeConfig } from '../../runtime-config';
 
 @Injectable({
   providedIn: 'root'
@@ -43,8 +44,9 @@ export class WebsocketService {
 
     this.socket =
       new WebSocket(
-        'ws://localhost:5182/ws'
-        // 'ws://10.154.20.72:5182/ws'
+        `ws://${runtimeConfig.ip}:5182/ws`,
+        // 'ws://localhost:5182/ws'
+        // 'ws://10.158.7.72:5182/ws'
       );
 
 

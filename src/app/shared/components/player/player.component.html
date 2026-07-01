@@ -44,7 +44,7 @@
                 (contextmenu)="onRightClick($event, card)"
                 (click)="dockSelected(i)"
                 (onCardClick)="attackingUnitSelected(card)"
-                [rival]="false"
+                [rival]="!visibleHand"
                 />
                 
                 <hr class="separator">
@@ -54,6 +54,7 @@
                 (contextmenu)="onRightClick($event, player.LastSpellPlayed)"
                 (click)="lastSpellClicked()"
                 [rival]="!visibleHand"
+                [spell]="true"
                 >
             </app-dock>
             

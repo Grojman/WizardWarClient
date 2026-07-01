@@ -361,7 +361,10 @@ firstime = true;
           player.HandData.push(
             Card.fromJSON(event.Card));
           player.HandSize++;
-          player.Deck.cardAmount--;
+          if(event.FromDeck)
+          {
+            player.Deck.cardAmount--;
+          }
         break;
         case "PlayerHealthChanged":
         await this.createProyectile(event.Source, event.PlayerSource);
@@ -808,10 +811,10 @@ boardSizeY: number = 0;
 boardSizeX: number = 0;
 
 
-playerBoardX: number = 1300;  //TODO: SUSTITUIRLO POR EL VALOR REAL
-playerBoardY: number = 350;  //TODO: SUSTITUIRLO POR EL VALOR REAL
+playerBoardX: number = 0;  //TODO: SUSTITUIRLO POR EL VALOR REAL
+playerBoardY: number = 0;  //TODO: SUSTITUIRLO POR EL VALOR REAL
 
-extraMargin: number = 150;
+extraMargin: number = 200;
 
 extraOffSetY: number = 0;
 extraOffSetX: number = 0;
@@ -907,5 +910,65 @@ getRivalStyle(index: number)
   };
 }
 
+boardRotation = 0;
+
+resetTransform()
+{
+  this.boardRotation = 0;
+}
+
+rotateBoardLeft()
+{
+  this.boardRotation -= this.rotation;
+}
+
+rotateBoardRight()
+{
+  this.boardRotation += this.rotation;
+}
+private isDragging = false;
+private startX = 0;
+private startY = 0;
+private startScrollX = 0;
+private startScrollY = 0;
+
+onMouseDown(event: MouseEvent): void {
+  if (event.button !== 0) {
+    return;
+  }
+
+  this.isDragging = true;
+  this.startX = event.clientX;
+  this.startY = event.clientY;
+
+  this.startScrollX = window.scrollX;
+  this.startScrollY = window.scrollY;
+
+  document.body.style.cursor = 'grabbing';
+
+  event.preventDefault();
+}
+
+@HostListener('window:mousemove', ['$event'])
+onMouseMove(event: MouseEvent): void {
+  if (!this.isDragging) {
+    return;
+  }
+
+  const dx = event.clientX - this.startX;
+  const dy = event.clientY - this.startY;
+
+  window.scrollTo({
+    left: this.startScrollX - dx,
+    top: this.startScrollY - dy,
+    behavior: 'auto'
+  });
+}
+
+@HostListener('window:mouseup')
+onMouseUp(): void {
+  this.isDragging = false;
+  document.body.style.cursor = '';
+}
 
 }

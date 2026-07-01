@@ -9,11 +9,12 @@
 
 .card-info
 {
-    font-size: 2rem;
+    font-size: 3rem;
     background-color: bisque;
     border-radius: 5px;
     padding: 0.5rem;
     color: grey;
+    max-width: 50vw;
 
     display: flex;
     flex-direction: column;
@@ -47,4 +48,10 @@ hr
     height: 3px;
     width: 100%;
     background-color: black;
+}
+
+.large
+{
+    transform: scale(1.5);
+    transform-origin: bottom;
 }

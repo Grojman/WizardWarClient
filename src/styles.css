@@ -35,5 +35,15 @@ p, .text
 }
 
 body {
+    background:
+    radial-gradient(circle at top, #2b1055, #000);
     margin: 0;
+}
+
+*
+{
+::-webkit-scrollbar {
+    display: none;
+}
+
 }

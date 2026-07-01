@@ -14,6 +14,9 @@ export class DockComponent {
   {
     this.onCardClick.emit();
   }
+
+  @Input()
+  spell: boolean = false;
   
   @Input()
   card: Card | null = null

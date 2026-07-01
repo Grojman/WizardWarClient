@@ -10,14 +10,9 @@
     [class.card-back]="faceDown"
     [class.card-can-be-selected]="canBeSelected"
     [class.spell]="card?.type === 'Spell'"
-    [style.background]="familiesToGradient(card?.families ?? [])"
+    [style.backgroundImage]="'url(/images/cards/' + this.card?.imageUrl + ')'"
+    [style.backgroundColor]="familiesToGradient(card?.families ?? [])"
   >
-    <figure
-    *ngIf="!faceDown"
-      class="card-art"
-      [style.backgroundImage]="'url(' + card?.imageUrl + ')'"
-    ></figure>
-
     <p 
     *ngIf="!faceDown"
     class="card-name">
