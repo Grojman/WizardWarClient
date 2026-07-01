@@ -19,7 +19,7 @@
         class="card-families"
         *ngIf="card.families?.length !== 0"
         >
-            {{ card.families?.join() }}
+            {{ card.families?.join(" / ") }}
         </p>
 
         <hr *ngIf="card.families?.length !== 0">

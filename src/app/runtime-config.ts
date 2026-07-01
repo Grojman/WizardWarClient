@@ -1,1 +1,1 @@
-export const runtimeConfig = { ip: '192.168.0.135' }; 
+export const runtimeConfig = { ip: 'localhost' }; 

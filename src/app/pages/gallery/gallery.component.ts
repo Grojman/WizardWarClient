@@ -44,4 +44,6 @@ export class GalleryComponent implements OnInit {
     return false;
   }
 
+  hoverCard: Card | null = null;
+
 }
