@@ -37,17 +37,23 @@
 
   <div class="main-content">
 
-    <div class="cards-container">
+    <div
+      class="deck-content"
+    
+    >
+
+    <div
+      *ngFor="let card of cards"
+    >
+      <p>
+        {{  card.name }}
+      </p>
+
+      <hr/>
+
+      <div class="cards-container">
   
-      <app-card
-        *ngFor="let card of cards"
-        [card]="card"
-        class="card-item"
-        (click)="hoverCard = hoverCard == card ? null : card"
-      
-      >
   
-      </app-card>
   
       <!-- <app-cardvisualizer
         *ngFor="let card of cards"
@@ -58,8 +64,22 @@
       >
       </app-cardvisualizer> -->
   
+      <app-card
+        *ngFor="let c of card.cards"
+        [card]="c.Key"
+        class="card-item"
+        (click)="hoverCard = hoverCard == c.Key ? null : c.Key"
+      
+      >
+      </app-card>
       
     </div>
+
+    </div>
+
+    </div>
+
+    
     <div
     class="displayer">
 <app-cardvisualizer

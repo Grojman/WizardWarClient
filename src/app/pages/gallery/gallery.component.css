@@ -101,8 +101,6 @@
 
 .cards-container {
 
-  width: 100%;
-  max-width: 1400px;
 
   display: grid;
 
@@ -167,6 +165,7 @@
 {
   display: flex;
   max-height: 60vh;
+  gap: 2rem;  
 }
 
 
@@ -175,4 +174,12 @@
   background-color: rebeccapurple;
   min-width: 25vw;
   
+}
+
+.deck-content
+{
+  display: flex;
+  flex-direction: column;
+  max-height: 60vh;
+  overflow-y: scroll;
 }

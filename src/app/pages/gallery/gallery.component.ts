@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { Card } from '../../models/card.model';
+import { DeckInfo } from '../../models/deckinfo.model';
 
 @Component({
   selector: 'app-gallery.component',
@@ -10,7 +11,7 @@ import { Card } from '../../models/card.model';
 })
 export class GalleryComponent implements OnInit {
 
-  cards: Card[] = [];
+  cards: DeckInfo[] = [];
 
   constructor(private ws: WebsocketService)
   {
