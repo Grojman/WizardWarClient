@@ -198,6 +198,8 @@ async animateAttack(
   const targetEl = this.getTargetElement(targetIndex, targetType, targetPlayerId);
   const targetPlayer = this.getPlayer(targetPlayerId);
 
+
+
   if (!attackerEl || !targetEl) {
     console.error("No se encontró atacante o objetivo");
     return;
@@ -206,13 +208,24 @@ async animateAttack(
   attackerEl.style.transformOrigin = "50% 100%";
   targetEl.style.transformOrigin = "50% 100%";
 
-  const targetAnim = targetEl.animate(
+  const attackerRect = attackerEl.getBoundingClientRect();
+  const targetRect = targetEl.getBoundingClientRect();
+  const dx = targetRect.left + targetRect.width / 2 - (attackerRect.left + attackerRect.width / 2);
+  const dy = targetRect.top + targetRect.height / 2 - (attackerRect.top + attackerRect.height / 2);
+
+  // Use only horizontal displacement to compute a small tilt angle
+  // and scale down the overall movement to make the animation less intense.
+  const angle = Math.atan(dx / attackerRect.width) * (180 / Math.PI);
+  const movementScaleX = 0.3;
+  const movementScaleY = 0.15;
+  const scaledDx = angle * movementScaleX;
+  const scaledDy = dy * movementScaleY;
+  const verticalMovement = scaledDy > 0 ? 6 : -6;
+
+  const targetAnim = attackerEl.animate(
     [
       { transform: "rotate(0deg) translateY(0px)" },
-
-      { transform: "rotate(-45deg) translateY(-10px)" },
-
-      { transform: "rotate(0deg) translateY(0px)" }
+      { transform: `rotate(${scaledDx}deg) translateY(${verticalMovement}px)` },
     ],
     {
       duration: 500,
@@ -220,13 +233,13 @@ async animateAttack(
     }
   );
 
+  await targetAnim.finished;
+
   const attackerAnim = attackerEl.animate(
     [
-      { transform: "rotate(0deg) translateY(0px)" },
-
-      { transform: "rotate(45deg) translateY(-10px)" },
-
-      { transform: "rotate(0deg) translateY(0px)" }
+      { transform: "translateY(0px)" },
+      { transform: `translate(${dx}px, ${dy}px) rotate(${scaledDx}deg)` },
+      { transform: "translate(0px, 0px) rotate(0deg)" }
     ],
     {
       duration: 500,
