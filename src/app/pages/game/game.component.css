@@ -119,13 +119,13 @@
 
 }
 
-
-
-.proyectile {
-  width: 3rem;
-  height: 3rem;
-
-  background-image: url("/images/board/proyectile.svg");
+.proyectile,
+.icon-hand,
+.icon-hand-card,
+.icon-hand-wrench
+{
+  height: 4rem;
+  width: 4rem;
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
@@ -135,6 +135,22 @@
   z-index: 9999;
 }
 
+
+.proyectile {
+  background-image: url("/images/board/proyectile.svg");
+}
+
+.icon-hand {
+  background-image: url("/images/board/hand.svg");
+}
+
+.icon-hand-card {
+  background-image: url("/images/board/hand_card.svg");
+}
+
+.icon-hand-wrench {
+  background-image: url("/images/board/hand_wrench.svg");
+}
 
 .table-container {
   min-width: 100vw;

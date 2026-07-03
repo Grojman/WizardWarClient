@@ -273,6 +273,75 @@ async animateAttack(
   ]);
 }
 
+async animateCardDrawn(cardOrigin: string, deckEnd: string, duration: number = 1000)
+{
+  await this.createAnimationDeckCardsAmount(".icon-hand", cardOrigin, deckEnd, duration)
+}
+
+async animateAddCard(cardOrigin: string, deckEnd: string, duration: number = 1000)
+{
+  await this.createAnimationDeckCardsAmount(".icon-hand-card", cardOrigin, deckEnd, duration)
+}
+
+async animateModifyDeck(cardOrigin: string, deckEnd: string, duration: number = 1000)
+{
+  await this.createAnimationDeckCardsAmount(".icon-hand-wrench", cardOrigin, deckEnd, duration)
+}
+
+async createAnimationDeckCardsAmount(startIcon: string, cardOrigin: string, deckEnd: string, duration: number)
+{
+  await this.nextFrame();
+
+  const cO = this.findElement(cardOrigin);
+  const dE = this.findElement(deckEnd);
+  if (!cO || !dE) {
+    console.error('createAnimationDeckCardsAmount: no se encontró origen o destino de animación', { cardOrigin, deckEnd });
+    return;
+  }
+
+  const icon1 = document.querySelector(startIcon) as HTMLElement | null;
+  if (!icon1 ) {
+    console.error('createAnimationDeckCardsAmount: no se encontró el icono de animación', { startIcon });
+    return;
+  }
+  icon1.style.display = "block";
+
+  const icon1BR = icon1.getBoundingClientRect();
+  const start = this.getCenter(cO);
+  const end = dE.getBoundingClientRect();
+  const endCenter = {
+    x: end.left + end.width / 2,
+    y: end.top
+  };
+  console.log(icon1BR)
+
+  const dx = endCenter.x - start.x - (icon1BR.width / 4);
+  const dy = endCenter.y - start.y - icon1BR.height;
+
+  icon1.style.position = "fixed";
+  icon1.style.left = `${start.x - icon1BR.width / 2}px`;
+  icon1.style.top = `${start.y - icon1BR.height / 2}px`;
+  icon1.style.willChange = "transform";
+
+  const animation1 = icon1.animate(
+    [
+      { transform: "translate(0px, 0px) rotate(0deg)", offset: 0.15 },
+      { transform: `translate(${dx}px, ${dy}px) rotate(0deg)`, offset: .7 },
+      { transform: `translate(${dx}px, ${dy - icon1BR.height / 2}px) rotate(180deg)`, opacity: 1, offset: .85 },
+      { transform: `translate(${dx}px, ${dy + icon1BR.height}px) rotate(180deg)`, opacity: 0, offset: 1 },
+    ],
+    {
+      duration,
+      easing: "ease-out",
+    }
+  );
+
+  await animation1.finished;
+
+  icon1.style.display = 'none';
+}
+
+
 async createProyectile(source: string, target: string)
 {
   if (source === target) return;
@@ -366,11 +435,10 @@ firstime = true;
           );
 
         break;
-        case "CardDrawnEvent":
+        case "CardDrawnEvent":  
           var player = this.getPlayer(event.PlayerSource);
-          await this.createProyectile(event.Source, 
-            this.getDeckId(player.Id)
-          );
+          await this.animateCardDrawn(event.Source, this.getDeckId(player.Id))
+
           player.HandData.push(
             Card.fromJSON(event.Card));
           player.HandSize++;
@@ -450,11 +518,11 @@ firstime = true;
         break;
 
         case "AddedCardToDeck":
-          await this.createProyectile(event.Source, this.getDeckId(event.TargetedPlayer));
+          await this.animateAddCard(event.Source, this.getDeckId(event.TargetedPlayer))
           this.getPlayer(event.TargetedPlayer).Deck.cardAmount++;
             break;
         case "DeckModifiedStats":
-          await this.createProyectile(event.Source, this.getDeckId(event.TargetedPlayer));
+          await this.animateModifyDeck(event.Source, this.getDeckId(event.TargetedPlayer))
           break;
         default:
         resolve();
