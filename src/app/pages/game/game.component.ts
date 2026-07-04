@@ -273,17 +273,17 @@ async animateAttack(
   ]);
 }
 
-async animateCardDrawn(cardOrigin: string, deckEnd: string, duration: number = 1000)
+async animateCardDrawn(cardOrigin: string, deckEnd: string, duration: number = 500)
 {
   await this.createAnimationDeckCardsAmount(".icon-hand", cardOrigin, deckEnd, duration)
 }
 
-async animateAddCard(cardOrigin: string, deckEnd: string, duration: number = 1000)
+async animateAddCard(cardOrigin: string, deckEnd: string, duration: number = 500)
 {
   await this.createAnimationDeckCardsAmount(".icon-hand-card", cardOrigin, deckEnd, duration)
 }
 
-async animateModifyDeck(cardOrigin: string, deckEnd: string, duration: number = 1000)
+async animateModifyDeck(cardOrigin: string, deckEnd: string, duration: number = 500)
 {
   await this.createAnimationDeckCardsAmount(".icon-hand-wrench", cardOrigin, deckEnd, duration)
 }
