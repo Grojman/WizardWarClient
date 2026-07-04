@@ -12,6 +12,9 @@
   height: 21vh;
 
   transition: transform 0.2s ease-out;
+
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 @media (max-width: 800px) {
@@ -65,10 +68,6 @@
 .card-front {
   display: flex;
   flex-direction: column;
-
-  background-color: #7b7855;
-
-  background-size: contain;
 
   & > *:not(.cannot-play) {
     color: #ffffff;

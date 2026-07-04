@@ -8,7 +8,6 @@
 
 
 
-  padding: 2rem;
 
   gap: 2rem;
 
@@ -171,7 +170,20 @@
 
 .displayer
 {
-  background-color: rebeccapurple;
+  border: solid 6px bisque;
+  border-radius: 5px;
+
+  & > p {
+    max-width: 50%;
+    text-align: center;
+    font-size: xx-large;
+  }
+
+  & > * {
+    margin: auto
+  }
+
+  display: flex;
   min-width: 25vw;
   
 }

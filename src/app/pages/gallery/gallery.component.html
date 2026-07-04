@@ -45,7 +45,7 @@
     <div
       *ngFor="let card of cards"
     >
-      <p>
+      <p class="title">
         {{  card.name }}
       </p>
 
@@ -82,12 +82,16 @@
     
     <div
     class="displayer">
-<app-cardvisualizer
-*ngIf="hoverCard"
-  [card]="hoverCard"
- >
+      <app-cardvisualizer
+      *ngIf="hoverCard"
+        [card]="hoverCard"
+      >
 
-</app-cardvisualizer>
+      </app-cardvisualizer>
+
+      <p *ngIf="!hoverCard" >
+        Haz click en una carta para ver lo que hace
+      </p>
 
     </div>
   </div>
