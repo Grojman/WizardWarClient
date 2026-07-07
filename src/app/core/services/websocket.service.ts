@@ -45,7 +45,7 @@ export class WebsocketService {
     this.socket =
       new WebSocket(
         // `ws://${runtimeConfig.ip}:5182/ws`,
-        'wss://localhost:5182/ws'
+        'wss://localhost/ws'
         // 'ws://10.158.7.72:5182/ws'
       );
 
