@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 
 import { Card } from '../../models/card.model';
 
@@ -11,6 +11,8 @@ import { MessageDialogComponent } from '../../ui/message-dialog/message-dialog.c
 import { ChatComponent } from '../../shared/components/chat/chat.component';
 import { Message } from '../../models/message.model';
 import { GameCardCheckComponent } from '../../shared/components/game-card-check/game-card-check.component';
+import { GameAnimationService } from '../../core/services/game-animation.service';
+import { GameStateService } from '../../core/services/game-state.service';
 
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
@@ -20,66 +22,20 @@ import { GameCardCheckComponent } from '../../shared/components/game-card-check/
   templateUrl: './game.component.html',
   styleUrls: ['./game.component.css'],
 })
-export class GameComponent implements OnInit {
+export class GameComponent implements OnInit, OnDestroy {
   constructor(
     private ws : WebsocketService,
-    private router : Router
+    private router : Router,
+    private gameStateService: GameStateService,
+    private animationService: GameAnimationService,
   )
   {
-    this.gameState = {
-      Me: {
-        TargetPlayer: "",
-        Id: "",
-        IsMyTurn: false,
-        LastSpellPlayed: null,
-        Name: "",
-        Board: [
-          null,
-          null,
-          null,
-          null,
-        ],
-        Health: new Health(),
-        HandSize: 0,
-        HandData: [],
-        Deck: {
-          id: "1",
-          name: "",
-          description: "",
-          cardAmount: 0          
-        },
-        GlobalEffects: [
-        ],
-      },
-      Rivals: [{
-        TargetPlayer: "",
-        IsMyTurn: false,
-        LastSpellPlayed: null,
-        Id: "",
-        Name: "",
-        Board: [
-          null,
-          null,
-          null,
-          null,
-        ],
-        Health: new Health(),
-        HandSize: 0,
-        HandData: [
-          
-        ],
-        Deck: {
-          id: "1",
-          name: "",
-          description: "",
-          cardAmount: 0          
-        },
-        GlobalEffects: [
-        ],
-      }]
-    }
-    
+    this.gameState = this.createInitialGameState();
     this.storedGameState = this.gameState;
+  }
+
+  private createInitialGameState(): Game {
+    return this.gameStateService.createInitialGameState();
   }
 
   //PONER AQUÍ LAS FUNCIONES QUE SE SALVAN
@@ -89,75 +45,96 @@ export class GameComponent implements OnInit {
     return this.gameState.Me.Id === id;
   }
 
-  getPlayer(id: string) : Player
-  {
-    return this.isUser(id) ? this.gameState.Me : this.gameState.Rivals.find(n => n.Id === id)!!;
+  private getSafePlayer(id: string | undefined): Player | null {
+    if (!id) {
+      return null;
+    }
+
+    if (this.isUser(id)) {
+      return this.gameState.Me;
+    }
+
+    return this.gameState.Rivals.find((n) => n.Id === id) ?? null;
+  }
+
+  getPlayer(id: string): Player {
+    const player = this.getSafePlayer(id);
+
+    if (player) {
+      return player;
+    }
+
+    console.warn(`Player not found for id "${id}", falling back to local player`);
+    return this.gameState.Me;
   }
   
   processMessage = (msg: any): boolean => {
     switch(msg.Type)
     {
       case "text_message":
-      this.createFloatingMessage(msg.Content.message, msg.Content.player);
-      break;
+        this.handleTextMessage(msg.Content);
+        break;
       case "game_events":
-      this.gameEvents = msg.Content;
-      this.handleGameEvents(this.gameEvents);
-      break;
+        this.handleGameEventsMessage(msg.Content);
+        break;
       case "game_state":
-      this.singleActionEvent = true;
-      this.storedGameState = msg.Content;
-      
-      //TODO: PROBAR Y CAMBIAR
-      if(this.gameState.Me.Id === "")
-      {
-        var health = new Health();
-        health.health = health.displayHealth = msg.Content.Me.Health;
-        this.gameState = this.storedGameState;
-        this.gameState.Me.Health = health;
-        this.gameState.Me.HandData = [];
-        this.gameState.Me.HandSize = 0;
-        this.gameState.Rivals.forEach((n,i) => {
-          var health = new Health();
-          health.health = health.displayHealth = msg.Content.Rivals[i].Health;
-          n.Health = health;
-          n.HandSize = 0;
-        })
-          this.playerBoardX = this.playerRef.nativeElement.getBoundingClientRect().width;
-          this.playerBoardY = this.playerRef.nativeElement.getBoundingClientRect().height;
-        this.prepareTableGame();
-      }
-
-      if(this.firstime)
-      {
-        this.firstime = false;
-        this.gameState.Me.TargetPlayer = this.getPlayer(this.gameState.Me.TargetPlayer).Name;
-
-        this.gameState.Rivals.forEach(n => {
-          n.TargetPlayer = this.getPlayer(n.TargetPlayer).Name;
-        })
-      }
-
-      this.gameState.Me.GlobalEffects = this.storedGameState.Me.GlobalEffects;
-      this.gameState.Me.IsMyTurn = this.storedGameState.Me.IsMyTurn;
-
-      this.gameState.Rivals.forEach((n, i) => {
-        n.GlobalEffects = this.storedGameState.Rivals[i].GlobalEffects;
-        n.IsMyTurn = this.storedGameState.Rivals[i].IsMyTurn;
-      })
-
-
-      break;
+        this.handleGameStateMessage(msg.Content);
+        break;
       case "end_game":
-        this.endGame(msg.Content.winner);
-      break;
+        this.handleEndGameMessage(msg.Content);
+        break;
       default:
-      console.error("Unknown message!!!");
-      console.error(msg);
-      return true;
+        console.error("Unknown message!!!");
+        console.error(msg);
+        return true;
     }
 
     return false;
+  }
+
+  private handleTextMessage(content: any): void {
+    this.createFloatingMessage(content?.message ?? '', content?.player ?? '');
+  }
+
+  private handleGameEventsMessage(content: any[]): void {
+    this.gameEvents = content;
+    this.handleGameEvents(this.gameEvents);
+  }
+
+  private handleGameStateMessage(content: Game | null): void {
+    this.singleActionEvent = true;
+    this.storedGameState = content ?? this.gameState;
+
+    if (this.gameState.Me.Id === "") {
+      this.initializeGameState(this.storedGameState);
+    }
+
+    this.syncPlayerTargets();
+    this.applyTurnAndEffects(this.storedGameState);
+  }
+
+  private handleEndGameMessage(content: any): void {
+    this.endGame(content?.winner);
+  }
+
+  private initializeGameState(snapshot: Game): void {
+    this.gameState = this.gameStateService.initializeFromSnapshot(snapshot);
+
+    this.playerBoardX = this.playerRef?.nativeElement?.getBoundingClientRect().width ?? 0;
+    this.playerBoardY = this.playerRef?.nativeElement?.getBoundingClientRect().height ?? 0;
+    this.prepareTableGame();
+  }
+
+  private createHealth(value: number): Health {
+    return this.gameStateService.createHealth(value);
+  }
+
+  private syncPlayerTargets(): void {
+    this.firstime = this.gameStateService.syncPlayerTargets(this.gameState, this.firstime, (id) => this.getPlayer(id));
+  }
+
+  private applyTurnAndEffects(snapshot: Game | null): void {
+    this.gameStateService.applyTurnAndEffects(this.gameState, snapshot);
   }
 
 getTargetElement(
@@ -197,6 +174,7 @@ async animateAttack(
   const attackerEl = this.findElement(attackerId);
   const targetEl = this.getTargetElement(targetIndex, targetType, targetPlayerId);
   const targetPlayer = this.getPlayer(targetPlayerId);
+  const attackerPlayer = this.getPlayer(playerId);
 
 
 
@@ -205,187 +183,43 @@ async animateAttack(
     return;
   }
 
-  attackerEl.style.transformOrigin = "50% 100%";
-  targetEl.style.transformOrigin = "50% 100%";
-
-  const attackerRect = attackerEl.getBoundingClientRect();
-  const targetRect = targetEl.getBoundingClientRect();
-  const dx = targetRect.left + targetRect.width / 2 - (attackerRect.left + attackerRect.width / 2);
-  const dy = targetRect.top + targetRect.height / 2 - (attackerRect.top + attackerRect.height / 2);
-
-  // Use only horizontal displacement to compute a small tilt angle
-  // and scale down the overall movement to make the animation less intense.
-  const angle = Math.atan(dx / attackerRect.width) * (180 / Math.PI);
-  const movementScaleX = 0.3;
-  const movementScaleY = 0.15;
-  const scaledDx = angle * movementScaleX;
-  const scaledDy = dy * movementScaleY;
-  const verticalMovement = scaledDy > 0 ? 6 : -6;
-
-  const targetAnim = attackerEl.animate(
-    [
-      { transform: "rotate(0deg) translateY(0px)" },
-      { transform: `rotate(${scaledDx}deg) translateY(${verticalMovement}px)` },
-    ],
-    {
-      duration: 500,
-      easing: "ease-out"
-    }
+  await this.animationService.animateAttack(
+    attackerEl,
+    targetEl,
+    targetPlayer,
+    targetIndex,
+    targetType,
+    attackerDamage,
+    defenderDamage,
+    attackerPlayer,
+    attackerId,
   );
-
-  await targetAnim.finished;
-
-  const attackerAnim = attackerEl.animate(
-    [
-      { transform: "translateY(0px)" },
-      { transform: `translate(${dx}px, ${dy}px) rotate(${scaledDx}deg)` },
-      { transform: "translate(0px, 0px) rotate(0deg)" }
-    ],
-    {
-      duration: 500,
-      easing: "ease-out"
-    }
-  );
-
-  await new Promise(resolve =>
-    setTimeout(resolve, 250)
-  );
-
-  switch (targetType)
-  {
-    case "PLAYER":
-      targetPlayer.Health.changeHealth(-attackerDamage, 500);  
-      break;
-    case "BOARD":
-      targetPlayer.Board[targetIndex]?.changeHealth(-attackerDamage, 500);
-      var attackerPlayer = this.getPlayer(playerId);
-      var attackerIndex = attackerPlayer.Board.findIndex(n => n?.id === attackerId);
-      if (attackerIndex !== -1)
-      {
-        attackerPlayer.Board[attackerIndex]?.changeHealth(-defenderDamage, 500);
-      }
-      break;
-  }
-
-  await Promise.all([
-    attackerAnim.finished,
-    targetAnim.finished
-  ]);
 }
 
-async animateCardDrawn(cardOrigin: string, deckEnd: string, duration: number = 500)
+async animateCardDrawn(cardOrigin: string, deckEnd: string, duration: number = 750)
 {
   await this.createAnimationDeckCardsAmount(".icon-hand", cardOrigin, deckEnd, duration)
 }
 
-async animateAddCard(cardOrigin: string, deckEnd: string, duration: number = 500)
+async animateAddCard(cardOrigin: string, deckEnd: string, duration: number = 750)
 {
   await this.createAnimationDeckCardsAmount(".icon-hand-card", cardOrigin, deckEnd, duration)
 }
 
-async animateModifyDeck(cardOrigin: string, deckEnd: string, duration: number = 500)
+async animateModifyDeck(cardOrigin: string, deckEnd: string, duration: number = 750)
 {
   await this.createAnimationDeckCardsAmount(".icon-hand-wrench", cardOrigin, deckEnd, duration)
 }
 
 async createAnimationDeckCardsAmount(startIcon: string, cardOrigin: string, deckEnd: string, duration: number)
 {
-  await this.nextFrame();
-
-  const cO = this.findElement(cardOrigin);
-  const dE = this.findElement(deckEnd);
-  if (!cO || !dE) {
-    console.error('createAnimationDeckCardsAmount: no se encontró origen o destino de animación', { cardOrigin, deckEnd });
-    return;
-  }
-
-  const icon1 = document.querySelector(startIcon) as HTMLElement | null;
-  if (!icon1 ) {
-    console.error('createAnimationDeckCardsAmount: no se encontró el icono de animación', { startIcon });
-    return;
-  }
-  icon1.style.display = "block";
-
-  const icon1BR = icon1.getBoundingClientRect();
-  const start = this.getCenter(cO);
-  const end = dE.getBoundingClientRect();
-  const endCenter = {
-    x: end.left + end.width / 2,
-    y: end.top
-  };
-  console.log(icon1BR)
-
-  const dx = endCenter.x - start.x - (icon1BR.width / 4);
-  const dy = endCenter.y - start.y - icon1BR.height;
-
-  icon1.style.position = "fixed";
-  icon1.style.left = `${start.x - icon1BR.width / 2}px`;
-  icon1.style.top = `${start.y - icon1BR.height / 2}px`;
-  icon1.style.willChange = "transform";
-
-  const animation1 = icon1.animate(
-    [
-      { transform: "translate(0px, 0px) rotate(0deg)", offset: 0.15 },
-      { transform: `translate(${dx}px, ${dy}px) rotate(0deg)`, offset: .7 },
-      { transform: `translate(${dx}px, ${dy - icon1BR.height / 2}px) rotate(180deg)`, opacity: 1, offset: .85 },
-      { transform: `translate(${dx}px, ${dy + icon1BR.height}px) rotate(180deg)`, opacity: 0, offset: 1 },
-    ],
-    {
-      duration,
-      easing: "ease-out",
-    }
-  );
-
-  await animation1.finished;
-
-  icon1.style.display = 'none';
+  await this.animationService.animateDeckCard(startIcon, cardOrigin, deckEnd, duration);
 }
 
 
 async createProyectile(source: string, target: string)
 {
-  if (source === target) return;
-  await this.nextFrame();
-  const proyectile = document.querySelector(".proyectile") as HTMLElement;
-
-  const vsource = this.findElement(source);
-  const vtarget = this.findElement(target);
-
-  if(!vsource || !vtarget)
-  {
-    console.error("No puedo crear proyectil");
-    return;
-  }
-
-  const start = this.getCenter(vsource);
-  const end = this.getCenter(vtarget);
-
-  proyectile.style.position = "fixed";
-  proyectile.style.left = `${start.x}px`;
-  proyectile.style.top = `${start.y}px`;
-  proyectile.style.display = "block";
-
-  const dx = end.x - start.x;
-  const dy = end.y - start.y;
-
-  const animation = proyectile.animate(
-  [
-    {
-      transform: "translate(0px, 0px) rotate(0deg)"
-    },
-    {
-      transform: `translate(${dx}px, ${dy}px) rotate(1080deg)`
-    }
-  ],
-  {
-    duration: 250,
-    easing: "ease-out",
-    fill: "forwards"
-  });
-
-  await animation.finished;
-
-  proyectile.style.display = "none";
+  await this.animationService.createProjectile(source, target);
 }
 
 getDeckId(id: string): string {
@@ -399,9 +233,9 @@ cardEventPlayed(cardId: string, playerId: string)
 
   if(i !== -1)
   {
-    player.Board[i]!.effectTimes! -= 1;
+    this.gameStateService.consumeBoardEffect(player, cardId);
   } else {
-    player.LastSpellPlayed!.effectTimes! -= 1;
+    this.gameStateService.consumeSpellEffect(player);
   }
 }
 
@@ -439,12 +273,10 @@ firstime = true;
           var player = this.getPlayer(event.PlayerSource);
           await this.animateCardDrawn(event.Source, this.getDeckId(player.Id))
 
-          player.HandData.push(
-            Card.fromJSON(event.Card));
-          player.HandSize++;
+          this.gameStateService.addCardToHand(player, Card.fromJSON(event.Card));
           if(event.FromDeck)
           {
-            player.Deck.cardAmount--;
+            this.gameStateService.updateDeckAmount(player, -1);
           }
         break;
         case "PlayerHealthChanged":
@@ -497,29 +329,21 @@ firstime = true;
         case "UnitPlayed":
         
         var player = this.getPlayer(event.PlayerSource);
-        var cardIndex = player.HandData.findIndex(c => c.id === event.Unit.id);
-        if (cardIndex !== -1) {
-          player.HandData.splice(cardIndex, 1);
-          player.HandSize--;
-        }
+        this.gameStateService.removeCardFromHand(player, event.Unit.id);
         if (event.Unit) {
-          player.Board[event.BoardPosition] = Card.fromJSON(event.Unit);
+          this.gameStateService.placeCardOnBoard(player, Card.fromJSON(event.Unit), event.BoardPosition);
         }
         break;
         
         case "SpellPlayed":
         var player = this.getPlayer(event.PlayerSource);
-        var cardIndex = player.HandData.findIndex(c => c.id === event.Spell.id);
-        if (cardIndex !== -1) {
-          player.HandData.splice(cardIndex, 1);
-          player.HandSize--;
-        }
-        player.LastSpellPlayed = Card.fromJSON(event.Spell);
+        this.gameStateService.removeCardFromHand(player, event.Spell.id);
+        this.gameStateService.setLastSpellPlayed(player, Card.fromJSON(event.Spell));
         break;
 
         case "AddedCardToDeck":
           await this.animateAddCard(event.Source, this.getDeckId(event.TargetedPlayer))
-          this.getPlayer(event.TargetedPlayer).Deck.cardAmount++;
+          this.gameStateService.updateDeckAmount(this.getPlayer(event.TargetedPlayer), 1);
             break;
         case "DeckModifiedStats":
           await this.animateModifyDeck(event.Source, this.getDeckId(event.TargetedPlayer))
@@ -536,19 +360,11 @@ firstime = true;
   
   nextFrame(): Promise<void>
   {
-    return new Promise(resolve =>
-      requestAnimationFrame(() =>
-        resolve()
-    )
-  );
-}
+    return this.animationService.nextFrame();
+  }
 
 getCenter(el: HTMLElement) {
-  const rect = el.getBoundingClientRect();
-  return {
-    x: rect.left + rect.width / 2,
-    y: rect.top + rect.height / 2
-  };
+  return this.animationService.getCenter(el);
 }
 
 findElement(id: string): HTMLElement{
@@ -560,6 +376,10 @@ findElement(id: string): HTMLElement{
 ngOnInit(): void {
   this.animationLayer = document.querySelector(".animation-layer") as HTMLElement;
   this.ws.subscribe(this.processMessage)
+}
+
+ngOnDestroy(): void {
+  this.ws.clearSubscription();
 }
 
 changeHealthAnimationDuration: number = 500;

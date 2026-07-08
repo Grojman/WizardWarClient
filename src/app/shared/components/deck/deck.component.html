@@ -10,7 +10,9 @@
       'background-image': 'url(' + getImagePath() + ')'
     }"
   >
-    <span class="descriptiontext">
+    <span class="descriptiontext"
+    [class.up]="infoUp"
+    >
       <p
       *ngIf="deck.description !== ''"
       >
@@ -20,7 +22,7 @@
       <p
       *ngIf="deck.cardAmount"
       >
-        {{ deck.cardAmount }}
+        Cartas en el mazo: {{ deck.cardAmount }}
         
       </p>
     </span>

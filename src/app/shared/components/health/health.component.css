@@ -59,8 +59,8 @@
 .player-health-background
 {
   display: flex;
-  width: 5vw;
-  height: 5vw;
+  width: 7rem;
+  height: 11rem;
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -78,8 +78,10 @@
 .life-text
 {
   margin: auto;
+  margin-top: 2rem;
   font-size: xx-large;
   font-family: "Title";
+  color:white;
 }
 .health-container-active
 {

@@ -10,7 +10,7 @@
     [class.card-back]="faceDown"
     [class.card-can-be-selected]="canBeSelected"
     [class.spell]="card?.type === 'Spell'"
-    [style.backgroundImage]="'url(/images/cards/' + this.card?.imageUrl + ')'"
+    [style.backgroundImage]="'url(/images/cards/' + (this.card?.imageUrl ?? 'reverse_card.svg') + ')'"
     [style.backgroundColor]="familiesToGradient(card?.families ?? [])"
   >
     <p 
@@ -82,8 +82,6 @@
     <div class="card-back-design"
     *ngIf="faceDown"
     >
-
-      Wizard War
 
     </div>
 

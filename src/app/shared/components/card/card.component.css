@@ -88,13 +88,6 @@
 .card-back {
 
 
-  background:
-
-    linear-gradient(
-      135deg,
-      #2c2c54,
-      #40407a
-    );
 
   display: flex;
 
@@ -208,7 +201,7 @@
 .cannot-play
 {
   height: 100%;
-  background-image: url("/images/board/cannot_play.svg");
+  background-image: url("/images/board/cannot_play.svg") !important;
   background-size: contain ;
   background-position: center;
   background-repeat:  no-repeat;

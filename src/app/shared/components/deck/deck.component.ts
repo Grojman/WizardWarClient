@@ -10,6 +10,9 @@ import { Deck } from '../../../models/deck.model';
 export class DeckComponent {
 
   @Input()
+  infoUp: boolean = false;
+
+  @Input()
   deck!: Deck;
 
   @Input()

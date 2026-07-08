@@ -92,11 +92,12 @@
 
 /* Tooltip */
 
+
 .descriptiontext {
 
   visibility: hidden;
 
-  width: 160px;
+  min-width: 5rem;
 
   background: rgba(0, 0, 0, 0.85);
 
@@ -108,12 +109,12 @@
 
   border-radius: 8px;
 
-  font-size: 0.85rem;
+  font-size: x-large;
 
   position: absolute;
 
-  bottom: 105%;
-  left: 50%;
+  bottom: 25%;
+  left: 100%;
 
   transform: translateX(-50%);
 
@@ -135,8 +136,8 @@
 
   position: absolute;
 
-  top: 100%;
-  left: 50%;
+  top: 50%;
+  left: 0%;
 
   transform: translateX(-50%);
 
@@ -151,6 +152,22 @@
     transparent;
 
 }
+
+.up
+{
+  bottom: 105%;
+  left: 50%;
+
+  width: 10rem;
+  font-size: 1rem;
+
+}
+
+.up::after{
+  top: 100%;
+  left: 50%;
+}
+
 
 /* Mostrar tooltip */
 

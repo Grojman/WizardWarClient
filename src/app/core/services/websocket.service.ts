@@ -1,154 +1,148 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgZone } from '@angular/core';
 import { runtimeConfig } from '../../runtime-config';
 
+export interface WebSocketMessage {
+  Type?: string;
+  Content?: unknown;
+}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class WebsocketService {
-
-  private messageQueue: any[] = [];
-
-  private recievedMessageQueue: any[] = [];
-
+  private messageQueue: unknown[] = [];
+  private receivedMessageQueue: WebSocketMessage[] = [];
   private socket?: WebSocket;
-
   private isConnecting = false;
-
   private isConnected = false;
-
-  private onMessage: (msg: any) => boolean;
+  private onMessage: (msg: WebSocketMessage) => boolean = () => false;
+  private reconnectAttempts = 0;
+  private reconnectTimer?: ReturnType<typeof setTimeout>;
+  private manualDisconnect = false;
 
   constructor(
     private router: Router,
-    private zone: NgZone
-  ) {
-    this.onMessage = (msg) => {
-      console.log(msg);
-      return false;
-    }
-  }
+    private zone: NgZone,
+  ) {}
 
-  connect() {
-    if (
-      this.isConnected ||
-      this.isConnecting
-    ) {
+  connect(): void {
+    if (this.isConnected || this.isConnecting) {
       return;
     }
 
+    this.manualDisconnect = false;
     this.isConnecting = true;
+    this.clearReconnectTimer();
 
     console.log('Connecting...');
 
-    this.socket =
-      new WebSocket(
-        // `ws://${runtimeConfig.ip}:5182/ws`,
-        'wss://localhost/ws'
-        // 'ws://10.158.7.72:5182/ws'
-      );
-
-
-    this.socket.onopen = () => {
-
-      console.log('Connected');
-
-      this.isConnected = true;
-
-      this.isConnecting = false;
-
-      while (this.messageQueue.length > 0) {
-
-        const msg = this.messageQueue.shift();
-
-        this.socket!.send(JSON.stringify(msg));
-
-      }
-
-    };
-
-
-    this.socket.onmessage = event => {
-
-      const message =
-        JSON.parse(event.data);
-
-      console.log(message)
-
-      this.handleMessage(message);
-
-    };
-
-
-    this.socket.onerror = error => {
-
-      console.error(error);
-
-      this.handleDisconnect();
-
-    };
-
-
-    this.socket.onclose = () => {
-
-      console.warn('Disconnected');
-
-      this.handleDisconnect();
-
-    };
-
-  }
-
-
-  send(data: any) {
-    if (
-      this.socket &&
-      this.socket.readyState === WebSocket.OPEN
-    ) {
-      console.log("Sending data: ", JSON.stringify(data))
-      this.socket.send(JSON.stringify(data));
-
-    } else {
-
-      console.log("Queueing message");
-
-      this.messageQueue.push(data);
-
+    try {
+      this.socket = new WebSocket(runtimeConfig.websocketUrl);
+    } catch (error) {
+      console.error('WebSocket initialization failed', error);
+      this.handleDisconnect('initialization-failed');
+      return;
     }
 
+    this.socket.onopen = () => {
+      console.log('Connected');
+      this.isConnected = true;
+      this.isConnecting = false;
+      this.reconnectAttempts = 0;
+
+      while (this.messageQueue.length > 0) {
+        const msg = this.messageQueue.shift();
+        if (msg !== undefined) {
+          this.socket?.send(JSON.stringify(msg));
+        }
+      }
+    };
+
+    this.socket.onmessage = (event) => {
+      try {
+        const message = JSON.parse(event.data) as WebSocketMessage;
+        this.handleMessage(message);
+      } catch (error) {
+        console.error('Invalid WebSocket payload', error, event.data);
+      }
+    };
+
+    this.socket.onerror = (error) => {
+      console.error('WebSocket error', error);
+      this.handleDisconnect('error');
+    };
+
+    this.socket.onclose = () => {
+      console.warn('Disconnected');
+      if (!this.manualDisconnect) {
+        this.handleDisconnect('closed');
+      }
+    };
   }
-  disconnect() {
+
+  send(data: unknown): void {
+    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+      console.log('Sending data: ', JSON.stringify(data));
+      this.socket.send(JSON.stringify(data));
+    } else {
+      console.log('Queueing message');
+      this.messageQueue.push(data);
+    }
+  }
+
+  disconnect(): void {
+    this.manualDisconnect = true;
+    this.clearReconnectTimer();
     this.socket?.close();
   }
 
-  private handleMessage(msg: any) {
+  private handleMessage(msg: WebSocketMessage): void {
     this.zone.run(() => {
-      if(this.onMessage(msg))
-      {
-        this.recievedMessageQueue.push(msg);
+      if (this.onMessage(msg)) {
+        this.receivedMessageQueue.push(msg);
       }
-    })
+    });
   }
 
-  private handleDisconnect() {
-
+  private handleDisconnect(reason: string): void {
     this.isConnected = false;
-
     this.isConnecting = false;
 
-    this.router.navigate([
-      '/error'
-    ]);
+    if (this.manualDisconnect) {
+      return;
+    }
+
+    if (this.reconnectAttempts < runtimeConfig.maxReconnectAttempts) {
+      this.reconnectAttempts += 1;
+      console.warn(`Reconnecting in ${runtimeConfig.reconnectDelayMs}ms (${reason})`);
+      this.reconnectTimer = setTimeout(() => this.connect(), runtimeConfig.reconnectDelayMs);
+      return;
+    }
+
+    this.router.navigate(['/error']);
   }
 
-  public subscribe(callback: (msg : any) => boolean) 
-  {
+  private clearReconnectTimer(): void {
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = undefined;
+    }
+  }
+
+  public subscribe(callback: (msg: WebSocketMessage) => boolean): void {
     this.onMessage = callback;
 
-    while(this.recievedMessageQueue.length > 0)
-    {
-      this.handleMessage(this.recievedMessageQueue.shift())
+    while (this.receivedMessageQueue.length > 0) {
+      const msg = this.receivedMessageQueue.shift();
+      if (msg) {
+        this.handleMessage(msg);
+      }
     }
+  }
+
+  public clearSubscription(): void {
+    this.onMessage = () => false;
+    this.receivedMessageQueue = [];
   }
 }
