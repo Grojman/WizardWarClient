@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { Message } from '../../../models/message.model';
 import { MessageDialogComponent } from '../../../ui/message-dialog/message-dialog.component';
 
@@ -21,24 +21,34 @@ export class ChatComponent {
     }
   }
 
+chatRef!: ElementRef<HTMLDivElement>;
+
+@ViewChild('chatref') set c(c: ElementRef)
+{
+  if (c)
+  {
+    this.chatRef = c;
+    this.scrollTop();
+  }
+}
+
   isOpen = false;
 
   messages: Message[] = [];
-  chat: HTMLElement | null = null;
   addMessage(m: Message)
   {
     this.messages.push(m);
 
-    if(!this.chat)
-    {
-      this.chat = document.querySelector('.chat-messages');
-    }
+    this.scrollTop();
 
-
+    
+  }
+  
+  scrollTop()
+  {
     requestAnimationFrame(() => {
-      this.chat!!.scrollTop = this.chat!!.scrollHeight;
+      this.chatRef.nativeElement.scrollTop = this.chatRef.nativeElement.scrollHeight;
     });
-
   }
 
   open()
