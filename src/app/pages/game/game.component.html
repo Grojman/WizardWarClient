@@ -17,7 +17,6 @@
       [player]="gameState.Me"
       [visibleHand]="true"
       [isAnimating]="isAnimating"
-      [showHealthAsTarget]="attackingUnit !== null"
       (onDeckSelected)="deckSelected()"
       (onCardRightClick)="onRightClick($event.event, $event.card)"
       (onDockSelected)="dockSelected($event)"
@@ -28,6 +27,7 @@
       [selectedCard]="selectedCard"
       [unitSelected]="unitSelected"
       [attackingUnit]="attackingUnit"
+      [showTarget]="gameState.Rivals.length !== 1"
     >
     </app-player>
   </div>
@@ -41,25 +41,38 @@
       [player]="player"
       [visibleHand]="false"
       [isAnimating]="isAnimating"
+      [attackingUnit]="attackingUnit"
       [reverseOrder]="shoudlRotatePlayers"
       [showHealthAsTarget]="attackingUnit !== null"
       (onCardRightClick)="onRightClick($event.event, $event.card)"
       (onDockSelected)="rivalBoardCardSelected(player, player.Board[$event])"
       (onPlayerTargetSelected)="rivalTargetSelected(player)"
+      [showTarget]="gameState.Rivals.length !== 1"
     >
     </app-player>
   </div>
 </div>
 
 <div class="action-buttons">
-  <button (click)="rotateBoardLeft()">
-    <i class="fa-solid fa-arrow-left"></i>
+  <div class="rotate-buttons"
+      *ngIf="gameState.Rivals.length !== 1"
+  >
+    <button (click)="rotateBoardLeft()">
+      <i class="fa-solid fa-arrow-left"></i>
+    </button>
+    <button (click)="resetTransform()">Reiniciar rotación</button>
+    <button (click)="rotateBoardRight()">
+      <i class="fa-solid fa-arrow-right"></i>
+    </button>
+  </div>
+  <button class="notification-button" (click)="openChat()">Abrir chat [TAB]
+
+    <p class="notification-counter"
+    *ngIf="unreadNotificationCounter !== 0"
+    >
+      {{ unreadNotificationCounter }}
+    </p>
   </button>
-  <button (click)="resetTransform()">YO</button>
-  <button (click)="rotateBoardRight()">
-    <i class="fa-solid fa-arrow-right"></i>
-  </button>
-  <button (click)="openChat()">Abrir chat [TAB]</button>
   <button (click)="prepareTableGame()">Recalcular tablero visual</button>
 </div>
 

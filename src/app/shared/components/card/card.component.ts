@@ -3,7 +3,8 @@ import {
   Input,
   OnChanges,
   SimpleChanges,
-  OnInit
+  OnInit,
+  input
 } from '@angular/core';
 
 import { CommonModule } from '@angular/common';
@@ -21,6 +22,12 @@ export class CardComponent implements OnChanges, OnInit {
   ngOnInit(): void {
     this.faceDown = this.card === null;
   }
+
+  @Input()
+  target: boolean = false;
+
+  @Input()
+  attacking: boolean = false;
 
   @Input()
   card: Card | null = null;

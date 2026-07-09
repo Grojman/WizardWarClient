@@ -1,6 +1,8 @@
   <div
     *ngIf="card || faceDown"
     class="card"
+    [class.attacking]="attacking"
+    [class.target]="target"
     [class.selected]="selected"
     [class.can-hover]="!selected && card?.canPlay"
     [attr.data-game-id]="card?.id"
@@ -11,7 +13,6 @@
     [class.card-can-be-selected]="canBeSelected"
     [class.spell]="card?.type === 'Spell'"
     [style.backgroundImage]="'url(/images/cards/' + (this.card?.imageUrl ?? 'reverse_card.svg') + ')'"
-    [style.backgroundColor]="familiesToGradient(card?.families ?? [])"
   >
     <p 
     *ngIf="!faceDown"

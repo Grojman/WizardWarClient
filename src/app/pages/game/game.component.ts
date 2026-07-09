@@ -93,6 +93,10 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private handleTextMessage(content: any): void {
+    if (!this.chat.isOpen)
+    {
+      this.unreadNotificationCounter++;
+    }
     this.createFloatingMessage(content?.message ?? '', content?.player ?? '');
   }
 
@@ -240,6 +244,7 @@ cardEventPlayed(cardId: string, playerId: string)
 }
 
 firstime = true;
+unreadNotificationCounter: number = 0;
 
 
   playEvent(event: any): Promise<void> {
@@ -628,6 +633,7 @@ openChat()
   if(this.chat.isOpen) {
       this.chat.close();
     } else {
+      this.unreadNotificationCounter = 0;
       this.chat.open();
     }
 }

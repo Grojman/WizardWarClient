@@ -143,3 +143,34 @@
   color:white;
   text-align: center;
 }
+
+.turn-active {
+  position: relative;
+}
+
+/* underline glow instead of full box shadow */
+.turn-active::after {
+  content: "";
+  position: absolute;
+  bottom: -0.25rem;
+  height: 0.25rem;
+  left:0;
+  width: 100%;
+  border-radius: 5px;
+  background: #aef4af;
+  transform-origin: center;
+  animation: glow-underline 1s infinite alternate;
+}
+
+@keyframes glow-underline {
+  from {
+    box-shadow: 0 0 6px 2px #aef4af;
+    transform: scaleX(0.9);
+    opacity: 0.8;
+  }
+  to {
+    box-shadow: 0 0 10px 4px #aef4af;
+    transform: scaleX(1.05);
+    opacity: 1;
+  }
+}

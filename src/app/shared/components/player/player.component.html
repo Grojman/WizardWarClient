@@ -19,7 +19,6 @@
             
             <div class="player-info">
                 <app-health 
-                [myTurn]="player.IsMyTurn && !isAnimating"
                 [health]="player.Health"
                 [rival]="!visibleHand"
                 [attr.data-game-id]="player.Id"
@@ -27,7 +26,10 @@
                 [enhanced]="showHealthAsTarget"
                 ></app-health>
                 
-                <p class="player-name">
+                <p class="player-name"
+                
+                [class.turn-active]="player.IsMyTurn && !isAnimating"
+                >
                     {{ player.Name }}
                 </p>
             </div>
@@ -45,6 +47,7 @@
                 (click)="dockSelected(i)"
                 (onCardClick)="attackingUnitSelected(card)"
                 [rival]="!visibleHand"
+                [isTarget]="card !== null && attackingUnit !== null"
                 />
                 
                 <hr class="separator">
@@ -68,7 +71,7 @@
         (click)="deckSelected()"
         ></app-deck>
 
-        <p class="target-player">
+        <p class="target-player" *ngIf="showTarget">
             Jugador objetivo:
             <br>
             <span>{{ player.TargetPlayer }}</span>

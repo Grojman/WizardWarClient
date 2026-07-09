@@ -1,13 +1,12 @@
 <div
-  [class.health-container-active]="myTurn"
-  [class.enhanced]="enhanced"
   [ngClass]="[
     rival ? 'rival-health-background' : 'player-health-background'
   ]"
 >
 
-  <span
+<span
     class="life-text"
+[class.enhanced]="enhanced"
     [ngClass]="{
       'health-animate-exit': health.animationState === 'exit',
       'health-animate-enter': health.animationState === 'enter',

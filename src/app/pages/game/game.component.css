@@ -267,3 +267,24 @@ button:hover {
   background: #ffca28;
   transform: scale(1.05);
 }
+
+
+.notification-button
+{
+  position: relative;
+}
+
+.notification-counter
+{
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  background-color: red;
+  color: white;
+  border-radius: 50%;
+  padding: 0.5rem;
+  margin: 0;
+  font-size: large;
+  width: 1rem;
+}

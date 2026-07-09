@@ -30,4 +30,7 @@ export class DockComponent {
   @Input()
   rival: boolean = false;
 
+  @Input()
+  isTarget: boolean = false;
+
 }

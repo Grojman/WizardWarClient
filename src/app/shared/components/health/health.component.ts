@@ -15,8 +15,5 @@ export class HealthComponent {
   rival: boolean = false;
 
   @Input()
-  myTurn: boolean = false; 
-
-  @Input()
   enhanced: boolean = false;
 }

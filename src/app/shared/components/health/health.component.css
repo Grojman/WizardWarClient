@@ -40,10 +40,13 @@
 
 /* Color si pierde vida */
 
-.enhanced
-{
-      box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
 
+.enhanced::after
+{
+  content: "";
+  box-shadow: -20px 50px 60px 60px rgb(239, 255, 14);
+  position: absolute;
+  z-index: -1;
 }
 
 .life-text.negative {
@@ -82,17 +85,4 @@
   font-size: xx-large;
   font-family: "Title";
   color:white;
-}
-.health-container-active
-{
-    animation: glow 1s infinite alternate;
-}
-
-@keyframes glow {
-  from {
-    box-shadow: 0 0 10px 7px #aef4af;
-  }
-  to {
-    box-shadow: 0 0 10px 10px #aef4af;
-  }
 }

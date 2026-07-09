@@ -58,7 +58,8 @@ export class PlayerComponent {
   @Input()
   attackingUnit: (Card | null) = null;
 
-
+  @Input()
+  showTarget: boolean = false;
 
   deckSelected()
   {
