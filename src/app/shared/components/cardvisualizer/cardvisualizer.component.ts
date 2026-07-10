@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Card } from '../../../models/card.model';
+import { CardDescriptionService } from '../../../core/services/card-description-service';
 
 @Component({
   selector: 'app-cardvisualizer',
@@ -8,6 +9,13 @@ import { Card } from '../../../models/card.model';
   styleUrl: './cardvisualizer.component.css',
 })
 export class CardvisualizerComponent {
+  
+  parser: CardDescriptionService;
+  constructor(service: CardDescriptionService)
+  {
+    this.parser = service;
+  }
+
   @Input()
   card!: Card;
 

@@ -1,7 +1,7 @@
 <div class="container"
 >
 <app-card
-[class.large]="large"
+        [class.large]="large"
         [card]="card"
         [canBeSelected]="false"
     >
@@ -27,8 +27,8 @@
         <p
         *ngIf="card.description"
         class="card-description"
+        [innerHTML]="parser.parseDescription(card.description)"
         >
-            {{ card.description }}
         </p>
     </div>
 </div>

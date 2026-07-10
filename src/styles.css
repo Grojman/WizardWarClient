@@ -47,3 +47,46 @@ body {
 }
 
 }
+
+/* SPECIAL WORDS CLASS */
+
+.rival
+{
+    color: red;
+}
+
+.player
+{
+    color: green;
+}
+
+.draw
+{
+    text-decoration: double;
+}
+
+.play
+{
+    text-emphasis-style: circle;
+}
+
+.family
+{
+    font-style: italic;
+    font-weight: bold;
+}
+
+.skill
+{
+    color: yellow;
+}
+
+.die
+{
+    text-decoration: line-through;
+}
+
+.add
+{
+    text-decoration: wavy;
+}
