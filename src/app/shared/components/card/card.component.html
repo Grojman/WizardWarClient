@@ -16,7 +16,7 @@
   >
     <p 
     *ngIf="!faceDown"
-    class="card-name">
+    class="card-name title">
       {{ card?.name }}
     </p>
 
@@ -44,7 +44,7 @@
 
     <footer class="card-footer" *ngIf="card?.type == 'Unit' && !faceDown">
 
-      <span class="attack">
+      <span class="attack-value">
         <i class="fa-solid fa-hand-fist"></i> 
         {{ card?.attack }}
 

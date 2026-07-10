@@ -64,14 +64,24 @@
       >
       </app-cardvisualizer> -->
   
-      <app-card
+      <div
         *ngFor="let c of card.cards"
+      >
+
+      <app-card
         [card]="c.Key"
         class="card-item"
         (click)="hoverCard = hoverCard == c.Key ? null : c.Key"
       
       >
+
       </app-card>
+      
+      <span class="card-amount">
+        x {{ c.Value }}
+      </span>
+      </div>
+
       
     </div>
 

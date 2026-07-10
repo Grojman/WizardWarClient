@@ -47,8 +47,12 @@
 
 hr 
 {
+    flex-shrink: 0;
+    min-height: 3px;
     height: 3px;
     width: 100%;
+    margin: 0;
+    border: 0;
     background-color: black;
 }
 
@@ -60,44 +64,86 @@ hr
 
 
 /* SPECIAL WORDS CLASS */
-
-.rival
-{
-    color: red;
+.rival,
+.player,
+.deck,
+.board,
+.draw,
+.play,
+.family,
+.skill,
+.die,
+.add,
+.endround,
+.attack {
+    font-weight: 600;
+    transition: .15s ease;
 }
 
-.player
-{
-    color: green;
+/* Jugadores */
+.rival {
+    color: #d32f2f;
 }
 
-.draw
-{
-    text-decoration: double;
+.player {
+    color: #2e7d32;
 }
 
-.play
-{
-    text-emphasis-style: circle;
-}
-
-.family
-{
+/* Lugares */
+.deck {
+    color: #616161;
     font-style: italic;
-    font-weight: bold;
 }
 
-.skill
-{
-    color: yellow;
+.board {
+    color: #8e24aa;
+    border-bottom: 2px solid #8e24aa;
 }
 
-.die
-{
+/* Acciones */
+.draw {
+    color: #1565c0;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
+.play {
+    color: #ef6c00;
+    border-bottom: 2px dashed currentColor;
+}
+
+.attack {
+    color: #c62828;
+    text-shadow: 1px 1px 0 rgba(0,0,0,.15);
+}
+
+/* Tipos */
+.family {
+    color: #5e35b1;
+    font-style: italic;
+    letter-spacing: .04em;
+}
+
+.skill {
+    color: #f9a825;
+    font-weight: 700;
+}
+
+/* Estados */
+.die {
+    color: #555;
     text-decoration: line-through;
+    opacity: .85;
 }
 
-.add
-{
-    text-decoration: wavy;
+.add {
+    color: #00897b;
+    border-left: 3px solid currentColor;
+    padding-left: .25em;
+}
+
+.endround {
+    color: #3949ab;
+    font-variant: small-caps;
+    letter-spacing: .06em;
 }

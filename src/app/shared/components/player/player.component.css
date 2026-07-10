@@ -75,17 +75,16 @@
 
 .hand
 {
-    display: flex;
-
+  display: flex;
   height: 100%;
-
+  min-height: 8rem;
   justify-content: center;
   align-items: center;
-
   gap: 2rem;
-
   padding: 0.25rem;
-
+  overflow: visible;
+  position: relative;
+  z-index: 3;
 }
 
 .board-section
@@ -139,7 +138,6 @@
   width: 5rem;
   max-width: 5rem;
   font-size: xx-large;
-  font-family: 'Title';
   color:white;
   text-align: center;
 }

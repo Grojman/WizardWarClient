@@ -154,7 +154,8 @@
 
 .table-container {
   min-width: 100vw;
-    
+  min-height: 100vh;
+
   position: absolute;
   top: 0;
   left: 0;
@@ -164,7 +165,7 @@
   background-position: center;
   background-repeat: no-repeat;
 
-  overflow: hidden;
+  overflow: visible;
 
   transition: transform 300ms ease;
 }
@@ -172,6 +173,8 @@
 .player-slot {
   position: absolute;
   transform-origin: center center;
+  overflow: visible;
+  z-index: 2;
   transition:
     left 300ms ease,
     top 300ms ease,

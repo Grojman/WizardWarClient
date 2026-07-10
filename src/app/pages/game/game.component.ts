@@ -123,10 +123,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private initializeGameState(snapshot: Game): void {
     this.gameState = this.gameStateService.initializeFromSnapshot(snapshot);
-
-    this.playerBoardX = this.playerRef?.nativeElement?.getBoundingClientRect().width ?? 0;
-    this.playerBoardY = this.playerRef?.nativeElement?.getBoundingClientRect().height ?? 0;
-    this.prepareTableGame();
+    this.scheduleTableLayout();
   }
 
   private createHealth(value: number): Health {
@@ -642,10 +639,23 @@ openChat()
 handleKeyboardEvent(event: KeyboardEvent) {
 
   if (event.key === 'Tab') {
+    event.preventDefault();
+    this.openChat();
+    return;
+  }
 
-    event.preventDefault(); 
+  if (this.gameState.Rivals.length === 1) {
+    if (event.key === 'ArrowLeft') {
+      event.preventDefault();
+      this.rotateBoardLeft();
+      return;
+    }
 
-    this.openChat()
+    if (event.key === 'ArrowRight') {
+      event.preventDefault();
+      this.rotateBoardRight();
+      return;
+    }
   }
 }
 
@@ -674,6 +684,8 @@ safeSend(payload: any): void {
 
 
 ngAfterViewInit() {
+  this.scheduleTableLayout();
+
   const viewport = this.viewportRef.nativeElement;
 
   viewport.scrollLeft =
@@ -681,6 +693,34 @@ ngAfterViewInit() {
 
   viewport.scrollTop =
     (viewport.scrollHeight - viewport.clientHeight) / 2;
+}
+
+private measurePlayerBoard(): void {
+  const playerElement = this.playerRef?.nativeElement;
+
+  if (!playerElement) {
+    return;
+  }
+
+  const rect = playerElement.getBoundingClientRect();
+  this.playerBoardX = Math.max(rect.width || 0, 260);
+  this.playerBoardY = Math.max(rect.height || 0, 220);
+}
+
+private scheduleTableLayout(): void {
+  if (!this.gameState?.Me) {
+    return;
+  }
+
+  requestAnimationFrame(() => {
+    this.measurePlayerBoard();
+    this.prepareTableGame();
+  });
+}
+
+@HostListener('window:resize')
+onWindowResize(): void {
+  this.scheduleTableLayout();
 }
 
 calculateApotema(): number
@@ -721,7 +761,7 @@ boardSizeX: number = 0;
 playerBoardX: number = 0;  //TODO: SUSTITUIRLO POR EL VALOR REAL
 playerBoardY: number = 0;  //TODO: SUSTITUIRLO POR EL VALOR REAL
 
-extraMargin: number = 200;
+extraMargin: number = 0;
 
 extraOffSetY: number = 0;
 extraOffSetX: number = 0;
@@ -738,29 +778,42 @@ getCircumradius(): number
 
 prepareTableGame()
 {
-
   this.rotation = this.calculateRotationDegrees();
+
   if(this.gameState.Rivals.length === 1)
   {
     this.extraMargin = 0;
     this.shoudlRotatePlayers = true;
     this.rotation = 0;
+  } else {
+    this.extraMargin = Math.max(0, this.playerBoardX * 0.6);
+    this.shoudlRotatePlayers = false;
   }
 
   this.distance = this.calculateApotema() + this.extraMargin;
 
-  // boardSize está en px
-  this.boardSizeX = (this.getCircumradius() + this.extraMargin) * 2;
-  this.boardSizeY = (this.getCircumradius() + this.extraMargin) * 2;
+  const viewportWidth = Math.max(window.innerWidth, this.playerBoardX * 2.5);
+  const viewportHeight = Math.max(window.innerHeight, this.playerBoardY * 2.5);
+  const minimumBoardSize = Math.max(
+    viewportWidth,
+    viewportHeight,
+    this.playerBoardX,
+    this.playerBoardY,
+    (this.getCircumradius() + this.extraMargin) * 2
+  );
+
+  this.boardSizeX = Math.ceil(minimumBoardSize);
+  this.boardSizeY = Math.ceil(minimumBoardSize);
 
   if(this.shoudlRotatePlayers)
   {
-    this.boardSizeY = this.playerBoardY * 2;
+    this.boardSizeY = Math.max(this.boardSizeY, viewportHeight * 1.4, this.playerBoardY * 3);
   }
 
   this.viewPortCenterY = this.boardSizeY / 2;
   this.viewPortCenterX = this.boardSizeX / 2;
 
+  this.styles = [];
 
   for (let index = 0; index < this.gameState.Rivals.length + 1; index++) {
     this.getRivalStyle(index);
@@ -792,10 +845,6 @@ getRivalStyle(index: number)
   {
     offsetY += this.playerBoardY / 2 * (index === 1 ? -1 : 1);
   }
-
-  console.log("Para ", index)
-  console.log("offsetX: ", offsetX);
-  console.log("offsetY: ", offsetY);
 
   /**
    * Posición final del centro del tablero rival
