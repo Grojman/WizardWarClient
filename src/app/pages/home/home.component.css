@@ -162,6 +162,24 @@
 
 }
 
+.login-container
+{
+  display: flex;
+  gap: 0.25rem;
+
+  & > div
+  {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+.buttons-container
+{
+  display: flex;
+}
+
 .input-wrapper {
 
   position: relative;

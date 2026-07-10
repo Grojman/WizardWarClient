@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { Card } from '../../../models/card.model';
 import { CardDescriptionService } from '../../../core/services/card-description-service';
 
@@ -7,6 +7,7 @@ import { CardDescriptionService } from '../../../core/services/card-description-
   standalone: false,
   templateUrl: './cardvisualizer.component.html',
   styleUrl: './cardvisualizer.component.css',
+  encapsulation: ViewEncapsulation.None
 })
 export class CardvisualizerComponent {
   

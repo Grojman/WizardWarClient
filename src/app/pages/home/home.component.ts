@@ -15,9 +15,13 @@ export class HomeComponent implements OnInit {
 
   searching = false;
 
+  searchingBot = false;
+
   selectedDeck?: Deck;
 
   decks: Deck[] = [];
+
+  numberOfPlayers: number = 2;
 
   constructor(
     private ws: WebsocketService,
@@ -71,11 +75,14 @@ export class HomeComponent implements OnInit {
 
   startBotGame()
   {
+    this.searchingBot = !this.searchingBot;
     this.ws.send({
       "$type" : "StartBotGameAction",
-      DeckId : this.selectedDeck?.id
+      DeckId : this.selectedDeck?.id,
+      NumberOfPlayers: this.numberOfPlayers
     })
   }
+
 
   toggleSearch() {
     if (!this.searching) {
@@ -84,7 +91,8 @@ export class HomeComponent implements OnInit {
 
       this.ws.send({
         "$type": 'JoinQueueAction',
-        DeckId: this.selectedDeck?.id
+        DeckId: this.selectedDeck?.id,
+        NumberOfPlayers: this.numberOfPlayers
       });
 
     } else {

@@ -54,6 +54,20 @@
 </div>
 
 <div class="action-buttons">
+  <p>
+    <span>
+      Turno: {{ gameState.CurrentTurn }}
+    </span>
+
+    <span *ngIf="gameState.CurrentTurn % 2 !== 0" 
+      title="Al acabar este turno, todos los jugadores roban una carta"
+    >
+<i class="fa-solid fa-copy"></i>
+<i class="fa-solid fa-plus"></i>
+    </span>
+
+  </p>
+
   <div class="rotate-buttons"
       *ngIf="gameState.Rivals.length !== 1"
   >

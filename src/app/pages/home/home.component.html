@@ -71,59 +71,93 @@
 
     </h2>
 
-    <div class="input-wrapper">
 
-      <i class="fa-solid fa-user"></i>
+    <div class="login-container">
 
-      <input
-        type="text"
-        [(ngModel)]="username"
-        (change)="onUsernameChange()"
-        placeholder="Introduce tu nombre"
-        class="username-input"
-      />
+      <div>
 
-    </div>
+        <h3 class="subtitle"> Nombre </h3>
 
-    <button
-      class="search-button"
-      [disabled]="!canSearch()"
-      (click)="toggleSearch()"
-    >
+        <div class="input-wrapper">
 
-      <i
-        class="fa-solid"
-        [ngClass]="searching ? 'fa-xmark' : 'fa-magnifying-glass'"
-      ></i>
+          <i class="fa-solid fa-user"></i>
 
-      {{ searching ? 'Cancelar' : 'Buscar partida' }}
+          <input
+            type="text"
+            [(ngModel)]="username"
+            (change)="onUsernameChange()"
+            placeholder="Introduce tu nombre"
+            class="username-input"
+          />
 
-      <span
-        *ngIf="searching"
-        class="spinner"
-      ></span>
+        </div>
+      </div>
 
-    </button>
 
-    <button
-      class="search-button"
-      [disabled]="!canSearch()"
-      (click)="startBotGame()"
-    >
+      <div>
+        <h3 class="subtitle"> Buscar partida </h3>
 
-      <i
-        class="fa-solid"
-        [ngClass]="searching ? 'fa-xmark' : 'fa-magnifying-glass'"
-      ></i>
+        <div class="buttons-container">
 
-      {{ searching ? 'Cancelar' : 'Empezar partida con BOT' }}
+          <button
+          class="search-button"
+          [disabled]="!canSearch() || searchingBot"
+          (click)="toggleSearch()"
+          >
 
-      <span
-        *ngIf="searching"
-        class="spinner"
-      ></span>
+            <i
+              class="fa-solid"
+              [ngClass]="searching ? 'fa-xmark' : 'fa-globe'"
+            ></i>
 
-    </button>
+            {{ searching ? 'Cancelar' : 'Online' }}
+
+            <span
+              *ngIf="searching"
+              class="spinner"
+            ></span>
+
+          </button>
+
+          <button
+          class="search-button"
+          [disabled]="!canSearch() || searching"
+          (click)="startBotGame()"
+        >
+
+          <i
+            class="fa-solid"
+            [ngClass]="searchingBot ? 'fa-xmark' : 'fa-robot'"
+          ></i>
+
+          {{ searchingBot ? 'Cancelar' : 'Contra máquina' }}
+
+          <span
+            *ngIf="searchingBot"
+            class="spinner"
+          ></span>
+
+        </button>
+
+        </div>
+
+        <h3 class="subtitle"> Nº Jugadores </h3>
+
+        <div class="buttons-container">
+
+          <button *ngFor="let i of [2, 3, 4]"
+          (click)="numberOfPlayers = i"
+          [disabled]="i === numberOfPlayers"
+          >
+            {{ i }}
+          </button>
+
+        </div>
+
+
+      </div>
+
+    </div>    
 
   </div>
 

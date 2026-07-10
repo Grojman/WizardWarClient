@@ -4,4 +4,5 @@ export interface Game
 {
     Me: Player,
     Rivals: Player[],
+    CurrentTurn: number
 }

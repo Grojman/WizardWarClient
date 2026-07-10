@@ -19,19 +19,47 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: "Text Font 2";
+  src: url("/fonts/Averia_Serif_Libre/AveriaSerifLibre-Regular.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Text Font 3";
+  src: url("/fonts/Eagle_Lake/EagleLake-Regular.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Text Font 4";
+  src: url("/fonts/Kings/Kings-Regular.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Text Font 5";
+  src: url("/fonts/Uncial_Antiqua/UncialAntiqua-Regular.ttf");
+  font-weight: bold;
+  font-style: normal;
+}
+
 h1, .title
 {
-    font-family: "Title";
+    font-family: "Text Font 3";
 }
 
 h2, .subtitle
 {
-    font-family: "Subtitle Font";
+    font-family: "Text Font 5";
 }
 
 p, .text
 {
-    font-family: "Text Font";
+    font-family: "Text Font 2";
 }
 
 body {
@@ -46,47 +74,4 @@ body {
     display: none;
 }
 
-}
-
-/* SPECIAL WORDS CLASS */
-
-.rival
-{
-    color: red;
-}
-
-.player
-{
-    color: green;
-}
-
-.draw
-{
-    text-decoration: double;
-}
-
-.play
-{
-    text-emphasis-style: circle;
-}
-
-.family
-{
-    font-style: italic;
-    font-weight: bold;
-}
-
-.skill
-{
-    color: yellow;
-}
-
-.die
-{
-    text-decoration: line-through;
-}
-
-.add
-{
-    text-decoration: wavy;
 }

@@ -48,6 +48,7 @@ export class GameStateService {
           GlobalEffects: [],
         },
       ],
+      CurrentTurn: 0
     };
   }
 
@@ -87,6 +88,7 @@ export class GameStateService {
 
     gameState.Me.GlobalEffects = currentSnapshot.Me?.GlobalEffects ?? [];
     gameState.Me.IsMyTurn = currentSnapshot.Me?.IsMyTurn ?? false;
+    gameState.CurrentTurn = currentSnapshot.CurrentTurn;
 
     gameState.Rivals.forEach((player, index) => {
       const rivalSnapshot = currentSnapshot.Rivals?.[index];
