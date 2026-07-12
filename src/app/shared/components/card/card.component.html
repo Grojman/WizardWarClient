@@ -50,7 +50,7 @@
 
         <span
           *ngIf="card?.attackChanged"
-          class="floating-number attack-change"
+          class="floating-number attack-change text"
           [class.positive]="(card?.attackChangedAmount || 0) > 0"
           [class.negative]="(card?.attackChangedAmount || 0) < 0"
         >
@@ -67,7 +67,7 @@
 
         <span
           *ngIf="card?.healthChanged"
-          class="floating-number health-change"
+          class="floating-number health-change text"
           [class.positive]="(card?.healthChangedAmount || 0) > 0"
           [class.negative]="(card?.healthChangedAmount || 0) < 0"
         >

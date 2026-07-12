@@ -1,6 +1,7 @@
 .container
 {
     display: flex;
+    position: relative;
     flex-direction: column;
     gap: 0.5rem;
 
@@ -25,6 +26,26 @@
     & > * {
         margin: 0.25rem;
     }
+}
+
+.has-scroll-fade {
+
+    
+    pointer-events: none;
+
+    position: absolute;
+    bottom: 0;
+
+    width: 100%;
+    background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0),
+    rgb(0, 0, 0)
+    );
+
+    display: flex;
+    justify-content: center;
+    font-size: xx-large;
 }
 
 .card-description,

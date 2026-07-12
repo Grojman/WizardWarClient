@@ -5,10 +5,10 @@ import { Card } from '../../models/card.model';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { Router } from '@angular/router';
 import { Game } from '../../models/game.model';
-import { Health } from '../../models/health.model';
 import { Player } from '../../models/player.model';
 import { MessageDialogComponent } from '../../ui/message-dialog/message-dialog.component';
 import { ChatComponent } from '../../shared/components/chat/chat.component';
+import { SettingsComponent } from '../../shared/components/settings/settings.component';
 import { Message } from '../../models/message.model';
 import { GameCardCheckComponent } from '../../shared/components/game-card-check/game-card-check.component';
 import { GameAnimationService } from '../../core/services/game-animation.service';
@@ -124,10 +124,6 @@ export class GameComponent implements OnInit, OnDestroy {
   private initializeGameState(snapshot: Game): void {
     this.gameState = this.gameStateService.initializeFromSnapshot(snapshot);
     this.scheduleTableLayout();
-  }
-
-  private createHealth(value: number): Health {
-    return this.gameStateService.createHealth(value);
   }
 
   private syncPlayerTargets(): void {
@@ -312,18 +308,9 @@ unreadNotificationCounter: number = 0;
         var visualElement = this.findElement(event.Unit);
         var index = arrayToFind.findIndex(n => n && n.id === event.Unit);
         if (index !== -1) {
-          const animation = visualElement.animate(
-            [
-              { opacity: 1, transform: 'scale(1)' },
-              { opacity: 0, transform: 'scale(0.8)' }
-            ],
-            {
-              duration: 300,
-              easing: 'ease-in',
-              fill: 'forwards'
-            }
-          );
-          await animation.finished;
+          if (visualElement) {
+            await this.animationService.animateUnitDeath(visualElement);
+          }
           arrayToFind[index] = null;
         }
         break;
@@ -699,10 +686,13 @@ private measurePlayerBoard(): void {
   const playerElement = this.playerRef?.nativeElement;
 
   if (!playerElement) {
+    console.log('returning player ')
     return;
   }
 
   const rect = playerElement.getBoundingClientRect();
+  console.log('it has width', rect.width);
+  console.log('it has size', rect.height);
   this.playerBoardX = Math.max(rect.width || 0, 260);
   this.playerBoardY = Math.max(rect.height || 0, 220);
 }
@@ -786,29 +776,32 @@ prepareTableGame()
     this.shoudlRotatePlayers = true;
     this.rotation = 0;
   } else {
-    this.extraMargin = Math.max(0, this.playerBoardX * 0.6);
+    // this.extraMargin = Math.max(0, this.playerBoardX * 0.6);
+    this.extraMargin = this.playerBoardY;
     this.shoudlRotatePlayers = false;
   }
 
   this.distance = this.calculateApotema() + this.extraMargin;
 
-  const viewportWidth = Math.max(window.innerWidth, this.playerBoardX * 2.5);
-  const viewportHeight = Math.max(window.innerHeight, this.playerBoardY * 2.5);
-  const minimumBoardSize = Math.max(
-    viewportWidth,
-    viewportHeight,
-    this.playerBoardX,
-    this.playerBoardY,
-    (this.getCircumradius() + this.extraMargin) * 2
-  );
+  // const viewportWidth = Math.max(window.innerWidth, this.playerBoardX * 2.5);
+  // const viewportHeight = Math.max(window.innerHeight, this.playerBoardY * 2.5);
+  // const minimumBoardSize = Math.max(
+  //   viewportWidth,
+  //   viewportHeight,
+  //   this.playerBoardX,
+  //   this.playerBoardY,
+  //   (this.getCircumradius() + this.extraMargin) * 2
+  // );
+
+  const minimumBoardSize = this.gameState.Rivals.length === 1 ? this.playerBoardX * 2 : this.distance * 2;
 
   this.boardSizeX = Math.ceil(minimumBoardSize);
   this.boardSizeY = Math.ceil(minimumBoardSize);
 
-  if(this.shoudlRotatePlayers)
-  {
-    this.boardSizeY = Math.max(this.boardSizeY, viewportHeight * 1.4, this.playerBoardY * 3);
-  }
+  // if(this.shoudlRotatePlayers)
+  // {
+  //   this.boardSizeY = Math.max(this.boardSizeY, viewportHeight * 1.4, this.playerBoardY * 3);
+  // }
 
   this.viewPortCenterY = this.boardSizeY / 2;
   this.viewPortCenterX = this.boardSizeX / 2;

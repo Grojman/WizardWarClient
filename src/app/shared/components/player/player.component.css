@@ -142,6 +142,15 @@
   text-align: center;
 }
 
+.card-counter
+{
+  position: absolute;
+  left: 0;
+  bottom: 0;  
+  color: white;
+  font-size: xx-large;
+}
+
 .turn-active {
   position: relative;
 }

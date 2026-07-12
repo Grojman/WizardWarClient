@@ -1,0 +1,32 @@
+<!-- settings.component.html -->
+
+<div class="settings-container" *ngIf="isOpen">
+  <div class="settings-panel">
+    <div class="settings-header">
+      <span class="title">Animation Settings</span>
+
+      <button class="close-btn" type="button" (click)="close()">
+        ✕
+      </button>
+    </div>
+
+    <div class="settings-content">
+      <div class="setting-group">
+        <label class="setting-label">Animation Speed</label>
+        <p class="current-speed">Current: {{ getCurrentSpeedLabel() }}</p>
+
+        <div class="speed-options">
+          <button
+            *ngFor="let option of speedOptions"
+            class="speed-btn"
+            [class.active]="option.value === currentSpeedMultiplier"
+            (click)="changeSpeed(option.value)"
+            [title]="option.description"
+          >
+            {{ option.label }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

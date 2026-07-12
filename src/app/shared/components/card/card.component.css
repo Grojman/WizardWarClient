@@ -231,7 +231,6 @@
 
 
 .floating-number {
-  -webkit-text-stroke: 2px black;
   white-space: nowrap;
   position: absolute;
 
@@ -243,7 +242,6 @@
 
   font-weight: bold;
 
-  font-family: "Text 4";
 
   font-size: 2rem;
 
@@ -255,13 +253,11 @@
 
 
 .floating-number.positive {
-  color: #2ecc71;
-  text-shadow: 0 0 10px #2ecc71;
+  color: #00c552;
 }
 
 .floating-number.negative {
-  color: #e74c3c;
-  text-shadow: 0 0 10px #e74c3c;
+  color: #ab1100;
 }
 
 

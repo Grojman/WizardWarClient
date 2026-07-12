@@ -7,7 +7,7 @@
     >
     </app-card>
 
-    <div class="card-info"
+    <div class="card-info" #cardinfo (scroll)="updateScrollFade()"  
     >
         <p>
             {{ card.type }}
@@ -27,8 +27,13 @@
         <p
         *ngIf="card.description"
         class="card-description"
-        [innerHTML]="parser.parseDescription(card.description)"
+        [innerHTML]="updateParser()"
         >
         </p>
+    </div>
+
+    <div class="has-scroll-fade" *ngIf="showScrollFade"
+    >
+        <i class="fa-solid fa-caret-down" style="color: rgb(255, 212, 59);"></i>    
     </div>
 </div>
