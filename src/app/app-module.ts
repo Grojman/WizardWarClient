@@ -22,6 +22,7 @@ import { MessageDialogComponent } from './ui/message-dialog/message-dialog.compo
 import { PlayerComponent } from './shared/components/player/player.component';
 import { ChatComponent } from './shared/components/chat/chat.component';
 import { GameCardCheckComponent } from './shared/components/game-card-check/game-card-check.component';
+import { SettingsComponent } from './shared/components/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { GameCardCheckComponent } from './shared/components/game-card-check/game
     ErrorComponent,
     HealthComponent,
     GalleryComponent,
+    SettingsComponent,
     CardvisualizerComponent,
     MessageDialogComponent,
     PlayerComponent,

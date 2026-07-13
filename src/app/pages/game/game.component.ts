@@ -557,6 +557,9 @@ dialog!: MessageDialogComponent;
 @ViewChild('chat')
 chat!: ChatComponent;
 
+@ViewChild('settings')
+settings!: SettingsComponent;
+
 @ViewChild('gamecheck')
 cardCheck!: GameCardCheckComponent;
 
@@ -622,6 +625,16 @@ openChat()
     }
 }
 
+openSettings()
+{
+  if(this.settings.isOpen)
+  {
+    this.settings.close();
+  } else {
+    this.settings.open();
+  }
+}
+
 @HostListener('window:keydown', ['$event'])
 handleKeyboardEvent(event: KeyboardEvent) {
 
@@ -673,13 +686,7 @@ safeSend(payload: any): void {
 ngAfterViewInit() {
   this.scheduleTableLayout();
 
-  const viewport = this.viewportRef.nativeElement;
-
-  viewport.scrollLeft =
-    (viewport.scrollWidth - viewport.clientWidth) / 2;
-
-  viewport.scrollTop =
-    (viewport.scrollHeight - viewport.clientHeight) / 2;
+  
 }
 
 private measurePlayerBoard(): void {
@@ -706,6 +713,21 @@ private scheduleTableLayout(): void {
     this.measurePlayerBoard();
     this.prepareTableGame();
   });
+
+  requestAnimationFrame(() => {
+    this.prepareScroll();
+  })
+
+}
+
+prepareScroll()
+{
+  window.scrollTo({
+    left: window.innerWidth / 2,
+    top: window.innerHeight / 2,
+    behavior: 'auto'
+  });
+
 }
 
 @HostListener('window:resize')
@@ -796,7 +818,7 @@ prepareTableGame()
   const minimumBoardSize = this.gameState.Rivals.length === 1 ? this.playerBoardX * 2 : this.distance * 2;
 
   this.boardSizeX = Math.ceil(minimumBoardSize);
-  this.boardSizeY = Math.ceil(minimumBoardSize);
+  this.boardSizeY = Math.ceil(minimumBoardSize / 2);
 
   // if(this.shoudlRotatePlayers)
   // {

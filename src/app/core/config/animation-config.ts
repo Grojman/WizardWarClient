@@ -62,7 +62,7 @@ export class AnimationConfig {
    * Get adjusted duration based on current speed multiplier
    */
   getAdjustedDuration(baseDuration: number): number {
-    return Math.round(baseDuration / this.currentSpeedMultiplier);
+    return Math.round(baseDuration * this.currentSpeedMultiplier);
   }
 
   /**

@@ -109,7 +109,6 @@ export class GameAnimationService {
     const dx = targetCenterX - attackerCenterX;
     const dy = targetCenterY - attackerCenterY;
     const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-    const travelDistance = Math.hypot(dx, dy);
     const swingAngle = Math.max(-34, Math.min(34, angle * 0.14));
     const lift = dy > 0 ? 8 : -8;
 
@@ -136,7 +135,7 @@ export class GameAnimationService {
     const pulse = targetElement.animate(
       [
         { transform: 'scale(1)', filter: 'brightness(1)' },
-        { transform: 'scale(1.05)', filter: 'brightness(1.25)' },
+        { transform: 'scale(1.5)', filter: 'brightness(1.25)' },
         { transform: 'scale(1)', filter: 'brightness(1)' },
       ],
       {

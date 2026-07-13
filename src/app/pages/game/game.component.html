@@ -87,11 +87,15 @@
       {{ unreadNotificationCounter }}
     </p>
   </button>
+  <button
+  (click)="openSettings()"
+  >
+    Abrir ajustes
+  </button>
   <button (click)="prepareTableGame()">Recalcular tablero visual</button>
 </div>
 
   <div class="animation-layer">
-
     <div class="proyectile" style="display: none;">
 
     </div>
@@ -125,4 +129,10 @@
 >
 
 </app-chat>
+
+<app-settings
+#settings
+>
+
+</app-settings>
 
