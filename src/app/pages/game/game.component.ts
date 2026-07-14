@@ -410,7 +410,11 @@ async handleGameEvents(events: any[]) {
   
   while (this.eventQueue.length > 0) {
     const event = this.eventQueue.shift();
-    await this.playEvent(event);
+    const promise =  this.playEvent(event);
+
+    if (!this.checkForConCurrency(event.$type)) {
+      await promise;
+    }
   }
 
   this.storedGameState.Me.HandData.forEach((n, i) => {
@@ -418,6 +422,13 @@ async handleGameEvents(events: any[]) {
   })
   
   this.isAnimating = false;
+}
+
+checkForConCurrency(type: string): boolean {
+  if (this.eventQueue.length === 0) return false;
+  const type2 = this.eventQueue[0].$type;
+  return (type === "UnitDamageChanged" || type === "UnitHealthChanged") &&
+  (type2 === "UnitDamageChanged" || type2 === "UnitHealthChanged");
 }
 
 onRightClick(
@@ -799,11 +810,12 @@ prepareTableGame()
     this.rotation = 0;
   } else {
     // this.extraMargin = Math.max(0, this.playerBoardX * 0.6);
-    this.extraMargin = this.playerBoardY;
+    this.extraMargin = this.playerBoardY / 2;
     this.shoudlRotatePlayers = false;
   }
 
   this.distance = this.calculateApotema() + this.extraMargin;
+  const radius = this.getCircumradius() + this.extraMargin
 
   // const viewportWidth = Math.max(window.innerWidth, this.playerBoardX * 2.5);
   // const viewportHeight = Math.max(window.innerHeight, this.playerBoardY * 2.5);
@@ -815,10 +827,11 @@ prepareTableGame()
   //   (this.getCircumradius() + this.extraMargin) * 2
   // );
 
-  const minimumBoardSize = this.gameState.Rivals.length === 1 ? this.playerBoardX * 2 : this.distance * 2;
+  const minimumBoardSize = this.gameState.Rivals.length === 1 ? this.playerBoardX * 2 : radius * 2;
+  const yRelation = this.gameState.Rivals.length === 1 ? 2 : 1;
 
   this.boardSizeX = Math.ceil(minimumBoardSize);
-  this.boardSizeY = Math.ceil(minimumBoardSize / 2);
+  this.boardSizeY = Math.ceil(minimumBoardSize / yRelation);
 
   // if(this.shoudlRotatePlayers)
   // {

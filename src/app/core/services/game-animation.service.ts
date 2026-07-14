@@ -11,67 +11,6 @@ export class GameAnimationService {
     return document.querySelector('.animation-layer') as HTMLElement | null;
   }
 
-  private spawnBurst(x: number, y: number, color: string, size: number = 80): void {
-    const layer = this.getAnimationLayer();
-    if (!layer) {
-      return;
-    }
-
-    const burst = document.createElement('div');
-    burst.className = 'impact-burst';
-    burst.style.left = `${x}px`;
-    burst.style.top = `${y}px`;
-    burst.style.setProperty('--burst-size', `${size}px`);
-    burst.style.setProperty('--burst-color', color);
-    layer.appendChild(burst);
-
-    const animation = burst.animate(
-      [
-        { opacity: 0, transform: 'translate(-50%, -50%) scale(0.2)' },
-        { opacity: 0.95, transform: 'translate(-50%, -50%) scale(1)' },
-        { opacity: 0, transform: 'translate(-50%, -50%) scale(1.35)' },
-      ],
-      {
-        duration: this.animationSettingsService.getAdjustedDuration(420),
-        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-        fill: 'forwards',
-      },
-    );
-
-    animation.finished.finally(() => burst.remove());
-  }
-
-  private spawnSpark(x: number, y: number, angle: number): void {
-    const layer = this.getAnimationLayer();
-    if (!layer) {
-      return;
-    }
-
-    const spark = document.createElement('div');
-    spark.className = 'impact-spark';
-    spark.style.left = `${x}px`;
-    spark.style.top = `${y}px`;
-    spark.style.setProperty('--spark-angle', `${angle}deg`);
-    spark.style.setProperty('--spark-distance', `${24 + Math.random() * 30}px`);
-    spark.style.setProperty('--spark-width', `${18 + Math.random() * 10}px`);
-    spark.style.setProperty('--spark-height', `${6 + Math.random() * 4}px`);
-    layer.appendChild(spark);
-
-    const animation = spark.animate(
-      [
-        { opacity: 0.95, transform: 'translate(-50%, -50%) scale(0.6)' },
-        { opacity: 0, transform: 'translate(-50%, -50%) scale(1.1)' },
-      ],
-      {
-        duration: this.animationSettingsService.getAdjustedDuration(280) + Math.random() * this.animationSettingsService.getAdjustedDuration(120),
-        easing: 'ease-out',
-        fill: 'forwards',
-      },
-    );
-
-    animation.finished.finally(() => spark.remove());
-  }
-
   nextFrame(): Promise<void> {
     return new Promise((resolve) => requestAnimationFrame(() => resolve()));
   }
@@ -124,13 +63,6 @@ export class GameAnimationService {
     );
 
     await swing.finished;
-
-    const impactX = targetCenterX;
-    const impactY = targetCenterY;
-    this.spawnBurst(impactX, impactY, 'rgba(255, 214, 102, 0.95)', 84 + Math.random() * 26);
-    for (let index = 0; index < 8; index += 1) {
-      this.spawnSpark(impactX, impactY, angle + (index - 3.5) * 18 + (Math.random() - 0.5) * 10);
-    }
 
     const pulse = targetElement.animate(
       [
@@ -219,7 +151,8 @@ export class GameAnimationService {
         { transform: 'translate(0px, 0px) rotate(0deg) scale(0.9)', offset: 0.1 },
         { transform: `translate(${dx * 0.45}px, ${dy * 0.3}px) rotate(14deg) scale(1.05)`, offset: 0.55 },
         { transform: `translate(${dx}px, ${dy}px) rotate(0deg) scale(1)`, offset: 0.8 },
-        { transform: `translate(${dx}px, ${dy - iconRect.height / 2}px) rotate(180deg) scale(0.8)`, offset: 1 },
+        { transform: `translate(${dx}px, ${dy}px) rotate(0deg) scale(1)`, opacity: 1, offset: 0.9 },
+        { transform: `translate(${dx}px, ${dy + iconRect.height * 2}px) rotate(180deg) scale(0.8)`, opacity: 0, offset: 1 },
       ],
       {
         duration: this.animationSettingsService.getAdjustedDuration(duration),
@@ -227,9 +160,10 @@ export class GameAnimationService {
       },
     );
 
-    this.spawnBurst(endCenter.x, endCenter.y, 'rgba(255, 240, 120, 0.95)', 52);
-
     await animation.finished;
+
+
+
     icon.style.display = 'none';
   }
 
@@ -238,8 +172,15 @@ export class GameAnimationService {
       return;
     }
 
+    // const projectile = document.querySelector('.proyectile') as HTMLElement | null;
+    const projectile = document.createElement('div');
+    projectile.classList.add('proyectile');
+    const layer = this.getAnimationLayer();
+    console.log('layer: ', layer)
+    layer?.appendChild(projectile);
     await this.nextFrame();
-    const projectile = document.querySelector('.proyectile') as HTMLElement | null;
+
+
     const sourceElement = document.querySelector(`[data-game-id="${source}"]`) as HTMLElement | null;
     const targetElement = document.querySelector(`[data-game-id="${target}"]`) as HTMLElement | null;
 
@@ -251,12 +192,9 @@ export class GameAnimationService {
     const end = this.getCenter(targetElement);
     const dx = end.x - start.x;
     const dy = end.y - start.y;
-    const arc = -Math.min(90, Math.max(-90, dx * 0.06));
 
-    projectile.style.position = 'fixed';
     projectile.style.left = `${start.x}px`;
     projectile.style.top = `${start.y}px`;
-    projectile.style.display = 'block';
     projectile.style.transform = 'translate(-50%, -50%)';
 
     const animation = projectile.animate(
@@ -273,12 +211,7 @@ export class GameAnimationService {
     );
 
     await animation.finished;
-    projectile.style.display = 'none';
-    projectile.style.transform = 'translate(-50%, -50%)';
-    this.spawnBurst(end.x, end.y, 'rgba(255, 200, 80, 0.95)', 86);
-    for (let index = 0; index < 10; index += 1) {
-      this.spawnSpark(end.x, end.y, (index / 10) * 360 + arc + (Math.random() - 0.5) * 22);
-    }
+    projectile.remove();
   }
 
   async animateUnitDeath(element: HTMLElement): Promise<void> {
@@ -286,11 +219,6 @@ export class GameAnimationService {
       return;
     }
 
-    const bounds = element.getBoundingClientRect();
-    const centerX = bounds.left + bounds.width / 2;
-    const centerY = bounds.top + bounds.height / 2;
-
-    this.spawnBurst(centerX, centerY, 'rgba(255, 94, 94, 0.95)', 96);
 
     const animation = element.animate(
       [

@@ -39,7 +39,7 @@
 
 .spell
 {
-  border-radius: 25%;
+  border-radius: 50% / 20%;
 }
 
 .card-can-be-selected
