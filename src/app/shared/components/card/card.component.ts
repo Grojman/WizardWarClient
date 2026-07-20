@@ -7,9 +7,8 @@ import {
   input
 } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
 import { Card } from '../../../models/card.model';
-
+import { UNIT, SPELL } from '../../../core/config/game-data-config';
 
 
 @Component({
@@ -19,6 +18,9 @@ import { Card } from '../../../models/card.model';
   styleUrls: ['./card.component.css'],
 })
 export class CardComponent implements OnChanges, OnInit {
+  unit: string = UNIT;
+  spell: string = SPELL;
+
   ngOnInit(): void {
     this.faceDown = this.card === null;
   }

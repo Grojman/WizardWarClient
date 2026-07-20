@@ -14,6 +14,8 @@ import { GameCardCheckComponent } from '../../shared/components/game-card-check/
 import { GameAnimationService } from '../../core/services/game-animation.service';
 import { GameStateService } from '../../core/services/game-state.service';
 
+import { SPELL, UNIT } from '../../core/config/game-data-config';
+
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
 @Component({
@@ -23,6 +25,9 @@ import { GameStateService } from '../../core/services/game-state.service';
   styleUrls: ['./game.component.css'],
 })
 export class GameComponent implements OnInit, OnDestroy {
+  spell: string = SPELL;
+  unit: string = UNIT;
+
   constructor(
     private ws : WebsocketService,
     private router : Router,
@@ -448,7 +453,7 @@ cardSelected(card: Card | null)
   if (!this.gameState.Me.IsMyTurn && card && card.canPlay) return;
   
   this.selectedCard = this.selectedCard?.id === card?.id ? null : card;
-  this.unitSelected = this.selectedCard?.type === "Unit";
+  this.unitSelected = this.selectedCard?.type === this.unit;
   this.attackingUnit = null;
 
   if(!this.unitSelected && this.selectedCard && card && card.canPlay)

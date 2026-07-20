@@ -31,6 +31,7 @@ export class GalleryComponent implements OnInit {
     {
       case "get_cards":
         this.cards = [...msg.Content];
+        console.log(this.cards)
 
 //         this.cards = msg.Content.map(
 //   data => new Card(data)

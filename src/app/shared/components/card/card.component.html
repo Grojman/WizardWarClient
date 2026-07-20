@@ -11,7 +11,7 @@
     [class.card-front]="!faceDown"
     [class.card-back]="faceDown"
     [class.card-can-be-selected]="canBeSelected"
-    [class.spell]="card?.type === 'Spell'"
+    [class.spell]="card?.type === spell"
     [style.backgroundImage]="'url(/images/cards/' + (this.card?.imageUrl ?? 'reverse_card.svg') + ')'"
   >
     <p 
@@ -42,7 +42,7 @@
 
     </div>
 
-    <footer class="card-footer" *ngIf="card?.type == 'Unit' && !faceDown">
+    <footer class="card-footer" *ngIf="card?.type == unit && !faceDown">
 
       <span class="attack-value">
         <i class="fa-solid fa-hand-fist"></i> 
