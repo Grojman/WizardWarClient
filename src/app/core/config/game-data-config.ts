@@ -1,2 +1,2 @@
-export const UNIT = 'Unidad';
-export const SPELL = 'Hechizo';
+export const UNIT = 'Unit';
+export const SPELL = 'Spell';

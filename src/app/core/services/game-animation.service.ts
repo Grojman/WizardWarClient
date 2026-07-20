@@ -185,6 +185,7 @@ export class GameAnimationService {
     const targetElement = document.querySelector(`[data-game-id="${target}"]`) as HTMLElement | null;
 
     if (!projectile || !sourceElement || !targetElement) {
+      projectile.remove();
       return;
     }
 
