@@ -1,6 +1,6 @@
 export const runtimeConfig = {
-  ip: '10.209.65.72',
-  websocketUrl: 'wss://10.209.65.72/ws',
+  ip: 'localhost',
+  websocketUrl: 'wss://localhost/ws',
   reconnectDelayMs: 2000,
   maxReconnectAttempts: 5,
 };
