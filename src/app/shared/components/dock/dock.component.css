@@ -2,7 +2,7 @@
 {
     width: 8vw;
     height: 20vh;
-    background-size: cover;
+    background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     border-radius: 4px;

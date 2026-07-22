@@ -1,11 +1,14 @@
 import { Injectable } from '@angular/core';
 import { AnimationSettingsService } from './animation-settings.service';
+import { AudioService } from './audio.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameAnimationService {
-  constructor(private animationSettingsService: AnimationSettingsService) {}
+  constructor(private animationSettingsService: AnimationSettingsService,
+    private audioService: AudioService
+  ) {}
 
   private getAnimationLayer(): HTMLElement | null {
     return document.querySelector('.animation-layer') as HTMLElement | null;
@@ -107,7 +110,10 @@ export class GameAnimationService {
         break;
     }
 
+    this.audioService.playSfx("audio/sound1.mp3")
     await Promise.all([dash.finished, pulse.finished]);
+
+
 
     attackerElement.style.transform = '';
     attackerElement.style.filter = '';

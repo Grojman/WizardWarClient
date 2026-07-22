@@ -23,8 +23,8 @@
   }
 }
 
-.settings-panel {
-  background-color: #1e1e2e;
+.settings-panel {  
+  background: #835601;
   border-radius: 8px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
   max-width: 400px;
@@ -75,6 +75,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+  margin-bottom: 1rem;
 }
 
 .setting-label {
@@ -84,12 +85,12 @@
 }
 
 .current-speed {
-  font-size: 14px;
+  font-size: 2rem;
   color: #a0a0a0;
   margin: 0;
   padding: 8px 0;
   border-radius: 4px;
-  background-color: rgba(100, 150, 200, 0.1);
+  background-color: #493001;
   padding: 8px 12px;
   border-left: 3px solid #6496c8;
 }
@@ -104,7 +105,7 @@
   padding: 12px 16px;
   border: 2px solid #404050;
   border-radius: 6px;
-  background-color: #2a2a3e;
+  background-color: #835601;
   color: #e0e0e0;
   font-size: 14px;
   font-weight: 500;
@@ -116,13 +117,13 @@
 
 .speed-btn:hover {
   border-color: #6496c8;
-  background-color: #333344;
+  background-color: #523501;
   color: #ffffff;
 }
 
 .speed-btn.active {
   border-color: #6496c8;
-  background-color: #404060;
+  background-color: #523501;
   color: #6496c8;
   box-shadow: 0 0 10px rgba(100, 150, 200, 0.3);
 }
@@ -137,8 +138,13 @@
   font-weight: bold;
 }
 
+label, span
+{
+  color: white;
+}
+
 /* Responsive styles */
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .settings-panel {
     width: 95%;
     border-radius: 12px;

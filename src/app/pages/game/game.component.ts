@@ -15,6 +15,7 @@ import { GameAnimationService } from '../../core/services/game-animation.service
 import { GameStateService } from '../../core/services/game-state.service';
 
 import { SPELL, UNIT } from '../../core/config/game-data-config';
+import { AudioService } from '../../core/services/audio.service';
 
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
@@ -28,15 +29,20 @@ export class GameComponent implements OnInit, OnDestroy {
   spell: string = SPELL;
   unit: string = UNIT;
 
+  audio: AudioService;
+
   constructor(
     private ws : WebsocketService,
     private router : Router,
     private gameStateService: GameStateService,
     private animationService: GameAnimationService,
+    private audioService: AudioService
   )
   {
     this.gameState = this.createInitialGameState();
     this.storedGameState = this.gameState;
+    this.audio = audioService;
+    audioService.startMusic();
   }
 
   private createInitialGameState(): Game {
@@ -400,6 +406,7 @@ createFloatingMessage(
   let playerName = this.getPlayer(playerId).Name;
   let message = new Message();
   message.text = text;
+  message.isMine = this.storedGameState.Me.Id === playerId;
   message.playerName = playerName;
 
   this.chat.addMessage(message);
@@ -417,7 +424,7 @@ async handleGameEvents(events: any[]) {
     const event = this.eventQueue.shift();
     const promise =  this.playEvent(event);
 
-    if (!this.checkForConCurrency(event.$type)) {
+    if (!this.checkForConCurrency(event.$type, event.Source)) {
       await promise;
     }
   }
@@ -429,11 +436,13 @@ async handleGameEvents(events: any[]) {
   this.isAnimating = false;
 }
 
-checkForConCurrency(type: string): boolean {
+checkForConCurrency(type: string, source: string): boolean {
   if (this.eventQueue.length === 0) return false;
   const type2 = this.eventQueue[0].$type;
+  const source2 = this.eventQueue[0].Source;
   return (type === "UnitDamageChanged" || type === "UnitHealthChanged") &&
-  (type2 === "UnitDamageChanged" || type2 === "UnitHealthChanged");
+  (type2 === "UnitDamageChanged" || type2 === "UnitHealthChanged") &&
+  source2 === source;
 }
 
 onRightClick(
@@ -605,6 +614,12 @@ endGame(winner: string)
 
   // Mostrar overlay antes de animar
   overlay.style.display = 'flex';
+
+  if (this.storedGameState.Me.Id === player.Id)
+  {
+    this.audioService.stopMusic();
+    this.audioService.playSfx("audio/win.wav");
+  }
 
   const animation = this.winnerboard.nativeElement.animate(
     [

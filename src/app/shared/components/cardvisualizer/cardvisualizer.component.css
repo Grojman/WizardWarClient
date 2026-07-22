@@ -168,3 +168,13 @@ hr
     font-variant: small-caps;
     letter-spacing: .06em;
 }
+
+
+@media( max-width: 900px)
+{
+    .card-description,
+    .card-families,
+    .card-info {
+        font-size: small;
+    }
+}

@@ -161,9 +161,11 @@
   top: 0;
   left: 0;
 
+  background-color: #231501;
+
   background-image: url("/images/board/board.png");
   background-position: center;
-  background-size: auto 100%;
+  background-size: 100% 100%;
   background-repeat: repeat-y;
 
   overflow: visible;
@@ -192,6 +194,13 @@
   display: none;
 }
 
+.turn-text
+{
+  color: white;
+  background-color: #00000038;
+  font-size: 1.5rem;
+}
+
 .action-buttons
 {
   position: fixed;
@@ -201,6 +210,7 @@
   left: 0;
   justify-content: end;
   gap: 1rem;
+  -webkit-backface-visibility: hidden;
 }
 
 
@@ -256,8 +266,9 @@
 
 /* Botón */
 button {
-  background: #ffd54a;
-  color: #1a1a1a;
+  opacity: 0.8;
+  background: #c07d00;
+  color: #000000;
   border: none;
   padding: 12px 24px;
   border-radius: 10px;
@@ -265,6 +276,7 @@ button {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.2s ease;
+  font-family: "Text Font 3";
 }
 
 button:hover {
@@ -291,4 +303,14 @@ button:hover {
   margin: 0;
   font-size: large;
   width: 1rem;
+}
+
+@media(max-width: 900px)
+{
+  .action-buttons > *
+  {
+    padding: 0.25rem;
+    font-size: small;
+  }
+  
 }

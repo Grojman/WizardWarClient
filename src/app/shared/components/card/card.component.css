@@ -83,12 +83,12 @@
   display: flex;
   flex-direction: column;
 
-  & > *:not(.cannot-play) {
-    color: #ffffff;
-    font-size: large;
-    background: rgba(61, 61, 61, 0.3);
-    align-self: center;
-  }
+}
+.card-front > *:not(.cannot-play) {
+  color: #ffffff;
+  font-size: large;
+  background: rgba(61, 61, 61, 0.3);
+  align-self: center;
 }
 
 .card-name
@@ -284,4 +284,22 @@
       scale(1);
   }
 
+}
+
+@media (max-width: 900px)
+{
+  .card-can-be-selected .card-name
+  {
+    display: none;
+  }
+
+  .card-front > *:not(.cannot-play)
+  {
+    font-size: small !important;
+  }
+
+  .card-footer
+  {
+    font-size: small;
+  }
 }

@@ -18,6 +18,7 @@
   
       <div
         class="message"
+        [class.mine]="message.isMine"
         *ngFor="let message of messages">
   
         <div class="player-name">

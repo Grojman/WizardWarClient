@@ -8,7 +8,7 @@
 
       <i class="fa-solid fa-hat-wizard title-icon"></i>
 
-      Guerra de Magos
+      El bar de los Magos
 
     </h1>
 
@@ -164,138 +164,21 @@
 
 
 
-  <!-- INFO -->
+  <div class="info-panel">
+    <h2 class="title">Envía una sugerencia / Reportar un error </h2>
 
-<div class="info-panel">
+    <span>
+      No nos vendría mal algo de ayuda; este juego se encuentra en beta, al fin de al cabo. Cualquier tipo de problema que hayas sufrido, o una sugerencia que quieras añadir a nuestro sistema, por favor explícalo en este recuadro de aquí delante (las sugerencias son anónimas. Nos dio pereza añadir un campo de nombre):
+    </span>
 
-  <h2>
+    <input 
+    type="textarea"
+    [(ngModel)]="sugestion"
+    (keypress)="suggestionKeyPress($event.key)"
+      placeholder="escribe aquí...">
 
-    <i class="fa-solid fa-scroll"></i>
+    <button [inert]="sugestion === ''">Enviar</button>
 
-    ¿En qué consiste la Guerra de Magos?
-
-  </h2>
-
-  <p class="intro-text">
-
-    Antes de comenzar tu primera partida, aquí tienes las reglas y
-    mecánicas básicas que necesitas conocer para dominar el campo de batalla.
-
-  </p>
-
-  <p>
-    Guerra de Magos es un juego de cartas online rápido y sencillo,
-    pensado para partidas cortas y entretenidas.
-  </p>
-
-  <p>
-    Cada jugador comienza con <strong>20 puntos de vida</strong>.
-    Si tu vida llega a 0 o te quedas sin cartas para robar,
-    perderás la partida.
-  </p>
-
-  <ul class="rules-list">
-
-    <li>
-
-      <i class="fa-solid fa-hand"></i>
-
-      Durante tu turno puedes robar cartas, jugar unidades o lanzar hechizos.
-
-    </li>
-
-    <li>
-
-      <i class="fa-solid fa-clone"></i>
-
-      Para jugar una unidad debes seleccionarla desde tu mano y
-      después pulsar sobre un hueco vacío de tu mesa.
-
-    </li>
-
-    <li>
-
-      <i class="fa-solid fa-arrows-left-right-to-line"></i>
-
-      También puedes reemplazar una unidad existente haciendo click
-      sobre el borde del contenedor de una carta en tu mesa.
-
-    </li>
-
-    <li>
-
-      <i class="fa-solid fa-burst"></i>
-
-      Para atacar, selecciona primero una unidad de tu mesa y luego
-      elige entre atacar una unidad enemiga o directamente la vida
-      de un rival.
-
-    </li>
-
-    <li>
-
-      <i class="fa-solid fa-crosshairs"></i>
-
-      Puedes cambiar tu objetivo actual haciendo click sobre el nombre
-      del objetivo y luego sobre la vida del jugador enemigo al que
-      quieras marcar. Esta acción no consume tu turno.
-
-    </li>
-
-    <li>
-
-      <i class="fa-solid fa-lightbulb"></i>
-
-      Algunas cartas poseen habilidades especiales. Si una carta tiene
-      una bombilla sobre su icono significa que su habilidad puede activarse.
-
-    </li>
-
-    <li>
-
-      <i class="fa-solid fa-computer-mouse"></i>
-
-      Las habilidades de unidades se activan con doble click sobre la carta.
-      En el caso del último hechizo jugado, basta con un solo click.
-
-    </li>
-
-    <li>
-
-      <i class="fa-solid fa-hourglass-half"></i>
-
-      Cada vez que utilizas una habilidad, su contador disminuye.
-      Cuando el contador llega a 0, esa habilidad no podrá volver
-      a utilizarse.
-
-    </li>
-
-    <li>
-
-      <i class="fa-solid fa-book-open"></i>
-
-      Puedes consultar la información de cualquier carta visible en mesa
-      haciendo click derecho sobre ella.
-
-    </li>
-
-    <li>
-
-      <i class="fa-solid fa-cards-blank"></i>
-
-      Al final de cada turno, el jugador activo roba automáticamente una carta.
-
-    </li>
-
-  </ul>
-
-  <p class="final-text">
-
-    Mucha suerte en tus partidas y
-    <strong>¡Que comience la guerra!</strong>
-
-  </p>
-
-</div>
+  </div>
 
 </div>

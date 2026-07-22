@@ -21,3 +21,11 @@
 
   z-index: 999;
 }
+
+@media(max-width: 900px)
+{
+  .visualizer-container
+  {
+    height: 100%;
+  }
+}

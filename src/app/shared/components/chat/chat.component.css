@@ -2,7 +2,7 @@
 
 .chat
 {
-    width: 100%;
+    width: 50%;
     padding-left: 5rem;
     padding-right: 5rem;
     height: 100%;
@@ -43,8 +43,10 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  
+  background: #835601;
 
-  background: #2a2a2a;
+  font-size: larger;
 
   border-bottom: 1px solid #3a3a3a;
 
@@ -76,11 +78,15 @@
 
   height: 80vh;
   max-height: 80vh;
+  background: #c07d00;
+  border: 3px solid #794e00;
+  border-radius: 10px;
+
 
 }
 
 .message {
-  background: #313131;
+  background: #835601;
 
   border-radius: 10px;
 
@@ -93,6 +99,11 @@
   max-width: 100%;
 
   word-break: break-word;
+}
+
+.mine
+{
+  align-self: flex-end;
 }
 
 .player-name {

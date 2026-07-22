@@ -19,9 +19,27 @@ export class HomeComponent implements OnInit {
 
   selectedDeck?: Deck;
 
+  sugestion: string = "";
+
   decks: Deck[] = [];
 
   numberOfPlayers: number = 2;
+
+  sendSugestion() {
+
+    //TODO: SEND
+
+    this.sugestion = "";
+  }
+
+  suggestionKeyPress(key: string)
+  {
+    if (key === "Enter")
+    {
+      this.sendSugestion()
+    }
+  }
+
 
   constructor(
     private ws: WebsocketService,
