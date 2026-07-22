@@ -1,0 +1,40 @@
+<div class="help-window" *ngIf="isOpen">
+    <div class="help-container">
+        
+    <h2 class="title">VENTANA DE AYUDA</h2>
+
+    <span class="text">Este es un resumen básico del juego</span>
+
+    <h3 class="subtitle">OBJETIVOS</h3>
+
+    <p class="text">Tienes dos formas de ganar: la primera, dejando la vida del rival (el barril) a 0 o menos. La segunda, haciendo que se quede sin cartas. El jugador que intente robar una carta y no le queden más perderá automáticamente. Cuando solo quede un jugador en pie, ese será el ganador</p>
+
+    <p class="text">Cada jugador dispone de un turno. Cada dos turnos, automáticamente todos los jugadores robarán una carta. Solo puedes hacer una acción por turno</p>
+
+    <h3 class="subtitle">ACCIONES DENTRO DE UN TURNO</h3>
+
+    <ul class="text">
+        <li>Jugar una carta: eliges la carta de la mano. Si es una unidad, después tendrás que marcar dónde quieres que se quede dentro de la mesa, en uno de los cuatro huecos correspondientes. Solo se puede seleccionar un hueco que no esté vacío</li>
+
+        <li>Atacar con una carta: elige la unidad en mesa, y después su objetivo, que puede ser una unidad del rival o la vida del rival</li>
+
+        <li>Robar una carta: haz click en tu mazo, que se encuentra a la izquierda, para robar una carta.</li>
+
+        <li>Activar una habilidad: si la unidad en mesa, o el último hechizo que hayas jugado, dispone del icono de una bombilla, significa que tiene una habilidad. Hacer doble click sobre esa carta activará esa habilidad. IMPORTANTE: activar una habilidad no consume turno, pero sí que consume usos de esa habilidad; si una habilidad tiene 0 usos ya no se podrá utilizar</li>
+    </ul>
+
+    <h3 class="subtitle">COSAS A SABER</h3>
+
+    <ul class="text">
+        <li>Puedes ver información de las cartas haciendo click derecho sobre ellas, o manteniendo el dedo si estás en el móvil</li>
+
+        <li>Puedes moverte por la mesa pulsando y arrastrando.</li>
+
+        <li>Suerte en tus partidas :)</li>
+    </ul>
+
+    <button (click)="close()">Cerrar</button>
+    </div>
+
+
+</div>

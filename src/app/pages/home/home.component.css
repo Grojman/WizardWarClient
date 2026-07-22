@@ -123,6 +123,10 @@
 
 .info-panel {
 
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
   max-width: 900px;
 
   padding: 2rem;
@@ -134,6 +138,18 @@
   line-height: 1.6;
 
   animation: fadeIn 1.2s ease;
+
+  & > button
+  {
+    align-self: center;
+    font-family: "Text Font 3";
+    font-size: larger;
+  }
+
+  & > textarea
+  {
+    min-height: 40vh;
+  }
 
 }
 

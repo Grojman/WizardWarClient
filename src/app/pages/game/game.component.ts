@@ -16,6 +16,7 @@ import { GameStateService } from '../../core/services/game-state.service';
 
 import { SPELL, UNIT } from '../../core/config/game-data-config';
 import { AudioService } from '../../core/services/audio.service';
+import { HelpComponent } from '../../shared/components/help/help.component';
 
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
@@ -585,10 +586,17 @@ chat!: ChatComponent;
 @ViewChild('settings')
 settings!: SettingsComponent;
 
+@ViewChild('helpwindow')
+help!: HelpComponent;
+
 @ViewChild('gamecheck')
 cardCheck!: GameCardCheckComponent;
 
 
+openHelp()
+{
+  this.help.open();
+}
 
 @ViewChild('winnerboard')
 winnerboard!: ElementRef<HTMLElement>;

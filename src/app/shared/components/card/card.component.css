@@ -17,6 +17,7 @@
 
   background-repeat: no-repeat;
   background-size: cover;
+
 }
 
 .attacking
@@ -82,6 +83,8 @@
   background-position: center;
   display: flex;
   flex-direction: column;
+  background-image: url('/images/cards/placeholder.png');
+
 
 }
 .card-front > *:not(.cannot-play) {

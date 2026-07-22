@@ -23,6 +23,7 @@ import { PlayerComponent } from './shared/components/player/player.component';
 import { ChatComponent } from './shared/components/chat/chat.component';
 import { GameCardCheckComponent } from './shared/components/game-card-check/game-card-check.component';
 import { SettingsComponent } from './shared/components/settings/settings.component';
+import { HelpComponent } from './shared/components/help/help.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { SettingsComponent } from './shared/components/settings/settings.compone
     PlayerComponent,
     ChatComponent,
     GameCardCheckComponent,
+    HelpComponent
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [

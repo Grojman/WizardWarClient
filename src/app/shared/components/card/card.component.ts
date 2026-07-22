@@ -23,6 +23,7 @@ export class CardComponent implements OnChanges, OnInit {
 
   ngOnInit(): void {
     this.faceDown = this.card === null;
+    this.loadCardimage(); 
   }
 
   @Input()
@@ -62,6 +63,35 @@ export class CardComponent implements OnChanges, OnInit {
 
   onMouseLeave() {
     this.boundingRect = undefined;
+  }
+
+  backgroundImage = ''
+
+  loadCardimage()
+  {
+    const img = new Image();
+
+  const src = '/images/cards/' + (this.card?.imageUrl ?? 'reverse_card.svg');
+
+  if(this.faceDown)
+  {
+    this.backgroundImage = `url('${src}')`;
+    return;
+  }
+
+  img.onload = () => {
+    console.log('carga');
+    this.backgroundImage = `url('${src}')`;
+  };
+
+  img.onerror = () => {
+    console.log('error');
+    this.backgroundImage = `url('/images/cards/placeholder.png')`;
+  };
+
+  img.src = src;
+
+    
   }
 
   onMouseMove(event: MouseEvent) {

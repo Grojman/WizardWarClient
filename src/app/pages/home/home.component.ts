@@ -27,14 +27,17 @@ export class HomeComponent implements OnInit {
 
   sendSugestion() {
 
-    //TODO: SEND
+    this.ws.send({
+      "$type": "SendSuggestion",
+      "Suggestion": this.sugestion
+    })
 
     this.sugestion = "";
   }
 
   suggestionKeyPress(key: string)
   {
-    if (key === "Enter")
+    if (key === "")
     {
       this.sendSugestion()
     }
