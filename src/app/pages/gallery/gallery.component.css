@@ -19,11 +19,6 @@
 }
 
 
-.card-amount
-{
-  
-}
-
 .gallery-header {
 
   text-align: center;
@@ -117,6 +112,12 @@
   flex: 1;
   overflow-y: scroll;
   gap: 1rem;
+
+  & > div {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  };
 
 }
 

@@ -4,11 +4,23 @@
 
   flex-direction: column;
 
-  height: 100vh;
-
-  
+  height: 100vh;  
 
   background-size: contain;
+
+  animation: 0.5s fadeIn;
+
+  
+}
+
+@keyframes fadeIn {
+  0%{
+    opacity: 0;
+  }
+  100%
+  {
+    opacity: 1;
+  }
 }
 
 .board-column {
@@ -171,6 +183,7 @@
   overflow: visible;
 
   transition: transform 300ms ease;
+
 }
 
 .player-slot {

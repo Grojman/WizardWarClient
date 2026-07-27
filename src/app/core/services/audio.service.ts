@@ -6,6 +6,25 @@ import { AudioSettingsService } from './audio-settings-service';
 })
 export class AudioService {
 
+  private audioContext = new AudioContext();
+  private sfxCache = new Map<string, AudioBuffer>();
+  private async getBuffer(path: string): Promise<AudioBuffer> {
+
+    const cached = this.sfxCache.get(path);
+
+    if (cached) {
+      return cached;
+    }
+
+    const response = await fetch(path);
+    const data = await response.arrayBuffer();
+
+    const buffer = await this.audioContext.decodeAudioData(data);
+
+    this.sfxCache.set(path, buffer);
+
+    return buffer;
+  }
   // Lista de canciones
   private playlist: string[] = [
     'audio/music/song1.mp3',
@@ -68,6 +87,15 @@ export class AudioService {
     });
   }
 
+  playSong(song: string)
+  {
+    if (!this.musicEnabled) return;
+    this.loadSong(song);
+    this.music.play().catch(() => {
+      // Algunos navegadores bloquean el autoplay
+    });
+  }
+
   stopMusic(): void {
     this.music.pause();
     this.music.currentTime = 0;
@@ -85,6 +113,8 @@ export class AudioService {
       // Algunos navegadores bloquean el autoplay
     });
   }
+
+
 
   nextSong(): void {
     this.playNextSong();
@@ -111,19 +141,35 @@ export class AudioService {
   // Efectos
   // ---------------------------
 
-  playSfx(path: string): void {
+  playSfx(path: string, addVariation: boolean = true): void {
 
     if (!this.sfxEnabled) return;
 
-    const sound = new Audio(path);
+    // Algunos navegadores suspenden el AudioContext
+    if (this.audioContext.state === "suspended") {
+      this.audioContext.resume();
+    }
 
-    sound.volume = this.sfxVolume;
-    
-    sound.play().catch(() => {});
+    this.getBuffer(path).then(buffer => {
 
-    sound.onended = () => {
-      sound.remove();
-    };
+      const source = this.audioContext.createBufferSource();
+      source.buffer = buffer;
+
+      if(addVariation)
+      {
+        // Variación aleatoria del pitch ±8%
+        source.playbackRate.value = 0.92 + Math.random() * 0.16;
+      }
+      
+      const gain = this.audioContext.createGain();
+      gain.gain.value = this.sfxVolume;
+
+      source.connect(gain);
+      gain.connect(this.audioContext.destination);
+
+      source.start();
+
+    }).catch(() => {});
   }
 
   // ---------------------------
@@ -148,8 +194,14 @@ export class AudioService {
   }
 
   private loadCurrentSong(): void {
+    this.loadSong(this.playlist[this.currentSong]);
+  }
 
-    this.music.src = this.playlist[this.currentSong];
+  
+
+  private loadSong(song: string)
+  {
+    this.music.src = song;
     this.music.load();
     this.music.volume = this.musicVolume;
     this.music.muted = !this.musicEnabled;

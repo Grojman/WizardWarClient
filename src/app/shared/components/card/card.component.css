@@ -1,308 +1,387 @@
-.card {
-
-  --x-rotation: 0deg;
-  --y-rotation: 0deg;
-  --y-translate: 0;
-
-  perspective: 1000px;
-
-  border-radius: 10px;
-
-  /* box-shadow: 3px 1px 5px 5px rgba(0, 0, 0, 0.3); */
-
-  width: 7vw;
-  height: 21vh;
-
-  transition: transform 0.2s ease-out;
-
-  background-repeat: no-repeat;
-  background-size: cover;
-
-}
-
-.attacking
-{
-    box-shadow: 0 0 10px 2px rgba(255, 239, 8, 0.8);
-}
-
-.target
-{
-    box-shadow: 0 0 10px 2px rgba(163, 192, 2, 0.8);
-
-}
-
-@media (max-width: 800px) {
   .card {
-    width: 7rem;
-    height: 10rem;
+
+    --x-rotation: 0deg;
+    --y-rotation: 0deg;
+    --y-translate: 0;
+
+    perspective: 30px;
+    perspective-origin: 20% 30%;
+
+    border-radius: 10px;
+
+    /* box-shadow: 3px 1px 5px 5px rgba(0, 0, 0, 0.3); */
+
+    width: 7vw;
+    height: 21vh;
+
+    transition: transform 0.2s ease-out;
+
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    overflow: visible;
+
   }
-}
 
-.spell
-{
-  border-radius: 50% / 20%;
-}
+  .attacking
+  {
+      box-shadow: 0 0 10px 2px rgba(255, 239, 8, 0.8);
+  }
 
-.card-can-be-selected
-{
-  --y-translate: -5vh !important;
+  .target
+  {
+      box-shadow: 0 0 10px 2px rgba(163, 192, 2, 0.8);
 
-}
+  }
 
-.card.can-hover:hover {
+  @media (max-width: 800px) {
+    .card {
+      width: 7rem;
+      height: 10rem;
+    }
+  }
 
-  transform:
+  .spell
+  {
+    border-radius: 50% / 20%;
+  }
 
-    rotateX(var(--x-rotation))
+  .card-can-be-selected
+  {
+    --y-translate: -5vh !important;
 
-    rotateY(var(--y-rotation))
-    translateY(var(--y-translate))
+  }
+
+
+  .card.can-hover:hover {
+
+    transform:
+
+      rotateX(var(--x-rotation))
+
+      rotateY(var(--y-rotation))
+      translateY(var(--y-translate))
+      
+      scale(1.1);
+      
+  }
+
+  .card.can-hover:hover .attack-value {
+    transform: translate(-50%, 0)
+  }
+
+  .card.can-hover:hover .health {
+    transform: translate(-50%, 0)
+  }
+  /* INNER */
+
+  .card-inner {
+
+    width: 100%;
+    height: 100%;
+
+    position: relative;
+
+    transform-style: preserve-3d;
+
+    transition: transform 0.6s;
+
     
-    scale(1.1);
+
+  }
+
+
+  .card-front {
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    background-image: url('/images/cards/placeholder.png');
+
+
+  }
+  .card-front > *:not(.cannot-play) {
+    font-size: large;
+  }
+
+  .card-name
+  {
+    background-color: bisque;
+    color: slategray;
+    text-align: center;
+    font-size: medium;
+    margin: 0;
+    margin-bottom:  auto;
+  }
+
+
+  .card-back {
+
+    background-color: #3a281aff;
+    background-size: contain;
+    background-position: center;
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-weight: bold;
+
+    color: white;
+
+  }
+
+  .card-back-design
+  {
+    text-align: center;
+  }
+
+
+  .card-art {
+
+    flex-grow: 1;
+
+    border-radius: 10px 10px 0 0;
+    background-size:auto;
+    background-repeat: no-repeat;
+    background-position: center;
+
+
+    margin: 0;
+
+  }
+
+
+  .card-footer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      bottom: 0;
+  }
+
+  .attack-value,
+  .health {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      transition: all 0.25s;
+
+      color: white;
+      font-weight: bold;                                                                
+      
+      width: 3rem;
+      height: 3rem;
+      z-index: 20;
+      bottom: 0;
+      /* opacity: 0.8 */
+
+      /* border-radius: 10px; */
+    }
+  .attack-value::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+
+      background: #d39a42;
+      clip-path: polygon(0 0, 65% 0, 100% 100%, 34% 100%);
+
+      z-index: -1;
+  }
+
+  .attack-value
+  {                                                                               
+    /* clip-path: polygon(0 0, 0% 100%, 100% 100%); */
+    /* clip-path: polygon(0 0, 65% 0, 100% 100%, 34% 100%); */
+    transform: translate(-25%, 25%);
+
+    & > p {
+      transform: skew(12deg);
+      font-family: 'Text Font 3';
+
+      /* transform: rotate(-20deg) */
+    }
+  }
+
+  .health {
+    /* clip-path: polygon(25% 0%, 100% 0%, 75% 100%, 0% 100%); */
     
+    left: 100%;
 
-}
+    transform: translate(-75%, 25%);
 
-/* INNER */
+    & > p {
+      transform: skew(-12deg);
+      font-family: 'Text Font 3';
 
-.card-inner {
+      /* transform: rotate(20deg) */
+    }
 
-  width: 100%;
-  height: 100%;
+  }
+  .health::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      clip-path: polygon(100% 0, 35% 0, 0 100%, 66% 100%);
+    /* clip-path: polygon(100% 0, 0% 100%, 100% 100%); */
+      background: crimson;
 
-  position: relative;
-
-  transform-style: preserve-3d;
-
-  transition: transform 0.6s;
-
-}
-
-
-.card-front {
-  background-position: center;
-  display: flex;
-  flex-direction: column;
-  background-image: url('/images/cards/placeholder.png');
-
-
-}
-.card-front > *:not(.cannot-play) {
-  color: #ffffff;
-  font-size: large;
-  background: rgba(61, 61, 61, 0.3);
-  align-self: center;
-}
-
-.card-name
-{
-  text-align: center;
-  font-size: medium;
-  margin: 0;
-  margin-bottom:  auto;
-}
-
-
-.card-back {
-
-  background-color: #3a281aff;
-  background-size: contain;
-  background-position: center;
-  display: flex;
-
-  align-items: center;
-  justify-content: center;
-
-  font-weight: bold;
-
-  color: white;
-
-}
-
-.card-back-design
-{
-  text-align: center;
-}
-
-
-.card-art {
-
-  flex-grow: 1;
-
-  border-radius: 10px 10px 0 0;
-  background-size:auto;
-  background-repeat: no-repeat;
-  background-position: center;
-
-
-  margin: 0;
-
-}
-
-
-.card-footer {
-
-  display: flex;
-
-  justify-content: space-between;
-
-  font-size: normal;
-
-  padding: 0.25rem;
-
-}
-
-
-.shine {
-
-  pointer-events: none;
-
-  position: absolute;
-
-  inset: 0;
-
-}
-
-
-.card:hover .shine {
-
-  background-color:
-
-    radial-gradient(
-
-      at var(--x) var(--y),
-
-      rgba(255,255,255,0.3) 20%,
-
-      transparent 80%
-
-    );
-
-}
-
-.card-info
-{
-  display: flex;
-  gap: 0.1rem;
-  justify-content: center;
-}
-
-.selected
-{
-  transform: translateY(-3rem);
-}
-
-.enter-animation {
-  animation: slide-fade 1s;
-}
-
-.leave-animation
-{
-  animation: slide-fade reverse 1s;
-}
-
-@keyframes slide-fade {
-  from {
-    opacity: 0.3;
-    transform:
-      translateY(-200px)
-      rotateZ(-45deg);
+      z-index: -1;
   }
 
-  to {
-    opacity: 1;
-    transform:
-      translateY(0)
-      rotateZ(0);
-  }
-}
-
-.cannot-play
-{
-  height: 100%;
-  background-image: url("/images/board/cannot_play.svg") !important;
-  background-size: contain ;
-  background-position: center;
-  background-repeat:  no-repeat;
-}
-
-.attack-value,
-.health {
-  position: relative;
-  overflow: visible;
-}
 
 
-.floating-number {
-  white-space: nowrap;
-  position: absolute;
-
-  left: 50%;
-  bottom: 100%;
-  line-height: 1;
-
-  transform: translateX(-50%);
-
-  font-weight: bold;
-
-
-  font-size: 2rem;
-
-  pointer-events: none;
-
-  animation: floatUpFade 0.75s ease-out forwards;
-
-}
-
-
-.floating-number.positive {
-  color: #00c552;
-}
-
-.floating-number.negative {
-  color: #ab1100;
-}
-
-
-@keyframes floatUpFade {
-
-  0% {
-    opacity: 1;
-    transform:
-      translate(-50%, 0px)
-      scale(1);
-  }
-
-  50% {
-    opacity: 1;
-    transform:
-      translate(-50%, -20px)
-      scale(1.2);
-  }
-
-  100% {
-    opacity: 0;
-    transform:
-      translate(-50%, -40px)
-      scale(1);
-  }
-
-}
-
-@media (max-width: 900px)
-{
-  .card-can-be-selected .card-name
+  .card-info
   {
-    display: none;
+    position: absolute;
+    bottom: -10%;
+    left: 50%;
+    background: none;
+    transform: translateX(-50%);
+    display: flex; 
+    color: white;
   }
 
-  .card-front > *:not(.cannot-play)
+  .card-info.active > p
   {
-    font-size: small !important;
+    /* clip-path: polygon(50% 100%, 0 40%, 100% 39%); */
+    /* clip-path: polygon(50% 100%, 0 0, 100% 0); */
+    /* clip-path: polygon(51% 75%, 0 0, 100% 0); */
+    clip-path: polygon(50% 95%, 0 15%, 100% 15%);
+    background-color: green;
+    animation: heartbeat 2s ease-in-out infinite;
+    padding: 0.5rem 1rem;
+
+  }
+  @keyframes heartbeat {
+    0% {
+      transform: scale(1);
+    }
+
+    14% {
+      transform: scale(1.15);
+    }
+
+    28% {
+      transform: scale(1);
+    }
+
+    42% {
+      transform: scale(1.12);
+    }
+
+    70% {
+      transform: scale(1);
+    }
+
+    100% {
+      transform: scale(1);
+    }
   }
 
-  .card-footer
+  .selected
   {
-    font-size: small;
+    transform: translateY(-3rem);
   }
-}
+
+  .enter-animation {
+    animation: slide-fade 1s;
+  }
+
+  .leave-animation
+  {
+    animation: slide-fade reverse 1s;
+  }
+
+  @keyframes slide-fade {
+    from {
+      opacity: 0.3;
+      transform:
+        translateY(-200px)
+        rotateZ(-45deg);
+    }
+
+    to {
+      opacity: 1;
+      transform:
+        translateY(0)
+        rotateZ(0);
+    }
+  }
+
+  .cannot-play
+  {
+    height: 100%;
+    background-image: url("/images/board/cannot_play.svg") !important;
+    background-size: contain ;
+    background-position: center;
+    background-repeat:  no-repeat;
+  }
+
+
+
+
+  .floating-number {
+    white-space: nowrap;
+    position: absolute;
+
+    line-height: 1;
+    left: 50%;
+    bottom: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    font-size: 3rem;
+    pointer-events: none;
+    animation: floatUpFade 0.75s ease-out forwards;
+    z-index: 9999;
+  }
+
+
+  .floating-number.positive {
+    color: #00c552;
+  }
+
+  .floating-number.negative {
+    color: #ab1100;
+  }
+
+
+  @keyframes floatUpFade {
+
+    0% {
+      opacity: 1;
+      transform:
+        scale(1);
+    }
+
+    50% {
+      opacity: 1;
+      transform:
+        scale(1.5);
+    }
+
+    100% {
+      opacity: 0;
+      transform:
+        scale(1);
+    }
+
+  }
+
+  @media (max-width: 900px)
+  {
+    .card-can-be-selected .card-name
+    {
+      display: none;
+    }
+
+    .card-front > *:not(.cannot-play)
+    {
+      font-size: small !important;
+    }
+
+    .card-footer
+    {
+      font-size: small;
+    }
+  }

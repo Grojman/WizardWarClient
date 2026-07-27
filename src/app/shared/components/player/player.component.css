@@ -1,8 +1,12 @@
+.info-section
+{
+  /* transform-style: preserve-3d; */
+}
+
 .dead
 {
   filter: grayscale(100%)
 }
-
 
 .effects-section
 {
@@ -93,7 +97,6 @@
     gap: 3rem;
   align-items: center;
   justify-content: center;
-
   display: flex;
 
   padding: 0.25rem;
@@ -117,14 +120,17 @@
 }
 
 .board-row {
+  /* will-change: transform; */
+  /* transform-style: preserve-3d; */
+  /* backface-visibility: hidden; */
   align-items: center;
   display: flex;
 
+
   justify-content: center;
 
-  gap: 10px;
+  gap: 1rem;
 }
-
 .separator
 {
   width: 0.25rem;

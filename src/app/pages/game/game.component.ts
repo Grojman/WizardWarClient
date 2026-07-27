@@ -144,6 +144,10 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private applyTurnAndEffects(snapshot: Game | null): void {
     this.gameStateService.applyTurnAndEffects(this.gameState, snapshot);
+    if (this.gameState.Me.IsMyTurn)
+    {
+      this.audio.playSfx('audio/ding.mp3', false)
+    }
   }
 
 getTargetElement(
@@ -235,11 +239,11 @@ getDeckId(id: string): string {
   return id + '-deck'
 } 
 
-cardEventPlayed(cardId: string, playerId: string)
+  async cardEventPlayed(cardId: string, playerId: string)
 {
   const player = this.getPlayer(playerId);
   const i = player.Board.findIndex(n => n?.id === cardId);
-
+  await this.animationService.animateSkillEfect(cardId);
   if(i !== -1)
   {
     this.gameStateService.consumeBoardEffect(player, cardId);
@@ -265,7 +269,7 @@ unreadNotificationCounter: number = 0;
           player.Health.changeHealth(-player.Health.displayHealth, 500)
           break;
         case "CardEventPlayed":
-          this.cardEventPlayed(event.Card, event.PlayerSource);  
+          await this.cardEventPlayed(event.Card, event.PlayerSource);  
           break;
         case "CardAttacked":
           await this.animateAttack(
@@ -377,6 +381,7 @@ findElement(id: string): HTMLElement{
 ngOnInit(): void {
   this.animationLayer = document.querySelector(".animation-layer") as HTMLElement;
   this.ws.subscribe(this.processMessage)
+  this.audio.playSfx('/audio/game_start.wav')
 }
 
 ngOnDestroy(): void {
@@ -623,9 +628,9 @@ endGame(winner: string)
   // Mostrar overlay antes de animar
   overlay.style.display = 'flex';
 
+  this.audioService.stopMusic();
   if (this.storedGameState.Me.Id === player.Id)
   {
-    this.audioService.stopMusic();
     this.audioService.playSfx("audio/win.wav");
   }
 

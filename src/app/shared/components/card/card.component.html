@@ -1,3 +1,4 @@
+
   <div
     *ngIf="card || faceDown"
     class="card"
@@ -14,28 +15,17 @@
     [class.spell]="card?.type === spell"
     [style.backgroundImage]="backgroundImage"
   >
-    <p 
+    
+ 
+   <p 
     *ngIf="!faceDown"
     class="title card-name ">
       {{ card?.name }}
     </p>
-
     <div class="card-info"
-    *ngIf="!faceDown"
+    *ngIf="!faceDown && card?.hasEffect"
+    [class.active]="card?.hasEffect && card?.effectTimes || 0 > 0"
     >
-
-      <i
-      *ngIf="card?.description !== ''"
-      class="fa-solid fa-circle-info"></i>
-
-      <i 
-      *ngIf="card?.hasEffect && card?.effectTimes || 0 > 0"
-      class="fa-solid fa-lightbulb"></i>
-
-      <i 
-      *ngIf="card?.hasEffect && card?.effectTimes === 0"
-      class="fa-regular fa-lightbulb"></i>
-
       <p *ngIf="card?.hasEffect && card?.effectTimes !== -1">
         {{ card?.effectTimes }}
       </p>
@@ -45,25 +35,33 @@
     <footer class="card-footer" *ngIf="card?.type == unit && !faceDown">
 
       <span class="attack-value">
-        <i class="fa-solid fa-hand-fist"></i> 
-        {{ card?.attack }}
+        <!-- <i class="fa-solid fa-hand-fist"></i>  -->
+         <p>
+
+           {{ card?.attack }}
+         </p>
 
         <span
-          *ngIf="card?.attackChanged"
+        *ngIf="card?.attackChanged"
           class="floating-number attack-change text"
           [class.positive]="(card?.attackChangedAmount || 0) > 0"
           [class.negative]="(card?.attackChangedAmount || 0) < 0"
         >
           {{ (card?.attackChangedAmount || 0) > 0 ? '+' : '' }}
           {{ card?.attackChangedAmount }}
+          
+
         </span>
 
       </span>
 
       <span class="health">
 
-        <i class="fa-solid fa-heart"></i>
-        {{ card?.health }}
+        <p>
+          {{ card?.health }}
+
+        </p>
+        <!-- <i class="fa-solid fa-heart"></i> -->
 
         <span
           *ngIf="card?.healthChanged"

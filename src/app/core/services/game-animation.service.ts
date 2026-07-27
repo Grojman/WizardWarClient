@@ -26,100 +26,164 @@ export class GameAnimationService {
     };
   }
 
-  async animateAttack(
-    attackerElement: HTMLElement,
-    targetElement: HTMLElement,
-    targetPlayer: { Health: { changeHealth: (amount: number, duration: number) => void } },
-    targetIndex: number,
-    targetType: 'BOARD' | 'PLAYER',
-    attackerDamage: number,
-    defenderDamage: number,
-    attackerPlayer: { Board: Array<{ id: string; changeHealth: (amount: number, duration: number) => void } | null> },
-    attackerId: string,
-  ): Promise<void> {
-    attackerElement.style.transformOrigin = '50% 100%';
-    targetElement.style.transformOrigin = '50% 100%';
-    attackerElement.style.willChange = 'transform, filter';
-    targetElement.style.willChange = 'transform, filter';
+async animateAttack(
+  attackerElement: HTMLElement,
+  targetElement: HTMLElement,
+  targetPlayer: { Health: { changeHealth: (amount: number, duration: number) => void } },
+  targetIndex: number,
+  targetType: 'BOARD' | 'PLAYER',
+  attackerDamage: number,
+  defenderDamage: number,
+  attackerPlayer: { Board: Array<{ id: string; changeHealth: (amount: number, duration: number) => void } | null> },
+  attackerId: string,
+): Promise<void> {
+  attackerElement.style.transformOrigin = '50% 100%';
+  targetElement.style.transformOrigin = '50% 100%';
+  attackerElement.style.willChange = 'transform, filter';
+  targetElement.style.willChange = 'transform, filter';
 
-    const attackerRect = attackerElement.getBoundingClientRect();
-    const targetRect = targetElement.getBoundingClientRect();
-    const attackerCenterX = attackerRect.left + attackerRect.width / 2;
-    const attackerCenterY = attackerRect.top + attackerRect.height / 2;
-    const targetCenterX = targetRect.left + targetRect.width / 2;
-    const targetCenterY = targetRect.top + targetRect.height / 2;
-    const dx = targetCenterX - attackerCenterX;
-    const dy = targetCenterY - attackerCenterY;
-    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
-    const swingAngle = Math.max(-34, Math.min(34, angle * 0.14));
-    const lift = dy > 0 ? 8 : -8;
+  const attackerRect = attackerElement.getBoundingClientRect();
+  const targetRect = targetElement.getBoundingClientRect();
 
-    const swing = attackerElement.animate(
-      [
-        { transform: 'rotate(0deg) translateY(0px) scale(1)', filter: 'brightness(1)' },
-        { transform: `rotate(${swingAngle}deg) translateY(${lift}px) scale(1.03)`, filter: 'brightness(1.15)' },
-      ],
-      {
-        duration: this.animationSettingsService.getAdjustedDuration(240),
-        easing: 'ease-out',
-      },
-    );
+  const attackerCenterX = attackerRect.left + attackerRect.width / 2;
+  const attackerCenterY = attackerRect.top + attackerRect.height / 2;
+  const targetCenterX = targetRect.left + targetRect.width / 2;
+  const targetCenterY = targetRect.top + targetRect.height / 2;
 
-    await swing.finished;
+  const dx = targetCenterX - attackerCenterX;
+  const dy = targetCenterY - attackerCenterY;
 
-    const pulse = targetElement.animate(
-      [
-        { transform: 'scale(1)', filter: 'brightness(1)' },
-        { transform: 'scale(1.5)', filter: 'brightness(1.25)' },
-        { transform: 'scale(1)', filter: 'brightness(1)' },
-      ],
-      {
-        duration: this.animationSettingsService.getAdjustedDuration(360),
-        easing: 'ease-out',
-      },
-    );
+  const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+  const swingAngle = Math.max(-34, Math.min(34, angle * 0.14));
+  const lift = dy > 0 ? 8 : -8;
 
-    const dash = attackerElement.animate(
-      [
-        { transform: 'translateY(0px) rotate(0deg) scale(1)' },
-        { transform: `translate(${dx * 0.6}px, ${dy * 0.6}px) rotate(${swingAngle * 0.8}deg) scale(1.02)` },
-        { transform: `translate(${dx}px, ${dy}px) rotate(${swingAngle}deg) scale(0.96)` },
-        { transform: 'translate(0px, 0px) rotate(0deg) scale(1)' },
-      ],
-      {
-        duration: this.animationSettingsService.getAdjustedDuration(500),
-        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-      },
-    );
+  // Movement tuning
+  let attackerTravel = 0.50;   // Distance attacker travels toward target
+  const attackerRecoil = 0.45;   // Distance after impact before returning
 
-    await new Promise((resolve) => setTimeout(resolve, this.animationSettingsService.getAdjustedDuration(220)));
+  let targetTravel = 0.50;     // Distance target lunges forward
+  let targetRecoil = 0.45;     // Distance after impact before returning
 
-    switch (targetType) {
-      case 'PLAYER':
-        targetPlayer.Health.changeHealth(-attackerDamage, 500);
-        break;
-      case 'BOARD':
-        if (targetPlayer && targetIndex >= 0) {
-          const boardTarget = targetPlayer as unknown as { Board: Array<{ changeHealth: (amount: number, duration: number) => void } | null> };
-          boardTarget.Board[targetIndex]?.changeHealth?.(-attackerDamage, 500);
-        }
-        const attackerIndex = attackerPlayer.Board.findIndex((card) => card?.id === attackerId);
-        if (attackerIndex !== -1) {
-          attackerPlayer.Board[attackerIndex]?.changeHealth?.(-defenderDamage, 500);
-        }
-        break;
-    }
-
-    this.audioService.playSfx("audio/sound1.mp3")
-    await Promise.all([dash.finished, pulse.finished]);
-
-
-
-    attackerElement.style.transform = '';
-    attackerElement.style.filter = '';
-    targetElement.style.transform = '';
-    targetElement.style.filter = '';
+  if (targetType === 'PLAYER')
+  {
+    attackerTravel = 1;
+    targetTravel = 0;
+    targetRecoil = 0;
   }
+
+  const swing = attackerElement.animate(
+    [
+      { transform: 'rotate(0deg) translateY(0px) scale(1)', filter: 'brightness(1)' },
+      { transform: `rotate(${swingAngle}deg) translateY(${lift}px) scale(1.03)`, filter: 'brightness(1.15)' },
+    ],
+    {
+      duration: this.animationSettingsService.getAdjustedDuration(240),
+      easing: 'ease-out',
+    },
+  );
+
+  await swing.finished;
+
+  const pulse = targetElement.animate(
+    [
+      { filter: 'brightness(1)' },
+      { filter: 'brightness(1.3)' },
+      { filter: 'brightness(1)' },
+    ],
+    {
+      duration: this.animationSettingsService.getAdjustedDuration(360),
+      easing: 'ease-out',
+    },
+  );
+
+  const attackerDash = attackerElement.animate(
+  [
+    {
+      transform: 'translate(0px,0px) rotate(0deg) scale(1)',
+    },
+    {
+      transform: `translate(${dx * attackerTravel}px, ${dy * attackerTravel}px)
+                  rotate(${swingAngle}deg) scale(1.06)`,
+      offset: 0.45,
+    },
+    {
+      transform: `translate(${dx * attackerRecoil}px, ${dy * attackerRecoil}px)
+                  rotate(${swingAngle * 0.5}deg) scale(1.02)`,
+      offset: 0.60,
+    },
+    {
+      transform: 'translate(0px,0px) rotate(0deg) scale(1)',
+    },
+  ],
+  {
+    duration: this.animationSettingsService.getAdjustedDuration(500),
+    easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+  },
+);
+
+const targetDash = targetElement.animate(
+  [
+    {
+      transform: 'translate(0px,0px) scale(1)',
+    },
+    {
+      transform: `translate(${-dx * targetTravel}px, ${-dy * targetTravel}px)
+                  scale(1.05)`,
+      offset: 0.45,
+    },
+    {
+      transform: `translate(${-dx * targetRecoil}px, ${-dy * targetRecoil}px)
+                  scale(1.02)`,
+      offset: 0.60,
+    },
+    {
+      transform: 'translate(0px,0px) scale(1)',
+    },
+  ],
+  {
+    duration: this.animationSettingsService.getAdjustedDuration(500),
+    easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+  },
+);
+
+  await new Promise(resolve =>
+    setTimeout(resolve, this.animationSettingsService.getAdjustedDuration(220))
+  );
+
+  switch (targetType) {
+    case 'PLAYER':
+      targetPlayer.Health.changeHealth(-attackerDamage, 500);
+      break;
+
+    case 'BOARD':
+      if (targetPlayer && targetIndex >= 0) {
+        const boardTarget = targetPlayer as unknown as {
+          Board: Array<{ changeHealth: (amount: number, duration: number) => void } | null>;
+        };
+        boardTarget.Board[targetIndex]?.changeHealth?.(-attackerDamage, 500);
+      }
+
+      const attackerIndex = attackerPlayer.Board.findIndex(card => card?.id === attackerId);
+      if (attackerIndex !== -1) {
+        attackerPlayer.Board[attackerIndex]?.changeHealth?.(-defenderDamage, 500);
+      }
+
+      break;
+  }
+
+  this.audioService.playSfx("audio/sound1.mp3");
+
+  await Promise.all([
+    attackerDash.finished,
+    targetDash.finished,
+    pulse.finished,
+  ]);
+
+  attackerElement.style.transform = '';
+  attackerElement.style.filter = '';
+  targetElement.style.transform = '';
+  targetElement.style.filter = '';
+}
 
   async animateDeckCard(startIcon: string, cardOrigin: string, deckEnd: string, duration: number): Promise<void> {
     await this.nextFrame();
@@ -172,6 +236,35 @@ export class GameAnimationService {
 
     icon.style.display = 'none';
   }
+
+async animateSkillEfect(card: string): Promise<void>
+{
+  const origin = document.querySelector(`[data-game-id="${card}"]`) as HTMLElement | null;
+  if (origin == null)
+  {
+    return;
+  }
+
+  const el = origin.querySelector('.card-info') as HTMLElement | null;
+  if (el == null)
+  {
+    return;
+  }
+
+  const animation = el.animate(
+    [
+      { transform: 'translateX(-50%) translateY(0) scale(1)' },
+      { transform: 'translateX(-50%) translateY(-2rem) scale(2) rotateZ(-180deg)' },
+      { transform: 'translateX(-50%) translateY(0) scale(1) rotateZ(0)' }
+    ],
+    {
+      duration: this.animationSettingsService.getAdjustedDuration(750),
+      easing: 'ease-in-out'
+    }
+  );
+
+  await animation.finished;
+}
 
   async createProjectile(source: string, target: string): Promise<void> {
     if (source === target) {

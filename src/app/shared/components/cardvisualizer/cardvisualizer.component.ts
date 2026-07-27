@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { Card } from '../../../models/card.model';
 import { CardDescriptionService } from '../../../core/services/card-description-service';
+import { CardComponent } from '../card/card.component';
 
 @Component({
   selector: 'app-cardvisualizer',
@@ -22,11 +23,18 @@ export class CardvisualizerComponent {
   @Input()
   set card(value: Card) {
     this._card = value;
+    requestAnimationFrame(() => {
+
+      this.cardelement.loadCardimage();
+    })
     this.updateScrollFade();
   }
   get card(): Card {
     return this._card;
   }
+
+@ViewChild('cardelement')
+cardelement!: CardComponent;
 
   @Input()
   large: boolean = true;
