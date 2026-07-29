@@ -10,6 +10,9 @@ import { Card } from '../../../models/card.model';
 })
 export class PlayerComponent {
   
+  @Input()
+  long: boolean = false;
+
   @Output()
   onDeckSelected: EventEmitter<any> = new EventEmitter();
 

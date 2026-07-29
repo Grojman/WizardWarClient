@@ -50,8 +50,6 @@ export class GameComponent implements OnInit, OnDestroy {
     return this.gameStateService.createInitialGameState();
   }
 
-  //PONER AQUÍ LAS FUNCIONES QUE SE SALVAN
-
   isUser(id: string): boolean
   {
     return this.gameState.Me.Id === id;
@@ -135,7 +133,6 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private initializeGameState(snapshot: Game): void {
     this.gameState = this.gameStateService.initializeFromSnapshot(snapshot);
-    this.scheduleTableLayout();
   }
 
   private syncPlayerTargets(): void {
@@ -230,9 +227,9 @@ async createAnimationDeckCardsAmount(startIcon: string, cardOrigin: string, deck
 }
 
 
-async createProyectile(source: string, target: string)
+async createProyectile(source: string, target: string, optionalTarget:string = "")
 {
-  await this.animationService.createProjectile(source, target);
+  await this.animationService.createProjectile(source, target, optionalTarget);
 }
 
 getDeckId(id: string): string {
@@ -254,6 +251,7 @@ getDeckId(id: string): string {
 
 firstime = true;
 unreadNotificationCounter: number = 0;
+changeHealthAnimationDuration: number = 500;
 
 
   playEvent(event: any): Promise<void> {
@@ -373,8 +371,6 @@ getCenter(el: HTMLElement) {
 }
 
 findElement(id: string): HTMLElement{
-  console.log("Buscando elemento: ", id);
-  console.log(document.querySelector(`[data-game-id="${id}"]`))
   return document.querySelector(`[data-game-id="${id}"]`) as HTMLElement;
 }
 
@@ -387,8 +383,6 @@ ngOnInit(): void {
 ngOnDestroy(): void {
   this.ws.clearSubscription();
 }
-
-changeHealthAnimationDuration: number = 500;
 
 selectedCard: Card | null = null;
 gameState: Game;
@@ -580,8 +574,6 @@ lastSpellClicked()
   }
 }
 
-currentTargetPos : string = ""
-
 @ViewChild('dialog')
 dialog!: MessageDialogComponent;
 
@@ -687,20 +679,6 @@ handleKeyboardEvent(event: KeyboardEvent) {
     this.openChat();
     return;
   }
-
-  if (this.gameState.Rivals.length === 1) {
-    if (event.key === 'ArrowLeft') {
-      event.preventDefault();
-      this.rotateBoardLeft();
-      return;
-    }
-
-    if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      this.rotateBoardRight();
-      return;
-    }
-  }
 }
 
 onMessageSent(text: string) {
@@ -726,223 +704,14 @@ safeSend(payload: any): void {
 }
 
 
-
-ngAfterViewInit() {
-  this.scheduleTableLayout();
-
-  
-}
-
-private measurePlayerBoard(): void {
-  const playerElement = this.playerRef?.nativeElement;
-
-  if (!playerElement) {
-    console.log('returning player ')
-    return;
-  }
-
-  const rect = playerElement.getBoundingClientRect();
-  console.log('it has width', rect.width);
-  console.log('it has size', rect.height);
-  this.playerBoardX = Math.max(rect.width || 0, 260);
-  this.playerBoardY = Math.max(rect.height || 0, 220);
-}
-
-private scheduleTableLayout(): void {
-  if (!this.gameState?.Me) {
-    return;
-  }
-
-  requestAnimationFrame(() => {
-    this.measurePlayerBoard();
-    this.prepareTableGame();
-  });
-
-  requestAnimationFrame(() => {
-    this.prepareScroll();
-  })
-
-}
-
-prepareScroll()
-{
-  window.scrollTo({
-    left: window.innerWidth / 2,
-    top: window.innerHeight / 2,
-    behavior: 'auto'
-  });
-
-}
-
-@HostListener('window:resize')
-onWindowResize(): void {
-  this.scheduleTableLayout();
-}
-
-calculateApotema(): number
-{
-  const playerX = this.playerBoardX;
-  const numPlayers = this.gameState.Rivals.length + 1;
-
-  // Ángulo en radianes
-  const angle = Math.PI / numPlayers;
-
-  return playerX / (2 * Math.tan(angle));
-}
-
-calculateRotationDegrees() : number
-{
-  const numPlayers = this.gameState.Rivals.length +1;
-  
-  return 360 / numPlayers;
-}
-
-
 @ViewChild('viewport')
 viewportRef!: ElementRef<HTMLDivElement>;
 
 @ViewChild('playerboard')
 playerRef!: ElementRef<HTMLDivElement>;
 
-distance: number = 0;
-rotation: number = 0;
-
-viewPortCenterY: number = 0;
-viewPortCenterX: number = 0;
-
-boardSizeY: number = 0;
-boardSizeX: number = 0;
 
 
-playerBoardX: number = 0;  //TODO: SUSTITUIRLO POR EL VALOR REAL
-playerBoardY: number = 0;  //TODO: SUSTITUIRLO POR EL VALOR REAL
-
-extraMargin: number = 0;
-
-extraOffSetY: number = 0;
-extraOffSetX: number = 0;
-
-shoudlRotatePlayers = false;
-
-getCircumradius(): number
-{
-  const side = this.playerBoardX;
-  const numPlayers = this.gameState.Rivals.length + 1;
-
-  return side / (2 * Math.sin(Math.PI / numPlayers));
-}
-
-prepareTableGame()
-{
-  this.rotation = this.calculateRotationDegrees();
-
-  if(this.gameState.Rivals.length === 1)
-  {
-    this.extraMargin = 0;
-    this.shoudlRotatePlayers = true;
-    this.rotation = 0;
-  } else {
-    // this.extraMargin = Math.max(0, this.playerBoardX * 0.6);
-    this.extraMargin = this.playerBoardY / 2;
-    this.shoudlRotatePlayers = false;
-  }
-
-  this.distance = this.calculateApotema() + this.extraMargin;
-  const radius = this.getCircumradius() + this.extraMargin
-
-  // const viewportWidth = Math.max(window.innerWidth, this.playerBoardX * 2.5);
-  // const viewportHeight = Math.max(window.innerHeight, this.playerBoardY * 2.5);
-  // const minimumBoardSize = Math.max(
-  //   viewportWidth,
-  //   viewportHeight,
-  //   this.playerBoardX,
-  //   this.playerBoardY,
-  //   (this.getCircumradius() + this.extraMargin) * 2
-  // );
-
-  const minimumBoardSize = this.gameState.Rivals.length === 1 ? this.playerBoardX * 2 : radius * 2;
-  const yRelation = this.gameState.Rivals.length === 1 ? 2 : 1;
-
-  this.boardSizeX = Math.ceil(minimumBoardSize);
-  this.boardSizeY = Math.ceil(minimumBoardSize / yRelation);
-
-  // if(this.shoudlRotatePlayers)
-  // {
-  //   this.boardSizeY = Math.max(this.boardSizeY, viewportHeight * 1.4, this.playerBoardY * 3);
-  // }
-
-  this.viewPortCenterY = this.boardSizeY / 2;
-  this.viewPortCenterX = this.boardSizeX / 2;
-
-  this.styles = [];
-
-  for (let index = 0; index < this.gameState.Rivals.length + 1; index++) {
-    this.getRivalStyle(index);
-  }
-}
-
-styles: any[] = []
-
-getRivalStyle(index: number)
-{
-  // Rotación total del rival
-  const rotationDeg = this.rotation * index;
-
-  // Conversión a radianes
-  const rotationRad = rotationDeg * (Math.PI / 180);
-
-  /**
-   * Centro del viewport
-   */
-  const centerX = this.viewPortCenterX;
-  const centerY = this.viewPortCenterY + this.extraOffSetY;
-  /**
-   * Descomposición del apotema
-   */
-  let offsetX = Math.sin(rotationRad) * this.distance;
-  let offsetY = Math.cos(rotationRad) * this.distance;
-
-  if(this.gameState.Rivals.length === 1)
-  {
-    offsetY += this.playerBoardY / 2 * (index === 1 ? -1 : 1);
-  }
-
-  /**
-   * Posición final del centro del tablero rival
-   */
-  const rivalCenterX = centerX + (-1* offsetX);
-  const rivalCenterY = centerY + (1 * offsetY);
-
-  /**
-   * Convertimos de centro a top-left
-   */
-  const x = rivalCenterX - (this.playerBoardX / 2);
-  const y = rivalCenterY - (this.playerBoardY / 2);
-
-  this.styles[index] = {
-    position: 'absolute',
-    left: `${x}px`,
-    top: `${y}px`,
-    transform: `rotate(${rotationDeg}deg)`
-  };
-}
-
-boardRotation = 0;
-
-resetTransform()
-{
-  this.boardRotation = 0;
-}
-
-rotateBoardLeft()
-{
-  this.boardRotation -= this.rotation;
-}
-
-rotateBoardRight()
-{
-  this.boardRotation += this.rotation;
-}
 private isDragging = false;
 private startX = 0;
 private startY = 0;

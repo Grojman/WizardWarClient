@@ -1,16 +1,10 @@
 .game-layout {
 
-  display: flex;
-
-  flex-direction: column;
-
-  height: 100vh;  
-
   background-size: contain;
 
   animation: 0.5s fadeIn;
 
-  
+
 }
 
 @keyframes fadeIn {
@@ -147,6 +141,11 @@
   z-index: 9999;
 }
 
+.reverse
+{
+  flex-direction: column-reverse !important;
+}
+
 .proyectile {
   background-image: url("/images/board/proyectile.svg");
   height: 22rem;
@@ -166,31 +165,24 @@
 }
 
 .table-container {
-  min-width: 100vw;
-  min-height: 100vh;
-
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  background-color: #231501;
-
   background-image: url("/images/board/board.png");
   background-position: center;
-  background-size: 100% 100%;
   background-repeat: repeat-y;
 
   overflow: visible;
 
   transition: transform 300ms ease;
-
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: fit-content;
+  min-width: 100vw;
 }
 
 .player-slot {
-  position: absolute;
   transform-origin: center center;
   overflow: visible;
-  z-index: 2;
   transition:
     left 300ms ease,
     top 300ms ease,

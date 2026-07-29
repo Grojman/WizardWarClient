@@ -1,6 +1,7 @@
 .info-section
 {
   /* transform-style: preserve-3d; */
+  gap: 2rem;
 }
 
 .dead
@@ -10,7 +11,7 @@
 
 .effects-section
 {
-  width: 10vw;
+  padding: 0 2rem;
   display: flex;
   flex-direction: column;
 }
@@ -23,14 +24,15 @@
 
 .effects-section
 {
-  height: 50vh;
+  /* height: 50vh; */
   max-height: 50vh;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  
+  width: 15rem;
+  max-width: 15rem;
 }
 
 .effects{
@@ -66,7 +68,10 @@
 {
     display: flex;
 }
-
+.long
+{
+  flex-direction: row !important;
+}
 .info-section
 {
     display: flex;
@@ -106,10 +111,9 @@
 .player-info
 {
   display: flex;
-  flex-direction: column;
   justify-content: space-around;
-  width: 10vw;
   align-items: center;
+  gap: 1rem;
 }
 
 .player-name
@@ -117,6 +121,8 @@
   text-align: center;
   color: whitesmoke;
   font-size: x-large;
+  width: 5vw;
+  max-width: 5vw;
 }
 
 .board-row {
@@ -142,11 +148,11 @@
 
 .target-player
 {
-  width: 5rem;
-  max-width: 5rem;
   font-size: xx-large;
   color:white;
   text-align: center;
+  width: 10rem;
+  max-width: 10rem;
 }
 
 .card-counter

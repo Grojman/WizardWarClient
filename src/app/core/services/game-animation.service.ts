@@ -266,7 +266,7 @@ async animateSkillEfect(card: string): Promise<void>
   await animation.finished;
 }
 
-  async createProjectile(source: string, target: string): Promise<void> {
+  async createProjectile(source: string, target: string, optionalTarget: string = ""): Promise<void> {
     if (source === target) {
       return;
     }
@@ -280,8 +280,13 @@ async animateSkillEfect(card: string): Promise<void>
     await this.nextFrame();
 
 
-    const sourceElement = document.querySelector(`[data-game-id="${source}"]`) as HTMLElement | null;
+    let sourceElement = document.querySelector(`[data-game-id="${source}"]`) as HTMLElement | null;
     const targetElement = document.querySelector(`[data-game-id="${target}"]`) as HTMLElement | null;
+
+    if (optionalTarget && !sourceElement)
+    {
+      sourceElement = document.querySelector(`[data-game-id="${optionalTarget}"]`) as HTMLElement | null;
+    }
 
     if (!projectile || !sourceElement || !targetElement) {
       projectile.remove();

@@ -1,16 +1,9 @@
 <div class="game-layout">
 <div class="table-container" #viewport
-  [style.width.px]="boardSizeX"
-    [style.height.px]="boardSizeY"
-    [style.transform]="'rotate(' + boardRotation + 'deg)'"
     (mousedown)="onMouseDown($event)"
-    >
+    [class.reverse]="gameState.Rivals.length === 1"
 >
-
-  <!-- Yo -->
   <div class="player-slot me"
-      [ngStyle]="styles[0]"
-
       #playerboard
   >
     <app-player
@@ -28,6 +21,8 @@
       [unitSelected]="unitSelected"
       [attackingUnit]="attackingUnit"
       [showTarget]="gameState.Rivals.length !== 1"
+      [long]="gameState.Rivals.length !== 1"
+
     >
     </app-player>
   </div>
@@ -35,19 +30,19 @@
   <div
     class="player-slot rival"
     *ngFor="let player of gameState.Rivals; let i = index"
-    [ngStyle]="styles[i + 1]"
   >
     <app-player
       [player]="player"
       [visibleHand]="false"
       [isAnimating]="isAnimating"
       [attackingUnit]="attackingUnit"
-      [reverseOrder]="shoudlRotatePlayers"
       [showHealthAsTarget]="attackingUnit !== null"
       (onCardRightClick)="onRightClick($event.event, $event.card)"
       (onDockSelected)="rivalBoardCardSelected(player, player.Board[$event])"
       (onPlayerTargetSelected)="rivalTargetSelected(player)"
       [showTarget]="gameState.Rivals.length !== 1"
+      [long]="gameState.Rivals.length !== 1"
+      [reverseOrder]="gameState.Rivals.length === 1"
     >
     </app-player>
   </div>
@@ -68,17 +63,7 @@
 
   </p>
 
-  <div class="rotate-buttons"
-      *ngIf="gameState.Rivals.length !== 1"
-  >
-    <button (click)="rotateBoardLeft()">
-      <i class="fa-solid fa-arrow-left"></i>
-    </button>
-    <button (click)="resetTransform()">Reiniciar rotación</button>
-    <button (click)="rotateBoardRight()">
-      <i class="fa-solid fa-arrow-right"></i>
-    </button>
-  </div>
+
   <button class="notification-button" (click)="openChat()">Abrir chat [TAB]
 
     <p class="notification-counter"
