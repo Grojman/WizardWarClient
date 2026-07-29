@@ -86,7 +86,7 @@ export class CardComponent implements OnChanges, OnInit {
 
   img.onerror = () => {
     console.log('error');
-    this.backgroundImage = `url('/images/cards/placeholder.png')`;
+    this.backgroundImage = `url('/images/cards/placeholder.webp')`;
   };
 
   img.src = src;

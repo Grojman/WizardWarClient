@@ -64,7 +64,7 @@ export class HomeComponent implements OnInit {
     window.addEventListener('scroll', () => {
       if (isready) return;
       isready = true;
-      this.audio.playSong("audio/music/home_music.wav")
+      this.audio.playSong("audio/music/home_music.mp3")
     })
   }
   
@@ -107,7 +107,7 @@ export class HomeComponent implements OnInit {
   }
 
   selectDeck(deck: Deck) {
-    this.audio.playSong("audio/music/home_music.wav")
+    this.audio.playSong("audio/music/home_music.mp3")
 
     this.selectedDeck = deck;
   }

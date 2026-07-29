@@ -3,7 +3,7 @@
   background-size: contain;
 
   animation: 0.5s fadeIn;
-
+  perspective: 1000px;
 
 }
 
@@ -167,7 +167,7 @@
 .table-container {
   background-image: url("/images/board/board.png");
   background-position: center;
-  background-repeat: repeat-y;
+  background-size: 100% 100%;
 
   overflow: visible;
 
@@ -178,6 +178,8 @@
   align-items: start;
   width: fit-content;
   min-width: 100vw;
+  transform: rotateX(10deg);
+
 }
 
 .player-slot {
