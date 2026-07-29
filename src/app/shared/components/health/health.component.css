@@ -84,20 +84,3 @@
   font-size: xx-large;
   color:white;
 }
-
-@media(max-width: 900px) {
-  .rival-health-background,
-.player-health-background{
-  width: 3rem;
-  height: 4rem;
-}    
-  .life-text
-  {
-    font-size: small;
-    margin-top: 0.5rem;
-  }
-
-  
-
-}
-

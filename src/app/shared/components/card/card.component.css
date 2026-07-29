@@ -160,6 +160,7 @@
 
   .attack-value,
   .health {
+    pointer-events: none;
       position: absolute;
       display: flex;
       align-items: center;
@@ -366,22 +367,4 @@
         scale(1);
     }
 
-  }
-
-  @media (max-width: 900px)
-  {
-    .card-can-be-selected .card-name
-    {
-      display: none;
-    }
-
-    .card-front > *:not(.cannot-play)
-    {
-      font-size: small !important;
-    }
-
-    .card-footer
-    {
-      font-size: small;
-    }
   }

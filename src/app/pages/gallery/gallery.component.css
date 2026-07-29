@@ -101,10 +101,8 @@
 .cards-container {
 
 
-  display: grid;
-
-  grid-template-columns:
-    auto auto auto auto auto;
+  display: flex;
+  flex-wrap: wrap;
 
 
   padding: 1rem;

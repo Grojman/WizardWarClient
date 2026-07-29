@@ -114,9 +114,10 @@
   & > textarea
   {
     min-height: 40vh;
+    align-self: stretch;
   }
 
-  & > p {
+  & > p, span, h2 {
     text-align: center;
   }
 }
@@ -162,7 +163,13 @@
 .buttons-container
 {
   display: flex;
+  gap: 0.5rem;
 }
+
+.players-button
+ {
+    padding: 1rem;
+ }
 
 .input-wrapper {
 

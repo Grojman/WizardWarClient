@@ -188,14 +188,3 @@
     opacity: 1;
   }
 }
-
-@media( max-width: 900px)
-{
-  .player-name,
-  .card-counter,
-  .effects-title,
-  .effects
-  {
-    font-size: small;
-  }
-}

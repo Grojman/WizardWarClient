@@ -78,6 +78,11 @@ body {
 }
 
 @media (max-width: 900px) {
+
+  .banner
+  {
+    padding: 3rem;
+  }
   .title
   {
     font-size: 1.5rem !important;
@@ -85,6 +90,11 @@ body {
   .subtitle
   {
     font-size: 1rem !important;
+  }
+
+  .hero .subtitle
+  {
+    margin: 0 2rem;
   }
   .text, *
   {
@@ -107,10 +117,29 @@ body {
       min-height: 50vh;
     }
   }
-  .cards-container
+
+  .attack-value, .health
   {
-    grid-template-columns:
-    auto auto auto !important;
+    width: 1rem !important;
+    height: 1rem !important;
+    padding: 0.25rem;
+  }
+
+  .card-can-be-selected .card-name
+  {
+    font-size: small !important;
+  }
+
+
+  .card-footer, .card-name
+  {
+    user-select: none !important;
+  -webkit-user-select: none !important;
+  }
+
+  .displayer
+  {
+    padding-top: 6rem;
   }
 
   .skeleton-image
@@ -121,7 +150,72 @@ body {
   .login-container
   {
     flex-direction: column;
+    margin: 0 2rem;
   }
+
+  .login-container button, input
+  {
+    padding: 0.25rem !important;
+  }
+
+  .card-info
+  {
+    max-width: 70vw !important;
+  }
+
+  .deck-list
+  {
+    padding: 1rem;
+  }
+
+  .card, .dock
+  {
+    width: 12vw !important;
+    height: 36vh !important;
+  }
+
+  .board-section, .hand, .info-section, .board-row
+  {
+    gap: 0.25rem !important;
+  }
+  .board-section, .hand, .player-content
+  {
+    padding: 0 !important;
+  }
+  .hand
+  {
+    margin: 0;
+  }
+
+  .info-section
+  {
+    flex-direction: row !important;
+    gap: 1rem !important;
+  }
+  .card-counter
+  {
+    bottom: -2rem !important;
+  }
+
+  .player-slot
+  {
+    left: 0 !important;
+  }
+
+.rival-health-background,
+.player-health-background{
+  width: 4rem !important;
+}    
+  .life-text
+  {
+    font-size: small;
+    margin-top: 0.5rem !important;
+  }
+
+.enhanced::after
+{
+  box-shadow: -15px 50px 60px 40px rgb(239, 255, 14) !important;
+}
 }
 
 .proyectile

@@ -142,7 +142,7 @@
             [ngClass]="searchingBot ? 'fa-xmark' : 'fa-robot'"
           ></i>
 
-          {{ searchingBot ? 'Cancelar' : 'Contra máquina' }}
+          {{ searchingBot ? 'Cancelar' : 'Máquina' }}
 
           <span
             *ngIf="searchingBot"
@@ -160,6 +160,7 @@
           <button *ngFor="let i of [2, 3, 4]"
           (click)="numberOfPlayers = i"
           [disabled]="i === numberOfPlayers"
+          class="players-button text"
           >
             {{ i }}
           </button>
