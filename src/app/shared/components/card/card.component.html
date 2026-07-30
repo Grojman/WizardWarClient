@@ -20,7 +20,10 @@
    <p 
     *ngIf="!faceDown"
     class="title card-name ">
+    <span>
+
       {{ card?.name }}
+    </span>
     </p>
     <div class="card-info"
     *ngIf="!faceDown && card?.hasEffect"

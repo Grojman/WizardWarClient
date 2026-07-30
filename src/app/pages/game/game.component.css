@@ -105,6 +105,8 @@
 
   overflow: visible;
 
+  position: rotateX(10deg);
+
 }
 
 .floating-card {
@@ -179,6 +181,8 @@
   width: fit-content;
   min-width: 100vw;
   transform: rotateX(10deg);
+  -webkit-box-shadow: inset 0px 15px 50px 0px #000000; 
+box-shadow: inset 0px 15px 50px 0px #000000;
 
 }
 

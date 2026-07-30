@@ -267,57 +267,87 @@ async animateSkillEfect(card: string): Promise<void>
 }
 
   async createProjectile(source: string, target: string, optionalTarget: string = ""): Promise<void> {
-    if (source === target) {
-      return;
-    }
-
-    // const projectile = document.querySelector('.proyectile') as HTMLElement | null;
-    const projectile = document.createElement('div');
-    projectile.classList.add('proyectile');
-    const layer = this.getAnimationLayer();
-    console.log('layer: ', layer)
-    layer?.appendChild(projectile);
-    await this.nextFrame();
-
-
-    let sourceElement = document.querySelector(`[data-game-id="${source}"]`) as HTMLElement | null;
-    const targetElement = document.querySelector(`[data-game-id="${target}"]`) as HTMLElement | null;
-
-    if (optionalTarget && !sourceElement)
-    {
-      sourceElement = document.querySelector(`[data-game-id="${optionalTarget}"]`) as HTMLElement | null;
-    }
-
-    if (!projectile || !sourceElement || !targetElement) {
-      projectile.remove();
-      return;
-    }
-
-    const start = this.getCenter(sourceElement);
-    const end = this.getCenter(targetElement);
-    const dx = end.x - start.x;
-    const dy = end.y - start.y;
-
-    projectile.style.left = `${start.x}px`;
-    projectile.style.top = `${start.y}px`;
-    projectile.style.transform = 'translate(-50%, -50%)';
-
-    const animation = projectile.animate(
-      [
-        { transform: 'translate(-50%, -50%) scale(0.7) rotate(0deg)', opacity: 0.85 },
-        { transform: `translate(calc(-50% + ${dx * 0.5}px), calc(-50% + ${dy * 0.5}px)) scale(1.05) rotate(540deg)`, opacity: 1 },
-        { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.75) rotate(1080deg)`, opacity: 0.2 },
-      ],
-      {
-        duration: this.animationSettingsService.getAdjustedDuration(250),
-        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
-        fill: 'forwards',
-      },
-    );
-
-    await animation.finished;
-    projectile.remove();
+  if (source === target) {
+    return;
   }
+
+  const projectile = document.createElement('div');
+  projectile.classList.add('proyectile');
+  const layer = this.getAnimationLayer();
+  layer?.appendChild(projectile);
+  await this.nextFrame();
+
+  let sourceElement = document.querySelector(`[data-game-id="${source}"]`) as HTMLElement | null;
+  const targetElement = document.querySelector(`[data-game-id="${target}"]`) as HTMLElement | null;
+
+  if (optionalTarget && !sourceElement) {
+    sourceElement = document.querySelector(`[data-game-id="${optionalTarget}"]`) as HTMLElement | null;
+  }
+
+  if (!projectile || !sourceElement || !targetElement) {
+    projectile.remove();
+    return;
+  }
+
+  const start = this.getCenter(sourceElement);
+  const end = this.getCenter(targetElement);
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+
+  projectile.style.left = `${start.x}px`;
+  projectile.style.top = `${start.y}px`;
+  projectile.style.transform = 'translate(-50%, -50%)';
+
+  // How high the arc lifts above the straight line, in px.
+  // Scale it a bit with distance so short throws don't look flat
+  // and long throws don't look absurdly high.
+  const distance = Math.hypot(dx, dy);
+  const arcHeight = Math.min(160, Math.max(50, distance * 0.35));
+
+  const steps = 20;
+  const keyframes: Keyframe[] = [];
+
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+
+    // Linear position along the straight path
+    const x = dx * t;
+    const y = dy * t;
+
+    // Parabolic lift: 0 at t=0 and t=1, peak at t=0.5
+    // (negative because CSS y grows downward, so "up" is negative)
+    const lift = -4 * arcHeight * t * (1 - t);
+
+    // Slight forward tilt toward camera at the peak to sell the
+    // "above the table" feel given the perspective/rotateX parent
+    const z = 60 * Math.sin(Math.PI * t);
+
+    // Scale: slightly bigger at the peak (closer to camera),
+    // slightly smaller as it lands (settling down)
+    const scale = 0.7 + 0.35 * Math.sin(Math.PI * t) - 0.1 * t;
+
+    const rotate = 1080 * t;
+
+    // Fade in fast, hold, fade out near landing
+    const opacity = t < 0.08 ? t / 0.08 * 0.9 + 0.1
+      : t > 0.85 ? 1 - (t - 0.85) / 0.15 * 0.8
+      : 1;
+
+    keyframes.push({
+      transform: `translate(-50%, -50%) translate3d(${x}px, ${y + lift}px, ${z}px) scale(${scale}) rotate(${rotate}deg)`,
+      opacity,
+    });
+  }
+
+  const animation = projectile.animate(keyframes, {
+    duration: this.animationSettingsService.getAdjustedDuration(250),
+    easing: 'ease-in-out',
+    fill: 'forwards',
+  });
+
+  await animation.finished;
+  projectile.remove();
+}
 
   async animateUnitDeath(element: HTMLElement): Promise<void> {
     if (!element) {

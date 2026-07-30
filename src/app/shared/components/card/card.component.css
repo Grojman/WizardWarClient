@@ -9,7 +9,7 @@
 
     border-radius: 10px;
 
-    /* box-shadow: 3px 1px 5px 5px rgba(0, 0, 0, 0.3); */
+    box-shadow: 3px 1px 5px 5px rgba(0, 0, 0, 0.3);
 
     width: 7vw;
     height: 21vh;
@@ -44,6 +44,12 @@
   .spell
   {
     border-radius: 50% / 20%;
+
+    & .card-name
+    {
+      border-radius: 50% / 20%;
+      
+    }
   }
 
   .card-can-be-selected
@@ -64,6 +70,11 @@
       
       scale(1.1);
       
+  }
+
+  .card.can-hover:hover .card-name
+  {
+    opacity: 1;
   }
 
   .card.can-hover:hover .attack-value {
@@ -105,12 +116,20 @@
 
   .card-name
   {
-    background-color: bisque;
-    color: slategray;
+    color: #fff;
+    background-color: rgb(0 0 0 / 0.4);
     text-align: center;
     font-size: medium;
+    opacity: 0;
+    flex-grow: 1;
+    display: flex;
     margin: 0;
-    margin-bottom:  auto;
+    transition: opacity 0.25s ease-in-out;
+    border-radius: 10px 10px 0 0;
+
+    & > span {
+      margin: auto;
+    }
   }
 
 
