@@ -107,8 +107,6 @@ export class HomeComponent implements OnInit {
   }
 
   selectDeck(deck: Deck) {
-    this.audio.playSong("audio/music/home_music.mp3")
-
     this.selectedDeck = deck;
   }
 

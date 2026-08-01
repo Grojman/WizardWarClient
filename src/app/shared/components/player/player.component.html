@@ -51,8 +51,6 @@
                 [isTarget]="card !== null && attackingUnit !== null"
                 />
                 
-                <hr class="separator">
-                
                 <app-dock
                 [card]="player.LastSpellPlayed"
                 (contextmenu)="onRightClick($event, player.LastSpellPlayed)"
@@ -88,7 +86,7 @@
             />
         </div>
     
-        <div class="hand"
+        <div class="hand own-hand"
         *ngIf="visibleHand"
         >
         <app-card

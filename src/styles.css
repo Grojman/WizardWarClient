@@ -77,6 +77,13 @@ body {
 
 }
 
+@media screen and (orientation: portrait) {
+    .rotate-phone
+    {
+      display: flex;
+    }
+}
+
 @media (max-width: 900px) {
 
   .banner

@@ -1,10 +1,27 @@
+.rotate-phone {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  font-size: 5rem;
+  justify-content: center;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
 .game-layout {
 
   background-size: contain;
 
   animation: 0.5s fadeIn;
   perspective: 1000px;
-
+  margin-left: 5rem;
 }
 
 @keyframes fadeIn {
@@ -180,13 +197,15 @@
   align-items: start;
   width: fit-content;
   min-width: 100vw;
-  transform: rotateX(10deg);
+  --table-tilt: 10deg;
+  transform: rotateX(var(--table-tilt));
   -webkit-box-shadow: inset 0px 15px 50px 0px #000000; 
 box-shadow: inset 0px 15px 50px 0px #000000;
 
 }
 
 .player-slot {
+  padding-bottom: 1rem;
   transform-origin: center center;
   overflow: visible;
   transition:

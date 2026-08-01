@@ -17,6 +17,7 @@ import { ErrorComponent } from './pages/error/error.component';
 import { DockComponent } from './shared/components/dock/dock.component';
 import { HealthComponent } from './shared/components/health/health.component';
 import { GalleryComponent } from './pages/gallery/gallery.component';
+import { StatsComponent } from './pages/stats/stats.component';
 import { CardvisualizerComponent } from './shared/components/cardvisualizer/cardvisualizer.component';
 import { MessageDialogComponent } from './ui/message-dialog/message-dialog.component';
 import { PlayerComponent } from './shared/components/player/player.component';
@@ -36,6 +37,7 @@ import { HelpComponent } from './shared/components/help/help.component';
     ErrorComponent,
     HealthComponent,
     GalleryComponent,
+    StatsComponent,
     SettingsComponent,
     CardvisualizerComponent,
     MessageDialogComponent,

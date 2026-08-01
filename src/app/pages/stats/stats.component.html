@@ -1,0 +1,125 @@
+<div class="stats-container">
+
+  <div class="stats-header">
+
+    <h1 class="title">
+      <i class="fa-solid fa-chart-simple title-icon"></i>
+      Estadísticas de las Barajas
+    </h1>
+
+    <h2 class="subtitle">
+      Partidas totales jugadas: {{ stats.TotalGames }}
+    </h2>
+
+    <a routerLink="/" class="back-button">
+      <i class="fa-solid fa-arrow-left"></i>
+      Volver a inicio
+    </a>
+
+  </div>
+
+  <div class="main-content">
+
+    <div class="deck-list-panel">
+
+      <p *ngIf="stats.Decks.length === 0" class="empty-text">
+        Todavía no hay estadísticas registradas.
+      </p>
+
+      <div
+        *ngFor="let deck of stats.Decks"
+        class="deck-row"
+        [class.selected]="deck === selectedDeck"
+        (click)="selectDeck(deck)"
+      >
+      <img src='{{ "images/decks/" + deck.DeckId + ".webp" }}' alt="">
+        <span class="deck-row-games">{{ deck.TotalGames }} partidas</span>
+      </div>
+
+    </div>
+
+    <div class="stats-display">
+
+      <ng-container *ngIf="selectedDeck; else noSelection">
+
+        <img src='{{ "images/decks/" + selectedDeck.DeckId + ".webp" }}' alt="">
+
+
+        <div class="selected-stats">
+
+          <div class="chart">
+  
+            <div class="bar-group">
+              <span class="bar-value">{{ selectedDeck.Wins }}</span>
+              <div class="bar-track">
+                <div class="bar win-bar" [style.height.%]="barHeight(selectedDeck.Wins)"></div>
+              </div>
+              <span class="bar-label">Victorias</span>
+            </div>
+  
+            <div class="bar-group">
+              <span class="bar-value">{{ selectedDeck.Losses }}</span>
+              <div class="bar-track">
+                <div class="bar lose-bar" [style.height.%]="barHeight(selectedDeck.Losses)"></div>
+              </div>
+              <span class="bar-label">Derrotas</span>
+            </div>
+  
+          </div>
+  
+          <div class="extra-stats">
+            <p><i class="fa-solid fa-dice"></i> Partidas jugadas: {{ selectedDeck.TotalGames }}</p>
+            <p><i class="fa-solid fa-hourglass-half"></i> Turno medio de finalización: {{ selectedDeck.AverageTurn | number: '1.0-1' }}</p>
+          </div>
+        </div>
+
+
+        <div class="matchups" *ngIf="selectedDeck.Matchups.length">
+
+          <h3 class="matchups-title">Enfrentamientos por baraja rival</h3>
+
+          <div class="matchup-list">
+
+            <div class="matchup-card" *ngFor="let matchup of selectedDeck.Matchups">
+
+              <img class="matchup-image" src='{{ "images/decks/" + matchup.OpponentDeckId + ".webp" }}' alt="">
+
+              <div class="chart matchup-chart">
+
+                <div class="bar-group">
+                  <span class="bar-value">{{ matchup.Wins }}</span>
+                  <div class="bar-track">
+                    <div class="bar win-bar" [style.height.%]="matchupBarHeight(matchup, matchup.Wins)"></div>
+                  </div>
+                  <span class="bar-label">Victorias</span>
+                </div>
+
+                <div class="bar-group">
+                  <span class="bar-value">{{ matchup.Losses }}</span>
+                  <div class="bar-track">
+                    <div class="bar lose-bar" [style.height.%]="matchupBarHeight(matchup, matchup.Losses)"></div>
+                  </div>
+                  <span class="bar-label">Derrotas</span>
+                </div>
+
+              </div>
+
+              <span class="matchup-games">{{ matchup.TotalGames }} partidas</span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </ng-container>
+
+      <ng-template #noSelection>
+        <p class="empty-text">Haz click en una baraja para ver sus estadísticas</p>
+      </ng-template>
+
+    </div>
+
+  </div>
+
+</div>

@@ -169,6 +169,12 @@ hr
     letter-spacing: .06em;
 }
 
+.condition
+{
+    color: #292929;
+    text-decoration: dashed;
+}
+
 
 @media( max-width: 900px)
 {

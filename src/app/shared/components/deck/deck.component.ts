@@ -23,6 +23,6 @@ export class DeckComponent {
 
   getImagePath() : string
   {
-    return `images/decks/${this.deck.id}.svg`; 
+    return `images/decks/${this.deck.id}.webp`; 
   }
 }

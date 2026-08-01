@@ -1,51 +1,63 @@
 <div class="game-layout">
-<div class="table-container" #viewport
-    (mousedown)="onMouseDown($event)"
-    [class.reverse]="gameState.Rivals.length === 1"
->
+  <div class="table-container" #viewport
+  (mousedown)="onMouseDown($event)"
+  [class.reverse]="gameState.Rivals.length === 1"
+  >
   <div class="player-slot me"
-      #playerboard
+  #playerboard
   >
-    <app-player
-      [player]="gameState.Me"
-      [visibleHand]="true"
-      [isAnimating]="isAnimating"
-      (onDeckSelected)="deckSelected()"
-      (onCardRightClick)="onRightClick($event.event, $event.card)"
-      (onDockSelected)="dockSelected($event)"
-      (onAttackingUnitSelected)="attackingUnitSelected($event)"
-      (onLastSpellClicked)="lastSpellClicked()"
-      (onCardSelected)="cardSelected($event)"
-      (onTargetSelected)="targetSel()"
-      [selectedCard]="selectedCard"
-      [unitSelected]="unitSelected"
-      [attackingUnit]="attackingUnit"
-      [showTarget]="gameState.Rivals.length !== 1"
-      [long]="gameState.Rivals.length !== 1"
+  <app-player
+  [player]="gameState.Me"
+  [visibleHand]="true"
+  [isAnimating]="isAnimating"
+  (onDeckSelected)="deckSelected()"
+  (onCardRightClick)="onRightClick($event.event, $event.card)"
+  (onDockSelected)="dockSelected($event)"
+  (onAttackingUnitSelected)="attackingUnitSelected($event)"
+  (onLastSpellClicked)="lastSpellClicked()"
+  (onCardSelected)="cardSelected($event)"
+  (onTargetSelected)="targetSel()"
+  [selectedCard]="selectedCard"
+  [unitSelected]="unitSelected"
+  [attackingUnit]="attackingUnit"
+  [showTarget]="gameState.Rivals.length !== 1"
+  [long]="gameState.Rivals.length !== 1"
+  
+  >
+</app-player>
+</div>
+<!-- Rivales -->
+<div
+class="player-slot rival"
+*ngFor="let player of gameState.Rivals; let i = index"
+>
+<app-player
+[player]="player"
+[visibleHand]="false"
+[isAnimating]="isAnimating"
+[attackingUnit]="attackingUnit"
+[showHealthAsTarget]="attackingUnit !== null"
+(onCardRightClick)="onRightClick($event.event, $event.card)"
+(onDockSelected)="rivalBoardCardSelected(player, player.Board[$event])"
+(onPlayerTargetSelected)="rivalTargetSelected(player)"
+[showTarget]="gameState.Rivals.length !== 1"
+[long]="gameState.Rivals.length !== 1"
+[reverseOrder]="gameState.Rivals.length === 1"
+>
+</app-player>
+</div>
+</div>
 
-    >
-    </app-player>
+
+<div class="animation-layer">
+  <div class="proyectile" style="display: none;">
+    
   </div>
-  <!-- Rivales -->
-  <div
-    class="player-slot rival"
-    *ngFor="let player of gameState.Rivals; let i = index"
-  >
-    <app-player
-      [player]="player"
-      [visibleHand]="false"
-      [isAnimating]="isAnimating"
-      [attackingUnit]="attackingUnit"
-      [showHealthAsTarget]="attackingUnit !== null"
-      (onCardRightClick)="onRightClick($event.event, $event.card)"
-      (onDockSelected)="rivalBoardCardSelected(player, player.Board[$event])"
-      (onPlayerTargetSelected)="rivalTargetSelected(player)"
-      [showTarget]="gameState.Rivals.length !== 1"
-      [long]="gameState.Rivals.length !== 1"
-      [reverseOrder]="gameState.Rivals.length === 1"
-    >
-    </app-player>
-  </div>
+  
+  <div class="icon-hand" style="display: none;"></div>
+  <div class="icon-hand-card" style="display: none;"></div>
+  <div class="icon-hand-wrench" style="display: none;"></div>
+</div>
 </div>
 
 <div class="action-buttons">
@@ -53,53 +65,41 @@
     <span>
       Turno: {{ gameState.CurrentTurn }}
     </span>
-
+    
     <span *ngIf="gameState.CurrentTurn % 2 !== 0" 
-      title="Al acabar este turno, todos los jugadores roban una carta"
+    title="Al acabar este turno, todos los jugadores roban una carta"
     >
-<i class="fa-solid fa-copy"></i>
-<i class="fa-solid fa-plus"></i>
-    </span>
+    <i class="fa-solid fa-copy"></i>
+    <i class="fa-solid fa-plus"></i>
+  </span>
+  
+</p>
 
-  </p>
 
-
-  <button class="notification-button" (click)="openChat()">Abrir chat [TAB]
-
-    <p class="notification-counter"
-    *ngIf="unreadNotificationCounter !== 0"
-    >
-      {{ unreadNotificationCounter }}
-    </p>
-  </button>
-  <button
-  (click)="openSettings()"
+<button class="notification-button" (click)="openChat()">Abrir chat [TAB]
+  
+  <p class="notification-counter"
+  *ngIf="unreadNotificationCounter !== 0"
   >
-    Abrir ajustes
-  </button>
-  <button (click)="openHelp()">
-    Ayuda
-  </button>
+  {{ unreadNotificationCounter }}
+</p>
+</button>
+<button
+(click)="openSettings()"
+>
+Abrir ajustes
+</button>
+<button (click)="openHelp()">
+  Ayuda
+</button>
 </div>
-
-  <div class="animation-layer">
-    <div class="proyectile" style="display: none;">
-
-    </div>
-
-    <div class="icon-hand" style="display: none;"></div>
-    <div class="icon-hand-card" style="display: none;"></div>
-    <div class="icon-hand-wrench" style="display: none;"></div>
-  </div>
-</div>
-
 <div class="winner-overlay">
   <div #winnerboard class="winner-board">
     <p>
       <span class="winner-name">Jugador 1</span>
       es el ganador de la guerra.
     </p>
-
+    
     <button (click)="leaveGame()">Aceptar</button>
   </div>
 </div>
@@ -128,3 +128,14 @@
 >
 
 </app-help>
+
+<div class="rotate-phone">
+  <div>
+    <i class="fa-solid fa-rotate"></i>
+    <i class="fa-solid fa-mobile-screen"></i>
+  </div>
+  
+  <p>
+    Por favor, rota tu teléfono para jugar
+  </p>
+</div>

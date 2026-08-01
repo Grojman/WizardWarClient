@@ -565,6 +565,7 @@ rivalBoardCardSelected(rival: Player, card: Card | null)
 
 lastSpellClicked()
 {
+  if (!this.gameState.Me.IsMyTurn) return;
   if(this.gameState.Me.LastSpellPlayed && this.gameState.Me.LastSpellPlayed!.effectTimes || 0 > 0)
   {
     this.safeSend({
