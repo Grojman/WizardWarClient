@@ -25,6 +25,7 @@ import { ChatComponent } from './shared/components/chat/chat.component';
 import { GameCardCheckComponent } from './shared/components/game-card-check/game-card-check.component';
 import { SettingsComponent } from './shared/components/settings/settings.component';
 import { HelpComponent } from './shared/components/help/help.component';
+import { AlertModalComponent } from './shared/components/alert-modal/alert-modal.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { HelpComponent } from './shared/components/help/help.component';
     PlayerComponent,
     ChatComponent,
     GameCardCheckComponent,
-    HelpComponent
+    HelpComponent,
+    AlertModalComponent
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [

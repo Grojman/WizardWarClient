@@ -17,6 +17,7 @@ import { GameStateService } from '../../core/services/game-state.service';
 import { SPELL, UNIT } from '../../core/config/game-data-config';
 import { AudioService } from '../../core/services/audio.service';
 import { HelpComponent } from '../../shared/components/help/help.component';
+import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
 
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
@@ -93,6 +94,9 @@ export class GameComponent implements OnInit, OnDestroy {
       case "end_game":
         this.handleEndGameMessage(msg.Content);
         break;
+      case "error":
+        this.handleErrorMessage(msg.Content);
+        break;
       default:
         console.error("Unknown message!!!");
         console.error(msg);
@@ -129,6 +133,14 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private handleEndGameMessage(content: any): void {
     this.endGame(content?.winner);
+  }
+
+  private handleErrorMessage(content: any): void {
+    this.errorModal.open(content?.message ?? 'Ha ocurrido un error inesperado.');
+  }
+
+  onErrorClosed(): void {
+    this.router.navigateByUrl('/');
   }
 
   private initializeGameState(snapshot: Game): void {
@@ -589,6 +601,9 @@ help!: HelpComponent;
 
 @ViewChild('gamecheck')
 cardCheck!: GameCardCheckComponent;
+
+@ViewChild('errorModal')
+errorModal!: AlertModalComponent;
 
 
 openHelp()

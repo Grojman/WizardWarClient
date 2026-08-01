@@ -1,0 +1,10 @@
+<div class="alert-window" *ngIf="isOpen">
+    <div class="alert-container">
+
+    <h2 class="title">Error</h2>
+
+    <p class="text">{{ message }}</p>
+
+    <button (click)="close()">Aceptar</button>
+    </div>
+</div>

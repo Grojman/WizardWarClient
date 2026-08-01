@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Deck } from '../../models/deck.model';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { Router } from '@angular/router';
 import { AudioService } from '../../core/services/audio.service';
+import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
 
 @Component({
   selector: 'app-home',
@@ -11,6 +12,9 @@ import { AudioService } from '../../core/services/audio.service';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
+
+  @ViewChild('errorModal')
+  errorModal!: AlertModalComponent;
 
   username = '';
 
@@ -85,6 +89,9 @@ export class HomeComponent implements OnInit {
         break;
       case "start_game":
         this.startGame();
+        break;
+      case "error":
+        this.errorModal.open(msg.Content?.message ?? 'Ha ocurrido un error inesperado.');
         break;
       default:
         console.log("Unknown message!!");
