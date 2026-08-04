@@ -57,6 +57,8 @@
   text-decoration: none;
 
   transition: 0.3s;
+
+  color: #e4991b
 }
 
 .gallery-link:hover {
@@ -232,10 +234,12 @@
 .search-button i {
 
   margin-right: 10px;
+  color: #e4991b
 
 }
 
 .search-button:hover {
+
 
   transform: scale(1.05);
 }

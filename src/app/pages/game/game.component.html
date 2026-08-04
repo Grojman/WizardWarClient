@@ -76,7 +76,8 @@ class="player-slot rival"
 </p>
 
 
-<button class="notification-button" (click)="openChat()">Abrir chat [TAB]
+<button class="notification-button" (click)="openChat()">
+  <i class="fa-solid fa-comments"></i>
   
   <p class="notification-counter"
   *ngIf="unreadNotificationCounter !== 0"
@@ -87,10 +88,10 @@ class="player-slot rival"
 <button
 (click)="openSettings()"
 >
-Abrir ajustes
+<i class="fa-solid fa-gear"></i>
 </button>
 <button (click)="openHelp()">
-  Ayuda
+  <i class="fa-solid fa-question"></i>
 </button>
 </div>
 <div class="winner-overlay">
