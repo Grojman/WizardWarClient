@@ -60,8 +60,11 @@ cardelement!: CardComponent;
     await requestAnimationFrame(() => {});
       const el = this.cardInfo.nativeElement;
 
-      this.showScrollFade =
-          el.scrollHeight > el.clientHeight &&
-          el.scrollTop + el.clientHeight < el.scrollHeight - 1;
+      // Tolerance accounts for fractional-pixel rounding introduced by browser/OS zoom,
+      // which otherwise keeps scrollTop a hair short of the bottom forever.
+      const hasOverflow = el.scrollHeight - el.clientHeight > 1;
+      const distanceFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight;
+
+      this.showScrollFade = hasOverflow && distanceFromBottom > 2;
   }
 }

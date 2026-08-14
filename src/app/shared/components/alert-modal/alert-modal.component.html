@@ -1,5 +1,5 @@
-<div class="alert-window" *ngIf="isOpen">
-    <div class="alert-container">
+<div class="alert-window overlay-backdrop" (click)="close()" *ngIf="isOpen">
+    <div class="alert-container panel" (click)="$event.stopPropagation()">
 
     <h2 class="title">Error</h2>
 

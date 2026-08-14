@@ -14,13 +14,13 @@
             {{ card.name }}
         </p>
 
-        <hr>
+        <hr class="divider">
 
         <p>
             {{ card.type }}
         </p>
 
-        <hr>
+        <hr class="divider">
 
         <p
         class="card-families"
@@ -29,7 +29,7 @@
             {{ card.families?.join(" / ") }}
         </p>
 
-        <hr *ngIf="card.families?.length !== 0">
+        <hr class="divider" *ngIf="card.families?.length !== 0">
 
         <p
         *ngIf="card.description"

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from "@angular/core";
+import { Component, EventEmitter, HostListener, Output } from "@angular/core";
 
 @Component({
   selector: 'app-alert-modal',
@@ -22,5 +22,12 @@ export class AlertModalComponent
   close(): void {
     this.isOpen = false;
     this.closed.emit();
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.isOpen) {
+      this.close();
+    }
   }
 }

@@ -1,24 +1,32 @@
-<div class="help-window" *ngIf="isOpen">
-    <div class="help-container">
+<div class="help-window overlay-backdrop" (click)="close()" *ngIf="isOpen">
+    <div class="help-container panel" (click)="$event.stopPropagation()">
         
-    <h2 class="title">LISTADO DE ACCIONES</h2>
+    <div class="help-header">
+        <h2 class="title">LISTADO DE ACCIONES</h2>
 
-    <video src="/video/play_unit.webm" alt="" autoplay loop></video>
-    <p class="text">Jugar una unidad</p>
+        <button (click)="close()" class="btn-icon">x</button>
+    </div>
 
-    <video src="/video/use_ability.webm" alt="" autoplay loop></video>
-    <p class="text">Usar habilidad</p>
-    
-    <video src="/video/play_spell.webm" alt="" autoplay loop></video>
-    <p class="text">Jugar hechizo</p>
-    
-    <video src="/video/attack_unit.webm" alt="" autoplay loop></video>
-    <p class="text">Atacar</p>
 
-    <video src="/video/draw_card.webm" alt="" autoplay loop></video>  
-    <p class="text">Robar carta</p>
 
-    <button (click)="close()">Cerrar</button>
+    <div class="actions-container">
+
+        <div
+        *ngFor="let help of videos"
+        >
+            <p class="text">{{ help.title }}</p>
+            <video 
+            src='{{ help.source }}'
+            class="gray"
+            alt="" 
+            (mouseenter)="this.playVideo($event)"
+            (mouseleave)="this.stopVideo($event)"
+            loop></video>
+            <hr class="divider">
+        </div>
+
+    </div>
+
     </div>
 
 

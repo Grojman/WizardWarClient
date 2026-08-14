@@ -1,0 +1,126 @@
+.series-container {
+  min-height: 100vh;
+  background-image: url('/images/home/wall.png');
+  background-size: contain;
+
+  display: flex;
+  justify-content: center;
+}
+
+.series-banner {
+  margin: auto;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 1.5rem;
+
+  background-image: url('/images/home/banner.png');
+  background-size: contain;
+  background-repeat: repeat-y;
+  width: 75vw;
+
+  padding: 2rem 0;
+}
+
+.round-indicator {
+  animation: fadeInUp 0.6s ease;
+}
+
+.series-row {
+  width: 100%;
+  max-width: 900px;
+
+  align-items: center;
+
+  animation: slideUpFade 0.6s ease;
+}
+
+.series-player-info {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+
+  margin-bottom: 1rem;
+}
+
+.series-player-name {
+  margin: 0;
+}
+
+.series-score-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 2.5rem;
+  height: 2.5rem;
+  padding: 0 0.5rem;
+
+  border-radius: 50%;
+  background: var(--color-wood-dark);
+  border: 2px solid var(--color-gold);
+
+  font-family: "Text Font 3";
+  font-size: 1.25rem;
+}
+
+.series-status {
+  font-family: "Text Font 2";
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.hidden-status {
+  opacity: 0.6;
+}
+
+.series-deck-list {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.series-end-panel {
+  align-items: center;
+  gap: 1rem;
+  padding: 2rem;
+  max-width: 500px;
+  text-align: center;
+}
+
+.winner-text {
+  font-size: 1.25rem;
+}
+
+.winner-text.win {
+  color: var(--color-gold);
+}
+
+.final-scores {
+  display: flex;
+  gap: 2rem;
+}
+
+.final-score-entry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.final-score-value {
+  font-family: "Text Font 3";
+  font-size: 2rem;
+}
+
+@media (max-width: 900px) {
+  .series-banner {
+    width: 95vw;
+    padding: 1rem;
+  }
+}

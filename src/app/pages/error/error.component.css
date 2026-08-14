@@ -96,43 +96,11 @@ h1 {
 
 .retry-button {
 
-  background:
-
-    linear-gradient(
-      135deg,
-      #4CAF50,
-      #2ecc71
-    );
-
-  border: none;
-
   border-radius: 8px;
 
   padding: 12px 24px;
 
   font-size: 16px;
-
-  color: white;
-
-  cursor: pointer;
-
-  transition:
-
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-
-}
-
-
-/* Hover botón */
-
-.retry-button:hover {
-
-  transform: translateY(-2px);
-
-  box-shadow:
-
-    0 6px 16px rgba(0,0,0,0.3);
 
 }
 

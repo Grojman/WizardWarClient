@@ -44,18 +44,12 @@
   overflow-y: auto;
 
   gap: 1rem;
-  &::-webkit-scrollbar
-  {
-    display:none;
-  }
 }
 
 .effect
 {
   max-width: 100%;
-  padding: 1rem;
   border-radius: 5px;
-  background-color: #835601;
   transition: transform 0.5s ease-in-out;
   word-wrap: break-word;
   text-align: center;
@@ -101,6 +95,12 @@
 
 /* Cancels the table's rotateX tilt so the local player's hand renders flat/readable. */
 .hand.own-hand
+{
+  transform: rotateX(calc(-1 * var(--table-tilt, 10deg)));
+}
+
+/* Cancels the table's rotateX tilt so the local player's health renders flat/readable. */
+.own-health
 {
   transform: rotateX(calc(-1 * var(--table-tilt, 10deg)));
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { AnimationSettingsService } from '../../../core/services/animation-settings.service';
 import { ANIMATION_SPEED_OPTIONS } from '../../../core/config/animation-config';
 import { AudioSettingsService } from '../../../core/services/audio-settings-service';
@@ -32,6 +32,13 @@ export class SettingsComponent implements OnInit {
    */
   close(): void {
     this.isOpen = false;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.isOpen) {
+      this.close();
+    }
   }
 
   /**

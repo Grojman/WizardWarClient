@@ -76,9 +76,9 @@ class="player-slot rival"
 </p>
 
 
-<button class="notification-button" (click)="openChat()">
+<button class="notification-button btn btn-gold btn-action" (click)="openChat()">
   <i class="fa-solid fa-comments"></i>
-  
+
   <p class="notification-counter"
   *ngIf="unreadNotificationCounter !== 0"
   >
@@ -86,11 +86,12 @@ class="player-slot rival"
 </p>
 </button>
 <button
+class="btn btn-gold btn-action"
 (click)="openSettings()"
 >
 <i class="fa-solid fa-gear"></i>
 </button>
-<button (click)="openHelp()">
+<button class="btn btn-gold btn-action" (click)="openHelp()">
   <i class="fa-solid fa-question"></i>
 </button>
 </div>
@@ -98,10 +99,10 @@ class="player-slot rival"
   <div #winnerboard class="winner-board">
     <p>
       <span class="winner-name">Jugador 1</span>
-      es el ganador de la guerra.
+      es el ganador y le deben una cerveza.
     </p>
     
-    <button (click)="leaveGame()">Aceptar</button>
+    <button class="btn btn-gold btn-action" (click)="leaveGame()">Aceptar</button>
   </div>
 </div>
 
@@ -137,7 +138,7 @@ class="player-slot rival"
 
 </app-alert-modal>
 
-<div class="rotate-phone">
+<div class="rotate-phone overlay-backdrop">
   <div>
     <i class="fa-solid fa-rotate"></i>
     <i class="fa-solid fa-mobile-screen"></i>

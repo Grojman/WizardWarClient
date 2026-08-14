@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Card } from '../../../models/card.model';
 
 @Component({
@@ -20,6 +20,15 @@ export class GameCardCheckComponent {
   close()
   {
     this.isOpen = false;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape()
+  {
+    if (this.isOpen)
+    {
+      this.close();
+    }
   }
 
 }

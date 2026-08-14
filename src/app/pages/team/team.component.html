@@ -1,0 +1,54 @@
+<div class="team-container">
+
+  <div class="team-header">
+
+    <h1 class="title">
+      <i class="fa-solid fa-users title-icon"></i>
+      Conoce al equipo
+    </h1>
+
+    <h2 class="subtitle">
+      Un equipo de decenas de profesionales, que resultan ser las mismas 2 personas.
+    </h2>
+
+    <a routerLink="/" class="back-button btn btn-gold">
+      <i class="fa-solid fa-arrow-left"></i>
+      Volver a inicio
+    </a>
+
+  </div>
+
+  <div class="member-list">
+
+    <div class="member-card" *ngFor="let member of members">
+
+      <a
+        [href]="'https://www.instagram.com/' + member.instagram + '/'"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="member-header hover-grow"
+      >
+        <img class="member-photo" [src]="member.photo" [alt]="member.name">
+
+        <span class="member-name">
+          <i class="fa-brands fa-instagram"></i>
+          @{{ member.name }}
+        </span>
+
+        <span class="member-lead">{{ member.roleLead }}</span>
+
+      </a>
+
+      <ul class="member-titles">
+        <li *ngFor="let title of member.titles">{{ title }}</li>
+      </ul>
+
+    </div>
+
+  </div>
+
+  <p class="team-footnote">
+    Sí, son solo 2 personas. No, todavía no estamos contratando.
+  </p>
+
+</div>

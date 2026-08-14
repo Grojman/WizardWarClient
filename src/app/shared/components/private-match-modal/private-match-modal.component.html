@@ -1,0 +1,21 @@
+<div class="private-match-window overlay-backdrop" *ngIf="isOpen">
+    <div class="private-match-container panel">
+
+    <h2 class="title">Partida privada</h2>
+
+    <p class="text" *ngIf="isHost">Comparte este código con tus amigos:</p>
+    <p class="text" *ngIf="!isHost">Esperando a que se completen los jugadores:</p>
+
+    <button class="code-display" (click)="copyCode()" title="Copiar código">
+      <span class="code">{{ code }}</span>
+      <i class="fa-solid" [ngClass]="copied ? 'fa-check' : 'fa-copy'"></i>
+    </button>
+
+    <p class="text player-count">
+      {{ current }} / {{ total }} jugadores
+      <span class="host-badge" *ngIf="isHost">(Eres el anfitrión)</span>
+    </p>
+
+    <button (click)="cancel()">Cancelar</button>
+    </div>
+</div>

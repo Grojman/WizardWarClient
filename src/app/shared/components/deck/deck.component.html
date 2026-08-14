@@ -1,10 +1,11 @@
 <div
   class="deck"
-  [class.selected]="selected"
   [class.small]="small"
+  [class.unavailable]="unavailable"
 >
 
-  <div
+<div
+[class.selected]="selected"
     class="deck-image"
     [ngStyle]="{
       'background-image': 'url(' + getImagePath() + ')'

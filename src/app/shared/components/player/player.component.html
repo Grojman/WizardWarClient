@@ -5,7 +5,7 @@
         <h3 class="effects-title subtitle">Efectos:</h3>
         
         <div class="effects">
-            <p class="effect" *ngFor="let e of this.player.GlobalEffects">
+            <p class="effect panel" *ngFor="let e of this.player.GlobalEffects">
                 {{ e }}
             </p>
         </div>
@@ -19,9 +19,10 @@
         <div class="board-section">
             
             <div class="player-info">
-                <app-health 
+                <app-health
                 [health]="player.Health"
                 [rival]="!visibleHand"
+                [class.own-health]="visibleHand"
                 [attr.data-game-id]="player.Id"
                 (click)="playerTargetSelected()"
                 [enhanced]="showHealthAsTarget"

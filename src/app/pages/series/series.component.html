@@ -1,0 +1,107 @@
+<div class="series-container">
+
+  <div class="series-banner">
+
+    <h1 class="title">Mejor de 3</h1>
+
+    <ng-container *ngIf="seriesState.endResult as end; else selecting">
+
+      <div class="series-end-panel panel slideUpFade">
+
+        <h2 class="subtitle" *ngIf="end.forfeited">Tu rival ha abandonado la serie</h2>
+        <h2 class="subtitle" *ngIf="!end.forfeited">¡Serie terminada!</h2>
+
+        <p class="text winner-text" [class.win]="isYouWinner()">
+          {{ isYouWinner() ? '¡Has ganado la serie!' : winnerName() + ' ha ganado la serie' }}
+        </p>
+
+        <div class="final-scores">
+          <div class="final-score-entry" *ngFor="let s of end.scores">
+            <span class="final-score-name">{{ s.name }}</span>
+            <span class="final-score-value">{{ s.score }}</span>
+          </div>
+        </div>
+
+        <button class="btn btn-gold" (click)="returnHome()">Volver al inicio</button>
+
+      </div>
+
+    </ng-container>
+
+    <ng-template #selecting>
+
+      <ng-container *ngIf="seriesState.snapshot as snapshot; else loading">
+
+        <h2 class="subtitle round-indicator">
+          Ronda {{ snapshot.round }} de 3
+        </h2>
+
+        <!-- RIVAL -->
+        <div class="series-row card-panel">
+
+          <div class="series-player-info">
+            <h3 class="subtitle series-player-name">{{ snapshot.rival.name || 'Rival' }}</h3>
+            <span class="series-score-badge">
+              {{ scoreFor(snapshot, snapshot.rival.playerId) }}
+            </span>
+            <span class="series-status" *ngIf="rivalStatusText() as statusText">
+              {{ statusText }}
+            </span>
+            <span class="series-status hidden-status" *ngIf="snapshot.rival.status === 'hidden'">
+              Mazo oculto hasta que empiece la partida
+            </span>
+          </div>
+
+          <div class="deck-list series-deck-list">
+            <app-deck
+              *ngFor="let deck of decks"
+              [deck]="deck"
+              [small]="true"
+              [selected]="isRivalPick(deck)"
+              [unavailable]="isUnavailable(deck) && !isRivalPick(deck)"
+              class="deck-item"
+            />
+          </div>
+
+        </div>
+
+        <!-- YOU -->
+        <div class="series-row card-panel">
+
+          <div class="series-player-info">
+            <h3 class="subtitle series-player-name">{{ snapshot.you.name || 'Tú' }}</h3>
+            <span class="series-score-badge">
+              {{ scoreFor(snapshot, snapshot.you.playerId) }}
+            </span>
+            <span class="series-status" *ngIf="!snapshot.you.hasSelected">Elige tu mazo</span>
+            <span class="series-status" *ngIf="snapshot.you.hasSelected">Mazo elegido, esperando a tu rival</span>
+          </div>
+
+          <div class="deck-list series-deck-list">
+            <app-deck
+              *ngFor="let deck of decks"
+              [deck]="deck"
+              [small]="true"
+              [selected]="isYourPick(deck)"
+              [unavailable]="!canSelect(deck) && !isYourPick(deck)"
+              (click)="selectDeck(deck)"
+              class="deck-item hover-grow"
+              [infoUp]="true"
+            />
+          </div>
+
+        </div>
+
+      </ng-container>
+
+      <ng-template #loading>
+        <p class="text">Cargando la serie...</p>
+      </ng-template>
+
+    </ng-template>
+
+  </div>
+
+  <app-alert-modal #errorModal></app-alert-modal>
+
+</div>

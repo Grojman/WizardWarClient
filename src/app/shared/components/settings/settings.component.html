@@ -1,11 +1,11 @@
 <!-- settings.component.html -->
 
-<div class="settings-container" *ngIf="isOpen">
-  <div class="settings-panel">
+<div class="settings-container overlay-backdrop" (click)="close()" *ngIf="isOpen">
+  <div class="settings-panel" (click)="$event.stopPropagation()">
     <div class="settings-header">
       <span class="title">Settings</span>
 
-      <button class="close-btn" type="button" (click)="close()">
+      <button class="close-btn btn-icon" type="button" (click)="close()">
         ✕
       </button>
     </div>

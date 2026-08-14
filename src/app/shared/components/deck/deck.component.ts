@@ -21,6 +21,9 @@ export class DeckComponent {
   @Input()
   small = false;
 
+  @Input()
+  unavailable = false;
+
   getImagePath() : string
   {
     return `images/decks/${this.deck.id}.webp`; 

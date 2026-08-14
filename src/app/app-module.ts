@@ -26,6 +26,9 @@ import { GameCardCheckComponent } from './shared/components/game-card-check/game
 import { SettingsComponent } from './shared/components/settings/settings.component';
 import { HelpComponent } from './shared/components/help/help.component';
 import { AlertModalComponent } from './shared/components/alert-modal/alert-modal.component';
+import { PrivateMatchModalComponent } from './shared/components/private-match-modal/private-match-modal.component';
+import { TeamComponent } from './pages/team/team.component';
+import { SeriesComponent } from './pages/series/series.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +49,10 @@ import { AlertModalComponent } from './shared/components/alert-modal/alert-modal
     ChatComponent,
     GameCardCheckComponent,
     HelpComponent,
-    AlertModalComponent
+    AlertModalComponent,
+    PrivateMatchModalComponent,
+    TeamComponent,
+    SeriesComponent
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [

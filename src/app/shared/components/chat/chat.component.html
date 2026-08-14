@@ -1,23 +1,23 @@
 <!-- chat.component.html -->
 
-<div class="chat-container" *ngIf="isOpen">
-<div class="chat">
+<div class="chat-container overlay-blur overlay-blur--bottom" (click)="close()" *ngIf="isOpen">
+<div class="chat" (click)="$event.stopPropagation()">
 
-    <div class="chat-header">
+    <div class="chat-header panel">
       <span class="title">Chat</span>
-  
+
       <button
-        class="close-btn"
+        class="close-btn btn-icon"
         type="button"
         (click)="close()">
         ✕
       </button>
     </div>
-  
+
     <div class="chat-messages"  #chatref>
-  
+
       <div
-        class="message"
+        class="message panel"
         [class.mine]="message.isMine"
         *ngFor="let message of messages">
   

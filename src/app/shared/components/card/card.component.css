@@ -126,6 +126,8 @@
     margin: 0;
     transition: opacity 0.25s ease-in-out;
     border-radius: 10px 10px 0 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
 
     & > span {
       margin: auto;
@@ -135,7 +137,7 @@
 
   .card-back {
 
-    background-color: #3a281aff;
+    background-color: var(--color-wood-dark);
     background-size: contain;
     background-position: center;
     display: flex;
@@ -203,7 +205,7 @@
       position: absolute;
       inset: 0;
 
-      background: #d39a42;
+      background: var(--color-gold);
       clip-path: polygon(0 0, 65% 0, 100% 100%, 34% 100%);
 
       z-index: -1;

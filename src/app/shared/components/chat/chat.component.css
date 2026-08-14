@@ -12,27 +12,7 @@
     transform: rotateX(5deg);
 }
 .chat-container {
-  position: fixed;
-
-  inset: 0;
-
-  background:
-    rgba(0,0,0,0.6);
-
-  backdrop-filter: blur(6px);
-
-  display: flex;
-
-  align-items: flex-end;
-
-  justify-content: center;
-
-  animation: fadeIn 0.25s ease;
-
-    height: 100vh;
-
-perspective: 1000px;
-  z-index: 999;
+  perspective: 1000px;
 }
 
 
@@ -41,28 +21,18 @@ perspective: 1000px;
 
   padding: 0 16px;
 
-  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  
-  background: #835601;
 
   font-size: larger;
 
   border-bottom: 1px solid #3a3a3a;
 
-  color: white;
   font-weight: 600;
 }
 
 .close-btn {
-  background: transparent;
-  border: none;
-
-  color: white;
-
-  cursor: pointer;
-
   font-size: 18px;
 }
 
@@ -87,15 +57,10 @@ perspective: 1000px;
 }
 
 .message {
-  background: #835601;
-
   border-radius: 10px;
-
   padding: 10px 12px;
 
-  color: white;
-
-    width: fit-content;
+  width: fit-content;
 
   max-width: 100%;
 

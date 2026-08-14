@@ -6,14 +6,6 @@
 
 .dialog-panel {
 
-
-  background: #835601;
-  padding: 1rem;
-
-  display: flex;
-
-  flex-direction: column;
-
   gap: 10px;
 
   border-radius:
@@ -24,6 +16,8 @@
 
   animation:
     slideUp 0.3s ease;
+
+    margin-bottom: 2rem;
 
 }
 
@@ -124,44 +118,6 @@
 /* BOTÓN ENVIAR */
 /* ========================= */
 
-.send-button {
-
-  padding: 12px 20px;
-
-  border: none;
-
-  border-radius: 12px;
-
-  color: #da9516;
-
-  background-color: #a76e04;
-
-
-  font-weight: bold;
-
-  cursor: pointer;
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 8px;
-
-  transition: 0.2s;
-
-}
-
-.send-button:hover {
-
-  transform: scale(1.05);
-
-  box-shadow:
-    0 0 12px #da9516;
-
-}
-
-
-
 /* ========================= */
 /* ANIMACIONES */
 /* ========================= */
@@ -182,18 +138,3 @@
 
 }
 
-@keyframes fadeIn {
-
-  from {
-
-    opacity: 0;
-
-  }
-
-  to {
-
-    opacity: 1;
-
-  }
-
-}

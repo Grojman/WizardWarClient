@@ -11,8 +11,6 @@
   background:
     radial-gradient(circle at top, #2b1055, #000);
 
-  color: white;
-
 }
 
 
@@ -20,7 +18,7 @@
 
   text-align: center;
 
-  animation: fadeIn 1s ease;
+  animation: fadeInUp 1s ease;
 
 }
 
@@ -65,34 +63,6 @@
 
   margin-top: 1rem;
 
-  display: inline-flex;
-
-  align-items: center;
-
-  gap: 10px;
-
-  padding: 10px 20px;
-
-  border-radius: 12px;
-
-  text-decoration: none;
-
-  color: white;
-
-  background:
-    linear-gradient(45deg, #7f5cff, #5c3dff);
-
-  transition: 0.3s;
-
-}
-
-.back-button:hover {
-
-  transform: scale(1.05);
-
-  box-shadow:
-    0 0 12px #7f5cff;
-
 }
 
 .cards-container {
@@ -132,34 +102,6 @@
 
 }
 
-
-@keyframes fadeIn {
-
-  from {
-
-    opacity: 0;
-    transform: translateY(10px);
-
-  }
-
-  to {
-
-    opacity: 1;
-    transform: translateY(0);
-
-  }
-
-}
-
-@keyframes floatIcon {
-
-  0% { transform: translateY(0px); }
-
-  50% { transform: translateY(-6px); }
-
-  100% { transform: translateY(0px); }
-
-}
 
 .main-content
 {

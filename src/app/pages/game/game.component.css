@@ -1,18 +1,8 @@
 .rotate-phone {
   display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  align-items: center;
   flex-direction: column;
   color: white;
   font-size: 5rem;
-  justify-content: center;
-  z-index: 9999;
-  background-color: rgba(0, 0, 0, 0.5);
-  animation: fadeIn 0.3s ease-in-out;
 }
 
 .game-layout {
@@ -22,16 +12,6 @@
   animation: 0.5s fadeIn;
   perspective: 1000px;
   margin-left: 5rem;
-}
-
-@keyframes fadeIn {
-  0%{
-    opacity: 0;
-  }
-  100%
-  {
-    opacity: 1;
-  }
 }
 
 .board-column {
@@ -236,8 +216,8 @@ box-shadow: inset 0px 15px 50px 0px #000000;
   position: fixed;
   display: flex;
   width: 100vw;
-  top: 0;
-  left: 0;
+  top: 1rem;
+  left: -1rem;
   justify-content: end;
   gap: 1rem;
   -webkit-backface-visibility: hidden;
@@ -295,22 +275,11 @@ box-shadow: inset 0px 15px 50px 0px #000000;
 }
 
 /* Botón */
-button {
-  opacity: 0.8;
-  background: #c07d00;
-  color: #000000;
-  border: none;
-  border-radius: 10px;
+.btn-action {
   font-size: 3rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.2s ease;
   font-family: "Text Font 3";
-}
-
-button:hover {
-  background: #ffca28;
-  transform: scale(1.05);
+  display:flex;
+  justify-content: center;
 }
 
 

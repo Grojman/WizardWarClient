@@ -18,6 +18,7 @@ import { SPELL, UNIT } from '../../core/config/game-data-config';
 import { AudioService } from '../../core/services/audio.service';
 import { HelpComponent } from '../../shared/components/help/help.component';
 import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
+import { SeriesStateService } from '../../core/services/series-state.service';
 
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
@@ -38,7 +39,8 @@ export class GameComponent implements OnInit, OnDestroy {
     private router : Router,
     private gameStateService: GameStateService,
     private animationService: GameAnimationService,
-    private audioService: AudioService
+    private audioService: AudioService,
+    private seriesStateService: SeriesStateService
   )
   {
     this.gameState = this.createInitialGameState();
@@ -94,6 +96,12 @@ export class GameComponent implements OnInit, OnDestroy {
       case "end_game":
         this.handleEndGameMessage(msg.Content);
         break;
+      case "series_state":
+        this.seriesStateService.applySeriesState(msg.Content);
+        break;
+      case "series_end":
+        this.seriesStateService.applySeriesEnd(msg.Content);
+        break;
       case "error":
         this.handleErrorMessage(msg.Content);
         break;
@@ -131,7 +139,16 @@ export class GameComponent implements OnInit, OnDestroy {
     this.applyTurnAndEffects(this.storedGameState);
   }
 
+  private pendingEndGame: any = null;
+  isSeriesRound: boolean = false;
+
   private handleEndGameMessage(content: any): void {
+    this.isSeriesRound = !!content?.isSeriesRound;
+
+    if (this.isAnimating || this.eventQueue.length > 0) {
+      this.pendingEndGame = content;
+      return;
+    }
     this.endGame(content?.winner);
   }
 
@@ -444,8 +461,14 @@ async handleGameEvents(events: any[]) {
   this.storedGameState.Me.HandData.forEach((n, i) => {
     this.gameState.Me.HandData[i].canPlay = n.canPlay;
   })
-  
+
   this.isAnimating = false;
+
+  if (this.pendingEndGame) {
+    const content = this.pendingEndGame;
+    this.pendingEndGame = null;
+    this.endGame(content?.winner);
+  }
 }
 
 checkForConCurrency(type: string, source: string): boolean {
@@ -616,10 +639,7 @@ winnerboard!: ElementRef<HTMLElement>;
 
 leaveGame()
 {
-  this.ws.send({
-    "$type" : "LeaveGame"
-  })
-  this.router.navigateByUrl("/");
+  this.router.navigateByUrl(this.isSeriesRound ? "/series" : "/");
 }
 
 endGame(winner: string)

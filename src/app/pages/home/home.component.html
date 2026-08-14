@@ -74,7 +74,7 @@
         [deck]="deck"
         [selected]="deck === selectedDeck"
         (click)="selectDeck(deck)"
-        class="deck-item"
+        class="deck-item hover-grow"
         [infoUp]="true"
       />
 
@@ -96,17 +96,92 @@
 
     </h2>
 
+    <div class="match-mode-selector">
+
+      <button
+      type="button"
+      class="btn btn-gold"
+      [class.active]="matchMode === 'Single'"
+      [disabled]="matchMode === 'Single' || anyActionPending()"
+      (click)="selectMatchMode('Single')"
+      >
+        <i class="fa-solid fa-chess-board"></i>
+        Normal
+      </button>
+
+      <button
+      type="button"
+      class="btn btn-gold"
+      [class.active]="matchMode === 'BestOfThree'"
+      [disabled]="matchMode === 'BestOfThree' || anyActionPending()"
+      (click)="selectMatchMode('BestOfThree')"
+      >
+        <i class="fa-solid fa-trophy"></i>
+        Mejor de 3
+      </button>
+
+    </div>
 
     <div class="login-container">
 
+      <div *ngIf="matchMode === 'Single'">
+      <h3 class="subtitle"> Nº Jugadores </h3>
+
+        <div class="number-players-carousel">
+
+          <button
+          type="button"
+          class="carousel-arrow"
+          (click)="shiftPlayerCount(-1)"
+          [disabled]="numberOfPlayers === playerCountOptions[0]"
+          aria-label="Menos jugadores"
+          >
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+
+          <ul
+          class="buttons-container number-players-container"
+          #playersCarousel
+          (scroll)="onPlayersCarouselScroll()"
+          >
+
+            <li
+            class="players-button"
+            *ngFor="let i of playerCountOptions"
+            >
+              <button
+              (click)="selectPlayerCount(i)"
+              [disabled]="i === numberOfPlayers"
+              class="text btn-gold btn"
+              >
+                {{ i }}
+              </button>
+            </li>
+
+
+          </ul>
+
+          <button
+          type="button"
+          class="carousel-arrow"
+          (click)="shiftPlayerCount(1)"
+          [disabled]="numberOfPlayers === playerCountOptions[playerCountOptions.length - 1]"
+          aria-label="Más jugadores"
+          >
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+
+        </div>
+      </div>
+      
+      
       <div>
-
         <h3 class="subtitle"> Nombre </h3>
-
+  
         <div class="input-wrapper">
-
+  
           <i class="fa-solid fa-user"></i>
-
+  
           <input
             type="text"
             maxlength="40"
@@ -115,19 +190,17 @@
             placeholder="Introduce tu nombre"
             class="username-input"
           />
-
+  
         </div>
-      </div>
 
+        <h3 class="subtitle">Buscar partida</h3>
 
-      <div>
-        <h3 class="subtitle"> Buscar partida </h3>
 
         <div class="buttons-container">
 
           <button
-          class="search-button"
-          [disabled]="!canSearch() || searchingBot"
+          class="search-button btn btn-gold"
+          [disabled]="!canSearch() || searchingBot || privateMatchPending"
           (click)="toggleSearch()"
           >
 
@@ -146,8 +219,9 @@
           </button>
 
           <button
-          class="search-button"
-          [disabled]="!canSearch() || searching"
+          *ngIf="matchMode === 'Single'"
+          class="search-button btn btn-gold"
+          [disabled]="!canSearch() || searching || privateMatchPending"
           (click)="startBotGame()"
         >
 
@@ -165,30 +239,67 @@
 
         </button>
 
-        </div>
-
-        <h3 class="subtitle"> Nº Jugadores </h3>
-
-        <div class="buttons-container">
-
-          <button *ngFor="let i of [2, 3, 4]"
-          (click)="numberOfPlayers = i"
-          [disabled]="i === numberOfPlayers"
-          class="players-button text"
+          <button
+          class="search-button btn btn-gold"
+          [disabled]="!canSearch() || searching || searchingBot || privateMatchPending"
+          (click)="createPrivateMatch()"
           >
-            {{ i }}
+
+            <i class="fa-solid fa-lock"></i>
+
+            Crear privada
+
+          </button>
+
+          <button
+          class="search-button btn btn-gold"
+          [disabled]="!canSearch() || searching || searchingBot || privateMatchPending"
+          (click)="toggleJoinInput()"
+          >
+
+            <i
+              class="fa-solid"
+              [ngClass]="showJoinInput ? 'fa-xmark' : 'fa-key'"
+            ></i>
+
+            {{ showJoinInput ? 'Cancelar' : 'Unirse a privada' }}
+
           </button>
 
         </div>
 
+        <div class="input-wrapper join-code-wrapper" *ngIf="showJoinInput">
 
+          <i class="fa-solid fa-hashtag"></i>
+
+          <input
+            type="text"
+            maxlength="6"
+            [(ngModel)]="joinCode"
+            (keyup.enter)="joinPrivateMatch()"
+            placeholder="Código de partida"
+            class="username-input join-code-input"
+          />
+
+          <button
+          class="btn btn-gold"
+          [disabled]="!joinCode"
+          (click)="joinPrivateMatch()"
+          >
+            Unirse
+          </button>
+
+        </div>
       </div>
 
     </div>    
 
   </div>
 
-
+  <a routerLink="/team" class="team-button btn btn-gold">
+    <i class="fa-solid fa-users"></i>
+    CONOCE AL EQUIPO
+  </a>
 
   <div class="info-panel">
     <h2 class="title">Envía una sugerencia / Reportar un error </h2>
@@ -208,6 +319,47 @@
 
 
   <app-alert-modal #errorModal></app-alert-modal>
+
+  <app-private-match-modal
+    #privateMatchModal
+    (cancelled)="onPrivateMatchCancelled()"
+  ></app-private-match-modal>
+
+  <footer class="footer">
+
+    <h2 class="footer-title">Creado por</h2>
+
+    <div class="footer-team">
+
+      <a
+        href="https://www.instagram.com/gomidev.developer/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="footer-dev hover-grow"
+      >
+        <img class="footer-dev-photo" src="/images/devs/gomidev.developer.png" alt="gomidev.developer">
+        <span class="footer-dev-name">
+          <i class="fa-brands fa-instagram"></i>
+          @gomidev.developer
+        </span>
+      </a>
+
+      <a
+        href="https://www.instagram.com/aweonao_crea/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="footer-dev hover-grow"
+      >
+        <img class="footer-dev-photo" src="/images/devs/aweonao_crea.png" alt="aweonao_crea">
+        <span class="footer-dev-name">
+          <i class="fa-brands fa-instagram"></i>
+          @aweonao_crea
+        </span>
+      </a>
+
+    </div>
+
+  </footer>
 
 </div>
 </div>

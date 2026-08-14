@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
 import { Message } from '../../../models/message.model';
 import { MessageDialogComponent } from '../../../ui/message-dialog/message-dialog.component';
 
@@ -59,6 +59,14 @@ chatRef!: ElementRef<HTMLDivElement>;
   close()
   {
     this.isOpen = false;
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape()
+  {
+    if (this.isOpen) {
+      this.close();
+    }
   }
 
   isReaction(text: string): boolean {

@@ -28,7 +28,7 @@
 
   text-align: center;
 
-  animation: fadeIn 1s ease;
+  animation: fadeInUp 1s ease;
 }
 
 .title {
@@ -58,7 +58,7 @@
 
   transition: 0.3s;
 
-  color: #e4991b
+  color: var(--color-accent-orange);
 }
 
 .gallery-link:hover {
@@ -83,7 +83,7 @@
 
   gap: 1rem;
 
-  animation: slideUp 0.6s ease;
+  animation: slideUpFade 0.6s ease;
 }
 
 .section-title {
@@ -104,7 +104,7 @@
 
   line-height: 1.6;
 
-  animation: fadeIn 1.2s ease;
+  animation: fadeInUp 1.2s ease;
 
   & > button
   {
@@ -137,28 +137,39 @@
 
 }
 
-.deck-item {
-
-  transition: transform 0.2s ease;
-
+.match-mode-selector
+{
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
 }
 
-.deck-item:hover {
+.match-mode-selector .btn.active
+{
+  box-shadow: 0 0 12px var(--color-gold);
+  border-color: var(--color-accent-orange);
+}
 
-  transform: scale(1.05);
-
+.match-mode-selector .btn i
+{
+  color: var(--color-accent-orange);
 }
 
 .login-container
 {
   display: flex;
-  gap: 0.25rem;
+  justify-content: space-around;
 
   & > div
   {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+  }
+
+  & > div:first-child
+  {
+    width: 25%;
   }
 }
 
@@ -168,14 +179,94 @@
   gap: 0.5rem;
 }
 
+.number-players-carousel
+{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.number-players-container
+{
+  overflow-x: scroll;
+  scroll-snap-type: x mandatory;
+  flex-grow: 1;
+  min-width: 0;
+  gap: 2rem;
+}
+
+.carousel-arrow
+{
+  flex: 0 0 auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+
+  font-size: 1.25rem;
+
+  transition: 0.2s;
+}
+
+.carousel-arrow:disabled
+{
+  opacity: 0.4;
+  cursor: default;
+}
+
 .players-button
- {
-    padding: 1rem;
- }
+{
+  list-style-type: none;
+  flex: 0 0 100%;
+  scroll-snap-align: center;
+
+  & > button
+  {
+    width: 100%;
+    height: 100%;
+    font-size: 4rem;
+
+    display: flex;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 700px) {
+  .login-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+
+  .login-container > div:first-child {
+    width: 100%;
+    max-width: 320px;
+  }
+}
 
 .input-wrapper {
 
   position: relative;
+
+}
+
+.join-code-wrapper {
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+}
+
+.join-code-input {
+
+  width: 180px;
+  text-transform: uppercase;
 
 }
 
@@ -215,40 +306,12 @@
 
   font-size: 18px;
 
-  border-radius: 12px;
-
-  border: none;
-
-  cursor: pointer;
-
-  transition: 0.3s;
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
 }
 
 .search-button i {
 
   margin-right: 10px;
-  color: #e4991b
-
-}
-
-.search-button:hover {
-
-
-  transform: scale(1.05);
-}
-
-.search-button:disabled {
-
-  opacity: 0.5;
-
-  cursor: not-allowed;
+  color: var(--color-accent-orange);
 
 }
 
@@ -270,36 +333,6 @@
 
 }
 
-
-@keyframes fadeIn {
-
-  from {
-
-    opacity: 0;
-    transform: translateY(10px);
-
-  }
-
-  to {
-
-    opacity: 1;
-    transform: translateY(0);
-
-  }
-
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 @keyframes spin {
   from { transform: rotate(0deg); }
@@ -327,5 +360,104 @@
   opacity: 0.9;
 
   margin-bottom: 1.5rem;
+
+}
+
+.team-button {
+
+  padding: 14px 30px;
+
+  font-size: 18px;
+
+}
+
+.team-button i {
+
+  color: var(--color-accent-orange);
+
+}
+
+.footer {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 1.5rem;
+
+  width: 100%;
+  max-width: 900px;
+
+  padding: 2rem;
+
+  animation: fadeInUp 1.2s ease;
+
+}
+
+.footer-title {
+
+  font-size: 1.75rem;
+
+}
+
+.footer-team {
+
+  display: flex;
+
+  gap: 3rem;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+}
+
+.footer-dev {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 0.75rem;
+
+  text-decoration: none;
+  color: white;
+
+}
+
+.footer-dev-photo {
+
+  width: 8rem;
+  height: 8rem;
+
+  object-fit: cover;
+
+  border-radius: 50%;
+
+  border: 3px solid var(--color-gold);
+
+  transition: 0.3s;
+
+}
+
+.footer-dev:hover .footer-dev-photo {
+
+  box-shadow: 0 0 14px var(--color-gold);
+
+}
+
+.footer-dev-name {
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 16px;
+
+}
+
+.footer-dev-name i {
+
+  color: var(--color-accent-orange);
 
 }
