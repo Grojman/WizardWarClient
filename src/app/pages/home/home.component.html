@@ -131,7 +131,7 @@
 
           <button
           type="button"
-          class="carousel-arrow"
+          class="carousel-arrow btn btn-gold"
           (click)="shiftPlayerCount(-1)"
           [disabled]="numberOfPlayers === playerCountOptions[0]"
           aria-label="Menos jugadores"
@@ -163,7 +163,7 @@
 
           <button
           type="button"
-          class="carousel-arrow"
+          class="carousel-arrow btn btn-gold"
           (click)="shiftPlayerCount(1)"
           [disabled]="numberOfPlayers === playerCountOptions[playerCountOptions.length - 1]"
           aria-label="Más jugadores"
@@ -196,7 +196,7 @@
         <h3 class="subtitle">Buscar partida</h3>
 
 
-        <div class="buttons-container">
+        <div class="buttons-container" [class.column]="matchMode === 'Single'">
 
           <button
           class="search-button btn btn-gold"

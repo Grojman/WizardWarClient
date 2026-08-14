@@ -30,12 +30,12 @@
 
     <ng-template #selecting>
 
-      <ng-container *ngIf="seriesState.snapshot as snapshot; else loading">
-
-        <h2 class="subtitle round-indicator">
-          Ronda {{ snapshot.round }} de 3
-        </h2>
-
+      
+      <h2 class="subtitle round-indicator">
+        Ronda {{ seriesState.snapshot!.round }} de 3
+      </h2>
+      
+      <div *ngIf="seriesState.snapshot as snapshot; else loading" class="series-decks-container">
         <!-- RIVAL -->
         <div class="series-row card-panel">
 
@@ -58,7 +58,7 @@
               [deck]="deck"
               [small]="true"
               [selected]="isRivalPick(deck)"
-              [unavailable]="isUnavailable(deck) && !isRivalPick(deck)"
+              [unavailable]="(isUnavailable(deck) || snapshot.rival.status === 'selecting') && !isRivalPick(deck)"
               class="deck-item"
             />
           </div>
@@ -73,7 +73,7 @@
             <span class="series-score-badge">
               {{ scoreFor(snapshot, snapshot.you.playerId) }}
             </span>
-            <span class="series-status" *ngIf="snapshot.you.status === 'selecting'">Elige tu mazo</span>
+            <span class="series-status" *ngIf="snapshot.you.status === 'waiting'">Elige tu mazo</span>
             <span class="series-status" *ngIf="snapshot.you.status === 'waiting_you'">Mazo elegido, esperando a tu rival</span>
           </div>
 
@@ -92,7 +92,7 @@
 
         </div>
 
-      </ng-container>
+      </div>
 
       <ng-template #loading>
         <p class="text">Cargando la serie...</p>

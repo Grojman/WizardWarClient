@@ -238,7 +238,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
   }
 
   canSearch(): boolean {
-    return !!this.username && !!this.selectedDeck;
+    return !!this.username && (!!this.selectedDeck || this.matchMode === "BestOfThree");
   }
 
   startBotGame()
@@ -259,7 +259,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
       this.ws.send({
         "$type": 'JoinQueueAction',
-        DeckId: this.selectedDeck?.id,
+        DeckId: this.selectedDeck?.id ?? -1,
         NumberOfPlayers: this.numberOfPlayers,
         Format: this.matchMode
       });

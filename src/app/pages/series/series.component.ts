@@ -128,11 +128,11 @@ export class SeriesComponent implements OnInit, OnDestroy {
     const status = this.seriesState.snapshot?.rival.status;
     switch (status) {
       case 'selecting':
-        return 'Seleccionando mazo...';
-      case 'waiting':
         return 'Esperando a que elijas';
+      case 'waiting':
+        return 'Seleccionando mazo...';
         case 'waiting_you':
-          return 'Esperando a que elijas';
+          return 'Eligiendo mazo...';
       default:
         return '';
     }

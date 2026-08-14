@@ -159,7 +159,7 @@
 {
   display: flex;
   justify-content: space-around;
-
+  gap: 2rem;
   & > div
   {
     display: flex;
@@ -167,10 +167,6 @@
     gap: 0.25rem;
   }
 
-  & > div:first-child
-  {
-    width: 25%;
-  }
 }
 
 .buttons-container
@@ -179,12 +175,18 @@
   gap: 0.5rem;
 }
 
+.column
+{
+  flex-direction: column;
+}
+
 .number-players-carousel
 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   width: 100%;
+  flex-grow: 1;
 }
 
 .number-players-container
@@ -194,6 +196,7 @@
   flex-grow: 1;
   min-width: 0;
   gap: 2rem;
+  height: 100%;
 }
 
 .carousel-arrow
