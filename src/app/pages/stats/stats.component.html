@@ -78,31 +78,57 @@
 
           <h3 class="matchups-title">Enfrentamientos por baraja rival</h3>
 
+          <div class="radar-wrapper">
+
+            <svg class="radar-chart" viewBox="0 0 300 300">
+
+              <polygon
+                *ngFor="let fraction of radarGridFractions"
+                [attr.points]="radarGridPoints(fraction)"
+                class="radar-grid"
+              ></polygon>
+
+              <line
+                *ngFor="let matchup of selectedDeck.Matchups; let i = index"
+                [attr.x1]="radarCenter" [attr.y1]="radarCenter"
+                [attr.x2]="radarAxisPoint(i).x" [attr.y2]="radarAxisPoint(i).y"
+                class="radar-axis"
+              ></line>
+
+              <polygon [attr.points]="radarLossPoints" class="radar-area radar-losses"></polygon>
+              <polygon [attr.points]="radarWinPoints" class="radar-area radar-wins"></polygon>
+
+              <image
+                *ngFor="let matchup of selectedDeck.Matchups; let i = index"
+                [attr.href]="'images/decks/' + matchup.OpponentDeckId + '.webp'"
+                [attr.x]="radarAxisPoint(i, radarRadius + 22).x - 16"
+                [attr.y]="radarAxisPoint(i, radarRadius + 22).y - 16"
+                width="32" height="32"
+                class="radar-deck-icon"
+              >
+                <title>{{ matchup.OpponentDeckName }}</title>
+              </image>
+
+            </svg>
+
+            <div class="radar-legend">
+              <span class="legend-item"><span class="legend-swatch win-swatch"></span> Victorias</span>
+              <span class="legend-item"><span class="legend-swatch lose-swatch"></span> Derrotas</span>
+            </div>
+
+          </div>
+
           <div class="matchup-list">
 
-            <div class="matchup-card" *ngFor="let matchup of selectedDeck.Matchups">
+            <div class="matchup-row" *ngFor="let matchup of selectedDeck.Matchups">
 
               <img class="matchup-image" src='{{ "images/decks/" + matchup.OpponentDeckId + ".webp" }}' alt="">
 
-              <div class="chart matchup-chart">
+              <span class="matchup-name">{{ matchup.OpponentDeckName }}</span>
 
-                <div class="bar-group">
-                  <span class="bar-value">{{ matchup.Wins }}</span>
-                  <div class="bar-track">
-                    <div class="bar win-bar" [style.height.%]="matchupBarHeight(matchup, matchup.Wins)"></div>
-                  </div>
-                  <span class="bar-label">Victorias</span>
-                </div>
-
-                <div class="bar-group">
-                  <span class="bar-value">{{ matchup.Losses }}</span>
-                  <div class="bar-track">
-                    <div class="bar lose-bar" [style.height.%]="matchupBarHeight(matchup, matchup.Losses)"></div>
-                  </div>
-                  <span class="bar-label">Derrotas</span>
-                </div>
-
-              </div>
+              <span class="matchup-record">
+                <span class="wins-text">{{ matchup.Wins }}V</span> - <span class="losses-text">{{ matchup.Losses }}D</span>
+              </span>
 
               <span class="matchup-games">{{ matchup.TotalGames }} partidas</span>
 
