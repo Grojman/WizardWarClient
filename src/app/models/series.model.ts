@@ -6,29 +6,24 @@ export interface SeriesScoreEntry {
   score: number;
 }
 
-export interface SeriesYou {
-  playerId: string;
-  name: string;
-  hasSelected: boolean;
-  deckId: number | null;
+export interface SeriesStatus
+{
+  playerId: string,
+  name: string,
+  status: SeriesPlayerStatus,
+  deckId: number | null
 }
 
-export type SeriesRivalStatus = 'selecting' | 'waiting' | 'hidden';
 
-export interface SeriesRival {
-  playerId: string;
-  name: string;
-  status: SeriesRivalStatus;
-  deckId: number | null;
-}
+export type SeriesPlayerStatus = 'selecting' | 'waiting' | 'hidden' | 'waiting_you';
 
 export interface SeriesSnapshot {
   seriesId: string;
   round: number;
   roundsToWin: number;
   scores: SeriesScoreEntry[];
-  you: SeriesYou;
-  rival: SeriesRival;
+  you: SeriesStatus;
+  rival: SeriesStatus;
   availableDecks: Deck[];
 }
 

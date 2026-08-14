@@ -108,7 +108,7 @@ export class SeriesComponent implements OnInit, OnDestroy {
 
   canSelect(deck: Deck): boolean {
     const snapshot = this.seriesState.snapshot;
-    return !!snapshot && !snapshot.you.hasSelected && !this.isUnavailable(deck);
+    return !!snapshot && snapshot.you.status !== "selecting" && !this.isUnavailable(deck);
   }
 
   selectDeck(deck: Deck): void {
@@ -131,6 +131,8 @@ export class SeriesComponent implements OnInit, OnDestroy {
         return 'Seleccionando mazo...';
       case 'waiting':
         return 'Esperando a que elijas';
+        case 'waiting_you':
+          return 'Esperando a que elijas';
       default:
         return '';
     }

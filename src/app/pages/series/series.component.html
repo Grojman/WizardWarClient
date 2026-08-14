@@ -73,8 +73,8 @@
             <span class="series-score-badge">
               {{ scoreFor(snapshot, snapshot.you.playerId) }}
             </span>
-            <span class="series-status" *ngIf="!snapshot.you.hasSelected">Elige tu mazo</span>
-            <span class="series-status" *ngIf="snapshot.you.hasSelected">Mazo elegido, esperando a tu rival</span>
+            <span class="series-status" *ngIf="snapshot.you.status === 'selecting'">Elige tu mazo</span>
+            <span class="series-status" *ngIf="snapshot.you.status === 'waiting_you'">Mazo elegido, esperando a tu rival</span>
           </div>
 
           <div class="deck-list series-deck-list">
