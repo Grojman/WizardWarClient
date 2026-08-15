@@ -170,6 +170,14 @@ hr
     text-decoration: dashed;
 }
 
+.card-condition-progress
+{
+    text-align: center;
+    font-size: smaller;
+    font-weight: 700;
+    color: #f9a825;
+}
+
 
 @media( max-width: 900px)
 {

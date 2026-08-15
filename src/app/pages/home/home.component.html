@@ -150,6 +150,7 @@
             >
               <button
               (click)="selectPlayerCount(i)"
+              [class.active]="i === numberOfPlayers"
               [disabled]="i === numberOfPlayers"
               class="text btn-gold btn"
               >
@@ -340,7 +341,7 @@
         rel="noopener noreferrer"
         class="footer-dev hover-grow"
       >
-        <img class="footer-dev-photo" src="/images/devs/gomidev.developer.png" alt="gomidev.developer">
+        <img class="footer-dev-photo" src="/images/devs/gomidev.developer.webp" alt="gomidev.developer">
         <span class="footer-dev-name">
           <i class="fa-brands fa-instagram"></i>
           @gomidev.developer
@@ -353,7 +354,7 @@
         rel="noopener noreferrer"
         class="footer-dev hover-grow"
       >
-        <img class="footer-dev-photo" src="/images/devs/aweonao_crea.png" alt="aweonao_crea">
+        <img class="footer-dev-photo" src="/images/devs/aweonao_crea.webp" alt="aweonao_crea">
         <span class="footer-dev-name">
           <i class="fa-brands fa-instagram"></i>
           @aweonao_crea

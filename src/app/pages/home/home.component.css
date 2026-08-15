@@ -2,7 +2,7 @@
 .home-container {
 
   min-height: 100vh;
-  background-image: url('/images/home/wall.png');
+  background-image: url('/images/home/wall.webp');
 
   background-size: contain;
 
@@ -18,7 +18,7 @@
 
   gap: 2rem;
 
-  background-image: url('/images/home/banner.png');
+  background-image: url('/images/home/banner.webp');
   background-size: contain;
   background-repeat: repeat-y;
   width: 75vw;

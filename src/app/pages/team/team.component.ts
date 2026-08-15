@@ -20,7 +20,7 @@ export class TeamComponent {
     {
       name: 'gomidev.developer',
       instagram: 'gomidev.developer',
-      photo: '/images/devs/gomidev.developer.png',
+      photo: '/images/devs/gomidev.developer.webp',
       roleLead: 'Área técnica',
       titles: [
         'Director Ejecutivo (CEO)',
@@ -54,7 +54,7 @@ export class TeamComponent {
     {
       name: 'aweonao_crea',
       instagram: 'aweonao_crea',
-      photo: '/images/devs/aweonao_crea.png',
+      photo: '/images/devs/aweonao_crea.webp',
       roleLead: 'Área gráfica',
       titles: [
         'Directora Creativa',

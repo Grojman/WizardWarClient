@@ -1,6 +1,7 @@
 export class Card {
 
   id: string = "";
+  serverId: string = "";
   name: string = "";
   description: string = "";
   attack?: number = 0;
@@ -11,6 +12,9 @@ export class Card {
   canPlay?: boolean = true;
   hasEffect?: boolean = false;
   effectTimes?: number = 0;
+
+  conditionProgress?: number | null = null;
+  conditionTarget?: number | null = null;
 
   attackChanged?: boolean = false;
   healthChanged?: boolean = false;

@@ -239,7 +239,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
         Format: this.matchMode
       });
 
-      this.audio.playSfx("/audio/search_match.mpeg");
+      this.audio.playSfx("/audio/search_match.mp3");
 
     } else {
 

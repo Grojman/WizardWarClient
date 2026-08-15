@@ -6,17 +6,17 @@
 
 .rival
 {
-  background-image: url('/images/red_b_opac.png');
+  background-image: url('/images/red_b_opac.webp');
 }
 
 .you
 {
-  background-image: url('/images/blue_b_opac.png');
+  background-image: url('/images/blue_b_opac.webp');
 }
 
 .series-container {
   min-height: 100vh;
-  background-image: url('/images/stones_opac.png');
+  background-image: url('/images/stones_opac.webp');
   display: flex;
   justify-content: space-around;
 }
@@ -27,7 +27,7 @@
   flex-direction: column;
   align-items: center;
 
-  background-image: url('/images/wood.png');
+  background-image: url('/images/wood.webp');
   background-size: contain;
   background-repeat: no-repeat;
   position: absolute;

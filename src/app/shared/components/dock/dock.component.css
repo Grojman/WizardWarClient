@@ -18,12 +18,12 @@
 
 .rival-background
 {
-    background-image: url('/images/board/rival_dock.png')
+    background-image: url('/images/board/rival_dock.webp')
 }
 
 .player-background
 {
-    background-image: url('/images/board/player_dock.png')
+    background-image: url('/images/board/player_dock.webp')
 }
 
 .spell-background

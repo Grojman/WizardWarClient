@@ -37,6 +37,13 @@
         [innerHTML]="updateParser()"
         >
         </p>
+
+        <p
+        *ngIf="card.conditionTarget"
+        class="card-condition-progress"
+        >
+            Progreso: {{ card.conditionProgress }} / {{ card.conditionTarget }}
+        </p>
     </div>
 
     <div class="has-scroll-fade" *ngIf="showScrollFade"

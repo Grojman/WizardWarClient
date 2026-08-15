@@ -222,9 +222,9 @@ export class AudioService {
   {
     if (this.coinIds.includes(id))
     {
-      this.playSfx("/audio/special_card/coin.mpeg", true);
+      this.playSfx("/audio/special_card/coin.mp3", true);
       return;
     }
-    this.playSfx(`/audio/special_card/${id}.mpeg`, true)
+    this.playSfx(`/audio/special_card/${id}.mp3`, true)
   }
 }

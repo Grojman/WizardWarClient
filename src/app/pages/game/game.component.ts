@@ -367,14 +367,14 @@ changeHealthAnimationDuration: number = 500;
         if (event.Unit) {
           this.gameStateService.placeCardOnBoard(player, Card.fromJSON(event.Unit), event.BoardPosition);
         }
-        this.checkCard(event.Unit.id);
+        this.checkCard(event.Unit.serverId);
         break;
-        
+
         case "SpellPlayed":
         var player = this.getPlayer(event.PlayerSource);
         this.gameStateService.removeCardFromHand(player, event.Spell.id);
         this.gameStateService.setLastSpellPlayed(player, Card.fromJSON(event.Spell));
-        this.checkCard(event.Spell.id);
+        this.checkCard(event.Spell.serverId);
         break;
 
         case "AddedCardToDeck":
@@ -394,13 +394,11 @@ changeHealthAnimationDuration: number = 500;
     });
   }
 
-checkCard(id: string)
+checkCard(serverId: string)
 {
-  console.log(id)
-  console.log(this.cardsWithEffect);
-  if (this.cardsWithEffect.includes(id))
+  if (this.cardsWithEffect.includes(serverId))
   {
-    this.audio.playCardSound(id);
+    this.audio.playCardSound(serverId);
   }
 }
   
@@ -420,7 +418,7 @@ findElement(id: string): HTMLElement{
 ngOnInit(): void {
   this.animationLayer = document.querySelector(".animation-layer") as HTMLElement;
   this.ws.subscribe(this.processMessage)
-  this.audio.playSfx('/audio/game_start.wav')
+  this.audio.playSfx('/audio/game_start.mp3')
 }
 
 ngOnDestroy(): void {
@@ -474,6 +472,8 @@ async handleGameEvents(events: any[]) {
 
   this.storedGameState.Me.HandData.forEach((n, i) => {
     this.gameState.Me.HandData[i].canPlay = n.canPlay;
+    this.gameState.Me.HandData[i].conditionProgress = n.conditionProgress;
+    this.gameState.Me.HandData[i].conditionTarget = n.conditionTarget;
   })
 
   this.isAnimating = false;
@@ -671,7 +671,7 @@ endGame(winner: string)
   overlay.style.display = 'flex';
 
   this.audioService.stopMusic();
-  this.audioService.playSfx(this.storedGameState.Me.Id === player.Id ? "audio/win.mp3" : "audio/lose.mpeg");
+  this.audioService.playSfx(this.storedGameState.Me.Id === player.Id ? "audio/win.mp3" : "audio/lose.mp3");
 
   const animation = this.winnerboard.nativeElement.animate(
     [

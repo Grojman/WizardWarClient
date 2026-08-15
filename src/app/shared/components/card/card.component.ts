@@ -51,6 +51,7 @@ export class CardComponent implements OnChanges, OnInit {
   playHoverSound()
   {
     if (this.faceDown) return;
+    if (this.card?.canPlay === false) return;
     this.audioService.playSfx('/audio/card_hover.mp3');
   }
 
