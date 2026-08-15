@@ -92,6 +92,6 @@
 
   </div>
 
-  <app-alert-modal #errorModal></app-alert-modal>
+  <app-alert-modal #errorModal *ngIf="errorModal?.isOpen ?? false"></app-alert-modal>
 
 </div>

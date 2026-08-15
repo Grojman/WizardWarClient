@@ -34,6 +34,8 @@ export class GameComponent implements OnInit, OnDestroy {
 
   audio: AudioService;
 
+  cardsWithEffect = ["34", "96", "98", "99", "100", "101", "102"];
+
   constructor(
     private ws : WebsocketService,
     private router : Router,
@@ -365,12 +367,14 @@ changeHealthAnimationDuration: number = 500;
         if (event.Unit) {
           this.gameStateService.placeCardOnBoard(player, Card.fromJSON(event.Unit), event.BoardPosition);
         }
+        this.checkCard(event.Unit.id);
         break;
         
         case "SpellPlayed":
         var player = this.getPlayer(event.PlayerSource);
         this.gameStateService.removeCardFromHand(player, event.Spell.id);
         this.gameStateService.setLastSpellPlayed(player, Card.fromJSON(event.Spell));
+        this.checkCard(event.Spell.id);
         break;
 
         case "AddedCardToDeck":
@@ -389,11 +393,21 @@ changeHealthAnimationDuration: number = 500;
       }, 500)
     });
   }
-  
-  nextFrame(): Promise<void>
+
+checkCard(id: string)
+{
+  console.log(id)
+  console.log(this.cardsWithEffect);
+  if (this.cardsWithEffect.includes(id))
   {
-    return this.animationService.nextFrame();
+    this.audio.playCardSound(id);
   }
+}
+  
+nextFrame(): Promise<void>
+{
+  return this.animationService.nextFrame();
+}
 
 getCenter(el: HTMLElement) {
   return this.animationService.getCenter(el);
@@ -657,10 +671,7 @@ endGame(winner: string)
   overlay.style.display = 'flex';
 
   this.audioService.stopMusic();
-  if (this.storedGameState.Me.Id === player.Id)
-  {
-    this.audioService.playSfx("audio/win.mp3");
-  }
+  this.audioService.playSfx(this.storedGameState.Me.Id === player.Id ? "audio/win.mp3" : "audio/lose.mpeg");
 
   const animation = this.winnerboard.nativeElement.animate(
     [

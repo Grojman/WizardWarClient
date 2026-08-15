@@ -44,7 +44,7 @@ chatRef!: ElementRef<HTMLDivElement>;
 
     if(!this.isOpen)
     {
-      this.audioService.playSfx('/audio/notification.mp3');
+      this.audioService.playNotification();
     }
 
     this.scrollTop();    

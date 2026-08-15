@@ -45,25 +45,12 @@
     <div
       *ngFor="let card of cards"
     >
-      <p class="title">
+      <p class="title deck-name">
         {{  card.name }}
       </p>
 
-      <hr/>
-
       <div class="cards-container">
-  
-  
-  
-      <!-- <app-cardvisualizer
-        *ngFor="let card of cards"
-        [card]="card"
-        class="card-item"
-        [large]="false"
-        
-      >
-      </app-cardvisualizer> -->
-  
+
       <div
         *ngFor="let c of card.cards"
       >

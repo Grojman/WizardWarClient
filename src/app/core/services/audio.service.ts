@@ -141,6 +141,15 @@ export class AudioService {
   // Efectos
   // ---------------------------
 
+  playNotification()
+  {
+    const options = [...Array(9).keys()];
+    
+    const notification = options[Math.floor(Math.random() * options.length)];
+
+    this.playSfx(`/audio/notifications/${notification + 1}.mp4`, true);
+  }
+
   playSfx(path: string, addVariation: boolean = true): void {
 
     if (!this.sfxEnabled) return;
@@ -205,5 +214,17 @@ export class AudioService {
     this.music.load();
     this.music.volume = this.musicVolume;
     this.music.muted = !this.musicEnabled;
+  }
+
+
+  coinIds = ["96", "98", "99", "100", "101", "102"]
+  playCardSound(id: string)
+  {
+    if (this.coinIds.includes(id))
+    {
+      this.playSfx("/audio/special_card/coin.mpeg", true);
+      return;
+    }
+    this.playSfx(`/audio/special_card/${id}.mpeg`, true)
   }
 }

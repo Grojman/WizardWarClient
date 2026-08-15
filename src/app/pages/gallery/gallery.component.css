@@ -1,3 +1,14 @@
+.deck-name
+{
+  background-image: url('/images/gallery/wood_deck_name.png');
+  width: fit-content;
+  background-repeat: no-repeat;
+  background-position: right;
+  padding: 1rem;
+  padding-right: 5rem;
+  background-size: auto 100%;
+}
+
 .gallery-container {
 
   min-height: 100vh;
