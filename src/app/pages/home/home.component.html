@@ -142,7 +142,6 @@
           <ul
           class="buttons-container number-players-container"
           #playersCarousel
-          (scroll)="onPlayersCarouselScroll()"
           >
 
             <li
@@ -195,6 +194,10 @@
 
         <h3 class="subtitle">Buscar partida</h3>
 
+        <p class="search-disabled-reason" *ngIf="searchDisabledReason() as reason">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          {{ reason }}
+        </p>
 
         <div class="buttons-container" [class.column]="matchMode === 'Single'">
 

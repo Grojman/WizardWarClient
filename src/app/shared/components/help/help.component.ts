@@ -14,6 +14,8 @@ export class HelpComponent
       { source: "/video/play_spell.webm", title: "Jugar hechizo"},
       { source: "/video/attack_unit.webm", title: "Atacar"},
       { source: "/video/draw_card.webm", title: "Robar carta"},
+      { source: "/video/attack_rival_health.webm", title: "Atacar vida del rival"},
+      { source: "/video/inspect_card.webm", title: "Inspeccionar carta"},
     ]
     isOpen: boolean = false;
       open(): void {

@@ -659,7 +659,7 @@ endGame(winner: string)
   this.audioService.stopMusic();
   if (this.storedGameState.Me.Id === player.Id)
   {
-    this.audioService.playSfx("audio/win.wav");
+    this.audioService.playSfx("audio/win.mp3");
   }
 
   const animation = this.winnerboard.nativeElement.animate(

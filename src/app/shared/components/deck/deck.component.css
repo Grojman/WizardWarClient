@@ -90,10 +90,7 @@
 /* Seleccionado */
 
 .selected {
-  box-shadow:
-     0 0 20px 10px gold,
-     inset 0 0 20px 20px gold,
-     0 0 25px 10px rgba(255, 215, 0, 1);
+  transform: translateY(-2rem) scale(1.1) !important;
 }
 
 /* Tooltip */

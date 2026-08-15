@@ -1,6 +1,7 @@
 import { Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } from '@angular/core';
 import { Message } from '../../../models/message.model';
 import { MessageDialogComponent } from '../../../ui/message-dialog/message-dialog.component';
+import { AudioService } from '../../../core/services/audio.service';
 
 @Component({
   selector: 'app-chat',
@@ -9,6 +10,8 @@ import { MessageDialogComponent } from '../../../ui/message-dialog/message-dialo
   styleUrl: './chat.component.css',
 })
 export class ChatComponent {
+
+  constructor(private audioService: AudioService) {}
 
   @Output()
   onMessageSent: EventEmitter<string> = new EventEmitter();
@@ -39,9 +42,12 @@ chatRef!: ElementRef<HTMLDivElement>;
   {
     this.messages.push(m);
 
-    this.scrollTop();
+    if(!this.isOpen)
+    {
+      this.audioService.playSfx('/audio/notification.mp3');
+    }
 
-    
+    this.scrollTop();    
   }
   
   scrollTop()

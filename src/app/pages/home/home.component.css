@@ -303,6 +303,20 @@
 }
 
 
+.search-disabled-reason {
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin: 0;
+
+  font-size: 14px;
+
+  color: var(--color-accent-orange);
+
+}
+
 .search-button {
 
   padding: 14px 30px;

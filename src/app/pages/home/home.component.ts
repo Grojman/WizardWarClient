@@ -111,45 +111,10 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   shiftPlayerCount(direction: 1 | -1): void {
     const currentIndex = this.playerCountOptions.indexOf(this.numberOfPlayers);
-    const nextIndex = Math.min(
-      Math.max(currentIndex + direction, 0),
-      this.playerCountOptions.length - 1
-    );
+    let nextIndex = currentIndex + direction;
+    if (nextIndex < 0) nextIndex = 0;
+    if (nextIndex >= this.playerCountOptions.length) nextIndex = this.playerCountOptions.length - 1;
     this.selectPlayerCount(this.playerCountOptions[nextIndex]);
-  }
-
-  onPlayersCarouselScroll(): void {
-    if (this.carouselScrollRaf !== undefined) return;
-
-    this.carouselScrollRaf = requestAnimationFrame(() => {
-      this.carouselScrollRaf = undefined;
-      this.syncPlayerCountFromScroll();
-    });
-  }
-
-  private syncPlayerCountFromScroll(): void {
-    const container = this.playersCarouselRef?.nativeElement;
-    if (!container || container.children.length === 0) return;
-
-    const containerCenter = container.scrollLeft + container.clientWidth / 2;
-    let closestIndex = 0;
-    let closestDistance = Infinity;
-
-    Array.from(container.children).forEach((child, index) => {
-      const element = child as HTMLElement;
-      const elementCenter = element.offsetLeft + element.offsetWidth / 2;
-      const distance = Math.abs(elementCenter - containerCenter);
-
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestIndex = index;
-      }
-    });
-
-    const newCount = this.playerCountOptions[closestIndex];
-    if (newCount !== undefined && newCount !== this.numberOfPlayers) {
-      this.numberOfPlayers = newCount;
-    }
   }
 
   private scrollToPlayerCount(count: number, behavior: ScrollBehavior = 'smooth'): void {
@@ -239,6 +204,16 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   canSearch(): boolean {
     return !!this.username && (!!this.selectedDeck || this.matchMode === "BestOfThree");
+  }
+
+  searchDisabledReason(): string | null {
+    if (!this.username) {
+      return 'Introduce tu nombre para poder buscar partida';
+    }
+    if (this.matchMode === 'Single' && !this.selectedDeck) {
+      return 'Selecciona un mazo para poder buscar partida';
+    }
+    return null;
   }
 
   startBotGame()

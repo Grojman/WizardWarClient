@@ -4,11 +4,11 @@ import {
   OnChanges,
   SimpleChanges,
   OnInit,
-  input
 } from '@angular/core';
 
 import { Card } from '../../../models/card.model';
 import { UNIT, SPELL } from '../../../core/config/game-data-config';
+import { AudioService } from '../../../core/services/audio.service';
 
 
 @Component({
@@ -20,6 +20,8 @@ import { UNIT, SPELL } from '../../../core/config/game-data-config';
 export class CardComponent implements OnChanges, OnInit {
   unit: string = UNIT;
   spell: string = SPELL;
+
+  constructor(private audioService: AudioService) {}
 
   ngOnInit(): void {
     this.faceDown = this.card === null;
@@ -45,6 +47,12 @@ export class CardComponent implements OnChanges, OnInit {
   selected = false;
 
   private boundingRect?: DOMRect;
+
+  playHoverSound()
+  {
+    if (this.faceDown) return;
+    this.audioService.playSfx('/audio/card_hover.mp3');
+  }
 
   ngOnChanges(
     changes: SimpleChanges
