@@ -120,8 +120,8 @@ export class SeriesComponent implements OnInit, OnDestroy {
     });
   }
 
-  scoreFor(snapshot: SeriesSnapshot, playerId: string): number {
-    return snapshot.scores.find((s) => s.playerId === playerId)?.score ?? 0;
+  scoreFor(snapshot: SeriesSnapshot | null, playerId: string): number {
+    return snapshot?.scores.find((s) => s.playerId === playerId)?.score ?? 0;
   }
 
   rivalStatusText(): string {

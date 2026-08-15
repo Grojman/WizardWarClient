@@ -1,4 +1,30 @@
 <div class="series-container">
+  <div class="series-row card-panel rival">
+    <div class="series-player-info">
+      <h3 class="subtitle series-player-name">{{ seriesState.snapshot!.rival.name || 'Rival' }}</h3>
+      <span class="series-score-badge">
+        {{ scoreFor(seriesState.snapshot, seriesState.snapshot!.rival.playerId) }}
+      </span>
+      <span class="series-status" *ngIf="rivalStatusText() as statusText">
+        {{ statusText }}
+      </span>
+      <span class="series-status hidden-status" *ngIf="seriesState.snapshot!.rival.status === 'hidden'">
+        Mazo oculto hasta que empiece la partida
+      </span>
+    </div>
+
+    <div class="deck-list series-deck-list">
+      <app-deck
+        *ngFor="let deck of decks"
+        [deck]="deck"
+        [small]="true"
+        [selected]="isRivalPick(deck)"
+        [unavailable]="(isUnavailable(deck) || seriesState.snapshot!.rival.status === 'selecting') && !isRivalPick(deck)"
+        class="deck-item"
+      />
+    </div>
+
+  </div>
 
   <div class="series-banner">
 
@@ -34,71 +60,35 @@
       <h2 class="subtitle round-indicator">
         Ronda {{ seriesState.snapshot!.round }} de 3
       </h2>
-      
-      <div *ngIf="seriesState.snapshot as snapshot; else loading" class="series-decks-container">
-        <!-- RIVAL -->
-        <div class="series-row card-panel">
 
-          <div class="series-player-info">
-            <h3 class="subtitle series-player-name">{{ snapshot.rival.name || 'Rival' }}</h3>
-            <span class="series-score-badge">
-              {{ scoreFor(snapshot, snapshot.rival.playerId) }}
-            </span>
-            <span class="series-status" *ngIf="rivalStatusText() as statusText">
-              {{ statusText }}
-            </span>
-            <span class="series-status hidden-status" *ngIf="snapshot.rival.status === 'hidden'">
-              Mazo oculto hasta que empiece la partida
-            </span>
-          </div>
-
-          <div class="deck-list series-deck-list">
-            <app-deck
-              *ngFor="let deck of decks"
-              [deck]="deck"
-              [small]="true"
-              [selected]="isRivalPick(deck)"
-              [unavailable]="(isUnavailable(deck) || snapshot.rival.status === 'selecting') && !isRivalPick(deck)"
-              class="deck-item"
-            />
-          </div>
-
-        </div>
-
-        <!-- YOU -->
-        <div class="series-row card-panel">
-
-          <div class="series-player-info">
-            <h3 class="subtitle series-player-name">{{ snapshot.you.name || 'Tú' }}</h3>
-            <span class="series-score-badge">
-              {{ scoreFor(snapshot, snapshot.you.playerId) }}
-            </span>
-            <span class="series-status" *ngIf="snapshot.you.status === 'waiting'">Elige tu mazo</span>
-            <span class="series-status" *ngIf="snapshot.you.status === 'waiting_you'">Mazo elegido, esperando a tu rival</span>
-          </div>
-
-          <div class="deck-list series-deck-list">
-            <app-deck
-              *ngFor="let deck of decks"
-              [deck]="deck"
-              [small]="true"
-              [selected]="isYourPick(deck)"
-              [unavailable]="!canSelect(deck) && !isYourPick(deck)"
-              (click)="selectDeck(deck)"
-              class="deck-item hover-grow"
-              [infoUp]="true"
-            />
-          </div>
-
-        </div>
-
-      </div>
-
-      <ng-template #loading>
-        <p class="text">Cargando la serie...</p>
-      </ng-template>
 
     </ng-template>
+
+  </div>
+
+  <div class="series-row card-panel you">
+
+    <div class="series-player-info">
+      <h3 class="subtitle series-player-name">{{ seriesState.snapshot!.you.name || 'Tú' }}</h3>
+      <span class="series-score-badge">
+        {{ scoreFor(seriesState!.snapshot, seriesState.snapshot!.you.playerId) }}
+      </span>
+      <span class="series-status" *ngIf="seriesState.snapshot!.you.status === 'waiting'">Elige tu mazo</span>
+      <span class="series-status" *ngIf="seriesState.snapshot!.you.status === 'waiting_you'">Mazo elegido, esperando a tu rival</span>
+    </div>
+
+    <div class="deck-list series-deck-list">
+      <app-deck
+        *ngFor="let deck of decks"
+        [deck]="deck"
+        [small]="true"
+        [selected]="isYourPick(deck)"
+        [unavailable]="!canSelect(deck) && !isYourPick(deck)"
+        (click)="selectDeck(deck)"
+        class="deck-item hover-grow"
+        [infoUp]="true"
+      />
+    </div>
 
   </div>
 

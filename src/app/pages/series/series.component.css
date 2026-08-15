@@ -1,3 +1,19 @@
+.rival, .you
+{
+  background-size: contain;
+}
+
+
+.rival
+{
+  background-image: url('/images/red_b_opac.png');
+}
+
+.you
+{
+  background-image: url('/images/blue_b_opac.png');
+}
+
 .series-container {
   min-height: 100vh;
   background-image: url('/images/home/wall.png');
@@ -6,33 +22,29 @@
 }
 
 .series-banner {
-  margin: auto;
   color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
 
-  gap: 1.5rem;
-
-  background-image: url('/images/home/banner.png');
-  background-size: cover;
-  background-repeat: repeat-y;
+  background-image: url('/images/wood.png');
+  background-size: contain;
+  background-repeat: no-repeat;
   width: 75vw;
 
-  padding: 2rem 0;
+  padding: 4rem 0;
 }
 
 .round-indicator {
   animation: fadeInUp 0.6s ease;
-  font-size: 3rem;
+  font-size: 2rem;
   margin: 0;
 
 }
 
 .title
 {
-  font-size: 4rem;
+  font-size: 3rem;
   margin: 0;
 }
 
