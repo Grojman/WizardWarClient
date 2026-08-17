@@ -1,3 +1,26 @@
+.unit-attack, .unit-health
+{
+    color: white;
+    font-weight: bold;
+    padding: 0 1.5rem;
+    transform: skew(12deg);
+
+}
+
+.unit-attack
+{
+    background: var(--color-gold);
+    clip-path: polygon(0 0, 65% 0, 100% 100%, 34% 100%);
+}
+
+.unit-health
+{
+    background: #dc143c;
+    clip-path: polygon(100% 0, 35% 0, 0 100%, 66% 100%);
+
+}
+
+
 .container
 {
     display: flex;

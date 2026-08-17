@@ -95,6 +95,11 @@ class="btn btn-gold btn-action"
   <i class="fa-solid fa-question"></i>
 </button>
 </div>
+<div class="disconnect-banner" *ngIf="opponentDisconnected">
+  <i class="fa-solid fa-triangle-exclamation"></i>
+  <span>{{ getPlayer(opponentDisconnected.playerId).Name }} se ha desconectado. Finalizando la partida en {{ secondsRemaining }}s si no vuelve...</span>
+</div>
+
 <div class="winner-overlay">
   <div #winnerboard class="winner-board">
     <p>

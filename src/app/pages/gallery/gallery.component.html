@@ -1,83 +1,85 @@
 <div class="gallery-container">
 
-  <!-- HEADER -->
-
-  <div class="gallery-header">
-
-    <h1 class="title">
-
-      <i class="fa-solid fa-book-sparkles title-icon"></i>
-
-      Galería de Cartas
-
-    </h1>
-
-    <h2 class="subtitle">
-
-      <i class="fa-solid fa-scroll"></i>
-
-      Explora todas las cartas y descubre sus poderes
-
-    </h2>
-
-    <a
-      routerLink="/"
-      class="back-button btn btn-gold"
-    >
-
-      <i class="fa-solid fa-arrow-left"></i>
-
-      Volver a inicio
-
-    </a>
+  <div>
+    
+      <div class="gallery-header">
+    
+        <h1 class="title">
+    
+          <i class="fa-solid fa-book-sparkles title-icon"></i>
+    
+          Galería de Cartas
+    
+        </h1>
+    
+        <h2 class="subtitle">
+    
+          <i class="fa-solid fa-scroll"></i>
+    
+          Explora todas las cartas y descubre sus poderes
+    
+        </h2>
+    
+        <a
+          routerLink="/"
+          class="back-button btn btn-gold"
+        >
+    
+          <i class="fa-solid fa-arrow-left"></i>
+    
+          Volver a inicio
+    
+        </a>
+    
+      </div>
+    
+      <div class="main-content">
+    
+        <div
+          class="deck-content"
+        
+        >
+    
+        <div
+          *ngFor="let card of cards"
+        >
+          <p class="title deck-name">
+            {{  card.name }}
+          </p>
+    
+          <div class="cards-container">
+    
+          <div
+            *ngFor="let c of card.cards"
+          >
+    
+          <app-card
+            [card]="c.Key"
+            class="card-item"
+            (click)="hoverCard = hoverCard == c.Key ? null : c.Key"
+          
+          >
+    
+          </app-card>
+          
+          <span class="card-amount subtitle">
+            x {{ c.Value }}
+          </span>
+          </div>
+    
+          
+        </div>
+    
+        </div>
+    
+        </div>
+    
+        
+      </div>
 
   </div>
 
-
-
-  <div class="main-content">
-
-    <div
-      class="deck-content"
-    
-    >
-
-    <div
-      *ngFor="let card of cards"
-    >
-      <p class="title deck-name">
-        {{  card.name }}
-      </p>
-
-      <div class="cards-container">
-
-      <div
-        *ngFor="let c of card.cards"
-      >
-
-      <app-card
-        [card]="c.Key"
-        class="card-item"
-        (click)="hoverCard = hoverCard == c.Key ? null : c.Key"
-      
-      >
-
-      </app-card>
-      
-      <span class="card-amount subtitle">
-        x {{ c.Value }}
-      </span>
-      </div>
-
-      
-    </div>
-
-    </div>
-
-    </div>
-
-    
-    <div
+  <div
     class="displayer">
       <app-cardvisualizer
       *ngIf="hoverCard"
@@ -90,10 +92,6 @@
         Haz click en una carta para ver lo que hace
       </p>
 
-    </div>
   </div>
-
-  <!-- GRID DE CARTAS -->
-
 
 </div>

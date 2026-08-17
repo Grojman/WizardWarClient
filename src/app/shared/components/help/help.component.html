@@ -2,12 +2,62 @@
     <div class="help-container panel" (click)="$event.stopPropagation()">
         
     <div class="help-header">
-        <h2 class="title">LISTADO DE ACCIONES</h2>
+        <h2 class="title">CÓMO JUGAR</h2>
 
         <button (click)="close()" class="btn-icon">x</button>
     </div>
 
+    <h2 class="title">TIPOS DE CARTAS</h2>
 
+    <div class="card-types">
+
+        <div>
+
+            <h3 class="subtitle">HECHIZO</h3>
+            
+            <app-card
+                [card]="cardSpellExample"
+                [canBeSelected]="false"
+                [class.large]="true"
+                [faceDown]="false"
+                ></app-card>
+
+            <p class="text">
+                Los hechizos son cartas que se juegan y se descartan inmediatamente después de su uso. 
+                Pueden tener efectos que afectan a las unidades en juego, al jugador o al oponente.
+            </p>
+        </div>
+
+        <div>
+
+            <h3 class="subtitle">UNIDAD</h3>
+            
+            <app-card
+                [card]="cardUnitExample"
+                [canBeSelected]="false"
+                [class.large]="true"></app-card>
+
+            <p class="text">
+                Las unidades son cartas que se juegan y permanecen en el campo de batalla hasta que sean destruidas. Tienen ataque (izq) y vida (drcha). Pueden atacar al oponente y defender al jugador.
+            </p>
+        </div>
+
+        <div>
+            <h3 class="subtitle">HABILIDAD</h3>
+            <app-card
+                [card]="cardWithAbilityExample"
+                [canBeSelected]="false"
+                [class.large]="true"
+                [faceDown]="false"
+                ></app-card>
+            <p class="text">
+                Algunas cartas, independientemente de su tipo, pueden tener habilidades. Las habilidades no gastan turno y solo se pueden usar cuando la carta esté en la mesa o se haya jugado, como los hechizos. Las habilidades pueden tener efectos que afectan a las unidades en juego, al jugador o al oponente.
+            </p>
+        </div>
+
+    </div>
+
+    <h2 class="title">ACCIONES</h2>
 
     <div class="actions-container">
 

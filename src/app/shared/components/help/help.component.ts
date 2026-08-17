@@ -1,5 +1,6 @@
 import { Component, HostListener, OnInit } from "@angular/core";
 import { HelpVideo } from "../../../models/help.video.model"
+import { Card } from "../../../models/card.model";
 @Component({
   selector: 'app-help',
   standalone: false,
@@ -8,6 +9,57 @@ import { HelpVideo } from "../../../models/help.video.model"
 })
 export class HelpComponent
  {
+  cardWithAbilityExample: Card = {
+    id: "",
+    serverId: "",
+    name: "Carta con habilidad",
+    hasEffect: true,
+    canPlay: true,
+    imageUrl: "example",
+    effectTimes: 1,
+    description: "",
+    changeHealth: function (amount: number, durationAnimation: number): void {
+      throw new Error("Function not implemented.");
+    },
+    changeDamage: function (amount: number, durationAnimation: number): void {
+      throw new Error("Function not implemented.");
+    }
+  }
+
+  cardSpellExample: Card = {
+    id: "",
+    serverId: "",
+    name: "Hechizo",
+    type: "Spell",
+    canPlay: true,
+    imageUrl: "example",
+    description: "Este es un ejemplo de carta de hechizo.",
+    changeHealth: function (amount: number, durationAnimation: number): void {
+      throw new Error("Function not implemented.");
+    },
+    changeDamage: function (amount: number, durationAnimation: number): void {
+      throw new Error("Function not implemented.");
+    }
+  }
+
+  cardUnitExample: Card = {
+    id: "",
+    serverId: "31",
+    name: "Unidad",
+    canPlay: true,
+    type: "Unit",
+    imageUrl: "example",
+    description: "Este es un ejemplo de carta de unidad.",
+    attack: 3,
+    health: 3,
+    changeHealth: function (amount: number, durationAnimation: number): void {
+      throw new Error("Function not implemented.");
+    },
+    changeDamage: function (amount: number, durationAnimation: number): void {
+      throw new Error("Function not implemented.");
+    }
+  }
+
     videos: HelpVideo[] = [
       { source: "/video/play_unit.webm", title: "Jugar una unidad"},
       { source: "/video/use_ability.webm", title: "Usar habilidad"},

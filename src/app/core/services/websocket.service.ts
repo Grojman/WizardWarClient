@@ -7,6 +7,17 @@ export interface WebSocketMessage {
   Content?: unknown;
 }
 
+const CLIENT_ID_STORAGE_KEY = 'ww_client_id';
+
+function getOrCreateClientId(): string {
+  let clientId = localStorage.getItem(CLIENT_ID_STORAGE_KEY);
+  if (!clientId) {
+    clientId = crypto.randomUUID();
+    localStorage.setItem(CLIENT_ID_STORAGE_KEY, clientId);
+  }
+  return clientId;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -38,7 +49,8 @@ export class WebsocketService {
     console.log('Connecting...');
 
     try {
-      this.socket = new WebSocket(runtimeConfig.websocketUrl);
+      const clientId = getOrCreateClientId();
+      this.socket = new WebSocket(`${runtimeConfig.websocketUrl}?clientId=${clientId}`);
     } catch (error) {
       console.error('WebSocket initialization failed', error);
       this.handleDisconnect('initialization-failed');

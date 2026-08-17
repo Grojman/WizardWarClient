@@ -19,6 +19,7 @@ import { AudioService } from '../../core/services/audio.service';
 import { HelpComponent } from '../../shared/components/help/help.component';
 import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
 import { SeriesStateService } from '../../core/services/series-state.service';
+import { GameSessionStorageService } from '../../core/services/game-session-storage.service';
 
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
@@ -42,7 +43,8 @@ export class GameComponent implements OnInit, OnDestroy {
     private gameStateService: GameStateService,
     private animationService: GameAnimationService,
     private audioService: AudioService,
-    private seriesStateService: SeriesStateService
+    private seriesStateService: SeriesStateService,
+    private gameSessionStorage: GameSessionStorageService
   )
   {
     this.gameState = this.createInitialGameState();
@@ -98,6 +100,12 @@ export class GameComponent implements OnInit, OnDestroy {
       case "end_game":
         this.handleEndGameMessage(msg.Content);
         break;
+      case "opponent_disconnected":
+        this.handleOpponentDisconnected(msg.Content);
+        break;
+      case "opponent_reconnected":
+        this.handleOpponentReconnected();
+        break;
       case "series_state":
         this.seriesStateService.applySeriesState(msg.Content);
         break;
@@ -130,6 +138,8 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private handleGameStateMessage(content: Game | null): void {
+    this.clearResumeWatchdog();
+
     this.singleActionEvent = true;
     this.storedGameState = content ?? this.gameState;
 
@@ -139,6 +149,43 @@ export class GameComponent implements OnInit, OnDestroy {
 
     this.syncPlayerTargets();
     this.applyTurnAndEffects(this.storedGameState);
+  }
+
+  opponentDisconnected: { playerId: string } | null = null;
+  secondsRemaining: number = 0;
+  private disconnectCountdownTimer?: ReturnType<typeof setInterval>;
+  private resumeWatchdogTimer?: ReturnType<typeof setTimeout>;
+
+  private handleOpponentDisconnected(content: any): void {
+    this.opponentDisconnected = { playerId: content?.playerId ?? '' };
+    this.secondsRemaining = content?.secondsToWait ?? 0;
+
+    clearInterval(this.disconnectCountdownTimer);
+    this.disconnectCountdownTimer = setInterval(() => {
+      this.secondsRemaining = Math.max(0, this.secondsRemaining - 1);
+      if (this.secondsRemaining === 0) {
+        clearInterval(this.disconnectCountdownTimer);
+      }
+    }, 1000);
+  }
+
+  private handleOpponentReconnected(): void {
+    this.opponentDisconnected = null;
+    clearInterval(this.disconnectCountdownTimer);
+  }
+
+  private startResumeWatchdog(): void {
+    this.resumeWatchdogTimer = setTimeout(() => {
+      if (this.gameState.Me.Id === "") {
+        this.gameSessionStorage.markInactive();
+        this.router.navigateByUrl('/');
+      }
+    }, 6000);
+  }
+
+  private clearResumeWatchdog(): void {
+    clearTimeout(this.resumeWatchdogTimer);
+    this.resumeWatchdogTimer = undefined;
   }
 
   private pendingEndGame: any = null;
@@ -159,6 +206,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   onErrorClosed(): void {
+    this.gameSessionStorage.markInactive();
     this.router.navigateByUrl('/');
   }
 
@@ -417,12 +465,16 @@ findElement(id: string): HTMLElement{
 
 ngOnInit(): void {
   this.animationLayer = document.querySelector(".animation-layer") as HTMLElement;
+  this.ws.connect();
   this.ws.subscribe(this.processMessage)
   this.audio.playSfx('/audio/game_start.mp3')
+  this.startResumeWatchdog();
 }
 
 ngOnDestroy(): void {
   this.ws.clearSubscription();
+  this.clearResumeWatchdog();
+  clearInterval(this.disconnectCountdownTimer);
 }
 
 selectedCard: Card | null = null;
@@ -653,6 +705,7 @@ winnerboard!: ElementRef<HTMLElement>;
 
 leaveGame()
 {
+  this.gameSessionStorage.markInactive();
   this.router.navigateByUrl(this.isSeriesRound ? "/series" : "/");
 }
 

@@ -6,6 +6,7 @@ import { AudioService } from '../../core/services/audio.service';
 import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
 import { PrivateMatchModalComponent } from '../../shared/components/private-match-modal/private-match-modal.component';
 import { SeriesStateService } from '../../core/services/series-state.service';
+import { GameSessionStorageService } from '../../core/services/game-session-storage.service';
 
 @Component({
   selector: 'app-home',
@@ -73,7 +74,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
     private ws: WebsocketService,
     private router: Router,
     private audio: AudioService,
-    private seriesState: SeriesStateService
+    private seriesState: SeriesStateService,
+    private gameSessionStorage: GameSessionStorageService
   )
   {
 
@@ -176,6 +178,8 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   async startGame()
   {
+    this.gameSessionStorage.markActive();
+
     await document.querySelector('.home-container')?.animate([
       { opacity: 1},
       { opacity: 0}

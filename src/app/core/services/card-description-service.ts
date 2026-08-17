@@ -27,6 +27,9 @@ export class CardDescriptionService
       let html = '';
       let i = start;
 
+      let statsContainer = '';
+      let isStatContainer = false;
+
       while (i < text.length)
       {
         const ch = text[i];
@@ -47,11 +50,32 @@ export class CardDescriptionService
           break;
         }
 
-        html += ch;
+        
+        if (ch === '[' && !isStatContainer) {
+          isStatContainer = true;
+        } else if (ch === ']' && isStatContainer) {
+          isStatContainer = false;
+          html += this.convertUnitValues(statsContainer);
+          statsContainer = '';
+        } else if (isStatContainer) {
+          statsContainer += ch;
+        } else {
+          html += ch;
+        }
         i++;
+
       }
 
       return { html, nextIndex: i };
+    }
+
+    private convertUnitValues(value: string) : string
+    {
+      const data = value.split('/');
+      if (data.length !== 2) return value;
+      const attack = data[0];
+      const health = data[1];
+      return `<span class="unit-attack">${attack}</span>/<span class="unit-health">${health}</span>`;
     }
 
     // Attempts to parse a `{class:text}` token starting at `openIndex` (the

@@ -7,6 +7,7 @@ import { AudioService } from '../../core/services/audio.service';
 import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
 import { Deck } from '../../models/deck.model';
 import { SeriesSnapshot } from '../../models/series.model';
+import { GameSessionStorageService } from '../../core/services/game-session-storage.service';
 
 @Component({
   selector: 'app-series',
@@ -25,6 +26,7 @@ export class SeriesComponent implements OnInit, OnDestroy {
     private router: Router,
     public seriesState: SeriesStateService,
     private audio: AudioService,
+    private gameSessionStorage: GameSessionStorageService,
   ) {}
 
   ngOnInit(): void {
@@ -66,6 +68,8 @@ export class SeriesComponent implements OnInit, OnDestroy {
   };
 
   async startRound(): Promise<void> {
+    this.gameSessionStorage.markActive();
+
     await document.querySelector('.series-container')?.animate([
       { opacity: 1 },
       { opacity: 0 },
@@ -78,6 +82,7 @@ export class SeriesComponent implements OnInit, OnDestroy {
 
   async returnHome(): Promise<void> {
     this.seriesState.clear();
+    this.gameSessionStorage.markInactive();
 
     await document.querySelector('.series-container')?.animate([
       { opacity: 1 },
