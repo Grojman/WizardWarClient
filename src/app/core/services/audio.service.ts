@@ -33,7 +33,8 @@ export class AudioService {
   }
 
   private playlists: PlayList[] = [
-    {id: "game", songs: ["/audio/music/song1.mp3"]}
+    {id: "game", songs: ["/audio/music/song1.mp3"]},
+    {id: "home", songs: ["audio/music/home_music.mp3"]}
   ]
 
   private currentplaylist: PlayList | null  = null;

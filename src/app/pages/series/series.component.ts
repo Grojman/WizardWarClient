@@ -34,7 +34,6 @@ export class SeriesComponent implements OnInit, OnDestroy {
     this.ws.subscribe(this.processMessage);
     this.ws.send({ '$type': 'GetDecksAction' });
     this.ws.send({ '$type': 'RequestSeriesStateAction' });
-    this.audio.startMusic();
   }
 
   ngOnDestroy(): void {

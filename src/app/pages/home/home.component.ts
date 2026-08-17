@@ -91,7 +91,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     window.addEventListener('scroll', () => {
       if (isready) return;
       isready = true;
-      this.audio.playSong("audio/music/home_music.mp3")
+      this.audio.startMusic("home")
     })
   }
 

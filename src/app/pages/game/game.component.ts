@@ -50,7 +50,7 @@ export class GameComponent implements OnInit, OnDestroy {
     this.gameState = this.createInitialGameState();
     this.storedGameState = this.gameState;
     this.audio = audioService;
-    audioService.startMusic();
+    audioService.startMusic("game");
   }
 
   private createInitialGameState(): Game {
