@@ -35,6 +35,8 @@
   transform: translateX(-50%);
 
   padding: 4rem 8rem;
+
+  z-index: 1;
 }
 
 .round-indicator {
@@ -42,6 +44,11 @@
   font-size: 2rem;
   margin: 0;
 
+}
+
+.disabled
+{
+  filter: brightness(0.6);
 }
 
 .title

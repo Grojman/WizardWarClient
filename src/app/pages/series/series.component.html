@@ -1,5 +1,8 @@
 <div class="series-container">
-  <div class="series-row card-panel rival">
+  <div class="series-row card-panel rival"
+  [class.disabled]="seriesState.snapshot!.rival.status !== 'waiting_you'"
+  
+  >
     <div class="series-player-info">
       <h3 class="subtitle series-player-name">{{ seriesState.snapshot!.rival.name || 'Rival' }}</h3>
       <span class="series-score-badge">
@@ -66,7 +69,9 @@
 
   </div>
 
-  <div class="series-row card-panel you">
+  <div class="series-row card-panel you"
+  [class.disabled]="seriesState.snapshot!.you.status !== 'waiting'"
+  >
 
     <div class="series-player-info">
       <h3 class="subtitle series-player-name">{{ seriesState.snapshot!.you.name || 'Tú' }}</h3>

@@ -1,6 +1,12 @@
 import { Injectable } from '@angular/core';
 import { AudioSettingsService } from './audio-settings-service';
 
+
+interface PlayList {
+  id: string,
+  songs: string[]
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -25,10 +31,12 @@ export class AudioService {
 
     return buffer;
   }
-  // Lista de canciones
-  private playlist: string[] = [
-    'audio/music/song1.mp3',
-  ];
+
+  private playlists: PlayList[] = [
+    {id: "game", songs: ["/audio/music/song1.mp3"]}
+  ]
+
+  private currentplaylist: PlayList | null  = null;
 
   private currentSong = 0;
 
@@ -47,37 +55,34 @@ export class AudioService {
       this.playNextSong();
     });
 
-    // Volumen de la música
     this.audioSettings.musicVolume$.subscribe(volume => {
       this.musicVolume = volume;
       this.music.volume = volume;
     });
 
-    // Volumen de efectos
     this.audioSettings.sfxVolume$.subscribe(volume => {
       this.sfxVolume = volume;
     });
 
-    // Música habilitada/deshabilitada
     this.audioSettings.musicEnabled$.subscribe(enabled => {
       this.musicEnabled = enabled;
       this.music.muted = !enabled;
     });
 
-    // Efectos habilitados/deshabilitados
     this.audioSettings.sfxEnabled$.subscribe(enabled => {
       this.sfxEnabled = enabled;
     });
   }
 
-  // ---------------------------
-  // Música
-  // ---------------------------
+  startMusic(zone: string): void {
 
-  startMusic(): void {
+    const findIndex = this.playlists.findIndex(n => n.id === zone);
 
-    if (!this.musicEnabled) return;
-    if (this.playlist.length === 0) return;
+    if (!this.musicEnabled || findIndex === -1) return;
+    
+    this.currentplaylist = this.playlists[findIndex];
+
+    if (this.currentplaylist.songs.length === 0) return;
 
     this.currentSong = 0;
     this.loadCurrentSong();
@@ -122,12 +127,12 @@ export class AudioService {
 
   previousSong(): void {
 
-    if (this.playlist.length === 0) return;
+    if (this.currentplaylist!.songs.length === 0) return;
 
     this.currentSong--;
 
     if (this.currentSong < 0) {
-      this.currentSong = this.playlist.length - 1;
+      this.currentSong = this.currentplaylist!.songs.length - 1;
     }
 
     this.loadCurrentSong();
@@ -136,10 +141,6 @@ export class AudioService {
       this.music.play().catch(() => {});
     }
   }
-
-  // ---------------------------
-  // Efectos
-  // ---------------------------
 
   playNotification()
   {
@@ -181,17 +182,13 @@ export class AudioService {
     }).catch(() => {});
   }
 
-  // ---------------------------
-  // Privados
-  // ---------------------------
-
   private playNextSong(): void {
 
-    if (this.playlist.length === 0) return;
+    if (this.currentplaylist!.songs.length === 0) return;
 
     this.currentSong++;
 
-    if (this.currentSong >= this.playlist.length) {
+    if (this.currentSong >= this.currentplaylist!.songs.length) {
       this.currentSong = 0;
     }
 
@@ -203,7 +200,7 @@ export class AudioService {
   }
 
   private loadCurrentSong(): void {
-    this.loadSong(this.playlist[this.currentSong]);
+    this.loadSong(this.currentplaylist!.songs[this.currentSong]);
   }
 
   
