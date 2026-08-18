@@ -2,7 +2,7 @@
 .home-container {
 
   min-height: 100vh;
-  background-image: url('/images/home/wall.webp');
+  background-image: url('/images/stones_opac.webp');
 
   background-size: contain;
 
@@ -18,10 +18,11 @@
 
   gap: 2rem;
 
-  background-image: url('/images/home/banner.webp');
+  background-image: url('/images/blue_b_opac.webp');
   background-size: contain;
   background-repeat: repeat-y;
   width: 75vw;
+  box-shadow: 1px 0 60px 10px #000b35;
 }
 
 .hero {

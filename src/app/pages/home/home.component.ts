@@ -87,12 +87,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
       "$type" : "GetDecksAction"
     });
 
-    let isready = false;
-    window.addEventListener('scroll', () => {
-      if (isready) return;
-      isready = true;
-      this.audio.startMusic("home")
-    })
+    this.audio.startMusic("home")
   }
 
   ngAfterViewInit(): void {

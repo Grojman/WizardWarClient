@@ -24,6 +24,8 @@
         [selected]="isRivalPick(deck)"
         [unavailable]="(isUnavailable(deck) || seriesState.snapshot!.rival.status === 'selecting') && !isRivalPick(deck)"
         class="deck-item"
+        [infoUp]="true"
+
       />
     </div>
 

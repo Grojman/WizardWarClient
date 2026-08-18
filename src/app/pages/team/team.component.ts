@@ -16,6 +16,18 @@ interface TeamMember {
 })
 export class TeamComponent {
 
+  collaborators: TeamMember[] = [
+    {
+      name: 'Sofía',
+      instagram: '',
+      photo: '',
+      roleLead: 'Dibujante',
+      titles: [
+        
+      ]
+    }
+  ]
+
   members: TeamMember[] = [
     {
       name: 'gomidev.developer',

@@ -18,37 +18,61 @@
 
   </div>
 
-  <div class="member-list">
+  <div class="participants">
 
-    <div class="member-card" *ngFor="let member of members">
-
-      <a
-        [href]="'https://www.instagram.com/' + member.instagram + '/'"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="member-header hover-grow"
+    <div class="member-list">
+  
+      <div class="member-card" 
+      *ngFor="let member of members"
+        [ngStyle]="{
+          'background-image': 'url(/images/devs/' + member.instagram + '_banner.webp)'
+        }"
       >
-        <img class="member-photo" [src]="member.photo" [alt]="member.name">
-
-        <span class="member-name">
-          <i class="fa-brands fa-instagram"></i>
-          @{{ member.name }}
-        </span>
-
-        <span class="member-lead">{{ member.roleLead }}</span>
-
-      </a>
-
-      <ul class="member-titles">
-        <li *ngFor="let title of member.titles">{{ title }}</li>
-      </ul>
-
+  
+        <a
+          [href]="'https://www.instagram.com/' + member.instagram + '/'"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="member-header hover-grow"
+        >
+          <img class="member-photo" [src]="member.photo" [alt]="member.name">
+  
+          <span class="member-name">
+            <i class="fa-brands fa-instagram"></i>
+            @{{ member.name }}
+          </span>
+  
+          <span class="member-lead">{{ member.roleLead }}</span>
+  
+        </a>
+  
+        <ul class="member-titles">
+          <li *ngFor="let title of member.titles">{{ title }}</li>
+        </ul>
+  
+      </div>
+  
     </div>
-
+    <div>
+      <h2 class="title">COLABORADOR@S</h2>
+  
+      <div class="members-list">
+  
+        <div
+        *ngFor="let col of collaborators"
+        class="collaborator-card"
+        >
+          <span class="collaborator-name">
+            {{ col.name }}
+          </span>
+  
+          <span class="collaborator-lead">{{ col.roleLead }}</span>
+        </div>
+  
+      </div>
+    </div>
   </div>
 
-  <p class="team-footnote">
-    Sí, son solo 2 personas. No, todavía no estamos contratando.
-  </p>
+
 
 </div>
