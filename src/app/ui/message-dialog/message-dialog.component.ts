@@ -52,11 +52,17 @@ export class MessageDialogComponent {
     this.message = `:${r.id}:`;
     this.reactionSuggestions = [];
     this.focus();
+    this.send();
   }
 
   hideSuggestionsDelayed()
   {
     setTimeout(() => this.reactionSuggestions = [], 150);
+  }
+
+  showSuggestions()
+  {
+    this.reactionSuggestions = REACTIONS;
   }
 
 }
