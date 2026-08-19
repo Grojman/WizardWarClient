@@ -1,4 +1,5 @@
 import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { Reaction, REACTIONS } from '../../shared/reactions';
 
 @Component({
   selector: 'app-message-dialog',
@@ -9,6 +10,8 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 export class MessageDialogComponent {
 
   message = "";
+
+  reactionSuggestions: Reaction[] = [];
 
   @ViewChild('messageinput')
   input!: ElementRef<HTMLInputElement>;
@@ -23,11 +26,37 @@ export class MessageDialogComponent {
 
     this.messageSent.emit(this.message);
     this.message = "";
+    this.reactionSuggestions = [];
   }
 
   focus()
   {
     this.input.nativeElement.focus();
+  }
+
+  onMessageChange()
+  {
+    const match = /^:([a-zA-Z0-9_-]*)$/.exec(this.message);
+
+    if (!match) {
+      this.reactionSuggestions = [];
+      return;
+    }
+
+    const typed = match[1].toLowerCase();
+    this.reactionSuggestions = REACTIONS.filter((r) => r.id.toLowerCase().startsWith(typed));
+  }
+
+  selectReaction(r: Reaction)
+  {
+    this.message = `:${r.id}:`;
+    this.reactionSuggestions = [];
+    this.focus();
+  }
+
+  hideSuggestionsDelayed()
+  {
+    setTimeout(() => this.reactionSuggestions = [], 150);
   }
 
 }

@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, HostListener, Output, ViewChild } 
 import { Message } from '../../../models/message.model';
 import { MessageDialogComponent } from '../../../ui/message-dialog/message-dialog.component';
 import { AudioService } from '../../../core/services/audio.service';
+import { getReactionPath as reactionImagePath, isReactionText } from '../../reactions';
 
 @Component({
   selector: 'app-chat',
@@ -77,7 +78,7 @@ chatRef!: ElementRef<HTMLDivElement>;
 
   isReaction(text: string): boolean {
 
-  return /^:[a-zA-Z0-9_-]+:$/.test(text);
+  return isReactionText(text);
 
 }
 
@@ -89,9 +90,7 @@ getReactionName(text: string): string {
 
 getReactionPath(text: string): string {
 
-  const name = this.getReactionName(text);
-
-  return `/images/reactions/${name}.${(name.startsWith('0') ? 'gif' : 'jpg')}`;
+  return reactionImagePath(this.getReactionName(text));
 
 }
 

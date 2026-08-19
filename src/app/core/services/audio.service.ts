@@ -145,11 +145,11 @@ export class AudioService {
 
   playNotification()
   {
-    const options = [...Array(9).keys()];
+    const options = [...Array(8).keys()];
     
     const notification = options[Math.floor(Math.random() * options.length)];
 
-    this.playSfx(`/audio/notifications/${notification + 1}.mp4`, true);
+    this.playSfx(`/audio/notifications/${notification + 1}.mp3`, true);
   }
 
   playSfx(path: string, addVariation: boolean = true): void {

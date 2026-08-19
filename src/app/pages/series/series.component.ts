@@ -93,6 +93,11 @@ export class SeriesComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/');
   }
 
+  getSelectedDeck(id: number | null): Deck | undefined {
+    if (!id) return undefined;
+    return this.decks.find((d) => Number(d.id) === id);
+  }
+
   isYourPick(deck: Deck): boolean {
     const snapshot = this.seriesState.snapshot;
     return !!snapshot && snapshot.you.deckId === Number(deck.id);
@@ -151,5 +156,9 @@ export class SeriesComponent implements OnInit, OnDestroy {
   isYouWinner(): boolean {
     const end = this.seriesState.endResult;
     return !!end && end.winnerId === this.seriesState.snapshot?.you.playerId;
+  }
+
+  trackById(index: number, deck: Deck): number {
+    return Number(deck.id);
   }
 }

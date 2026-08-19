@@ -1,16 +1,26 @@
 .unit-attack, .unit-health
 {
-    color: white;
-    font-weight: bold;
-    padding: 0 1.5rem;
-    transform: skew(12deg);
-
+    width: fit-content;
+    display: inline-flex;
+    font-size: 2rem;
+    & > span
+    {
+        color: white;
+        font-weight: bold;
+        padding: 1rem 1.5rem;
+        margin: 0;
+    }
 }
 
 .unit-attack
 {
     background: var(--color-gold);
     clip-path: polygon(0 0, 65% 0, 100% 100%, 34% 100%);
+    
+    & > span
+    {
+        transform: skew(20deg);
+    }
 }
 
 .unit-health
@@ -18,6 +28,10 @@
     background: #dc143c;
     clip-path: polygon(100% 0, 35% 0, 0 100%, 66% 100%);
 
+    & > span
+    {
+        transform: skew(-10deg);
+    }
 }
 
 
@@ -119,78 +133,52 @@ hr
     transition: .15s ease;
 }
 
-/* Jugadores */
-.rival {
-    color: #d32f2f;
+
+/* 1. entities — colour + weight, nothing else */
+.rival, .player, .board, .deck, .skill { font-weight: 600; }
+
+.rival  { color: var(--hl-red); }
+.player { color: var(--hl-green); }
+.board  { color: var(--hl-violet); }
+.skill  { color: var(--hl-amber); }
+.deck   { color: var(--hl-slate); }
+.family { color: var(--hl-violet); font-style: italic; font-weight: 500; }
+
+/* 2. actions — same, plus a soft underline */
+.draw, .play, .attack, .add {
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: .09em;
+  text-decoration-color: color-mix(in oklab, currentColor 38%, transparent);
+  text-underline-offset: .19em;
+  text-decoration-skip-ink: auto;
 }
 
-.player {
-    color: #2e7d32;
-}
+.draw   { color: var(--hl-blue); }
+.play   { color: var(--hl-amber); }
+.attack { color: var(--hl-red); }
+.add    { color: var(--hl-green); }
 
-/* Lugares */
-.deck {
-    color: #616161;
-    font-style: italic;
-}
-
-.board {
-    color: #8e24aa;
-    border-bottom: 2px solid #8e24aa;
-}
-
-/* Acciones */
-.draw {
-    color: #1565c0;
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-}
-
-.play {
-    color: #ef6c00;
-    border-bottom: 2px dashed currentColor;
-}
-
-.attack {
-    color: #c62828;
-    text-shadow: 1px 1px 0 rgba(0,0,0,.15);
-}
-
-/* Tipos */
-.family {
-    color: #5e35b1;
-    font-style: italic;
-    letter-spacing: .04em;
-}
-
-.skill {
-    color: #f9a825;
-    font-weight: 700;
-}
-
-/* Estados */
+/* 3. states — quiet, no colour of their own */
 .die {
-    color: #555;
-    text-decoration: line-through;
-    opacity: .85;
-}
-
-.add {
-    color: #00897b;
-    border-left: 3px solid currentColor;
-    padding-left: .25em;
+  color: var(--hl-slate);
+  font-weight: 600;
+  text-decoration: line-through;
+  text-decoration-thickness: from-font;
+  text-decoration-color: color-mix(in oklab, currentColor 55%, transparent);
 }
 
 .endround {
-    color: #3949ab;
-    font-variant: small-caps;
-    letter-spacing: .06em;
+  color: var(--hl-blue);
+  font-weight: 600;
+  font-variant-caps: all-small-caps;
+  letter-spacing: .05em;
 }
 
-.condition
-{
-    color: #292929;
-    text-decoration: dashed;
+.condition {
+  color: var(--hl-slate);
+  font-weight: 600;
+  font-style: italic;
 }
 
 .card-condition-progress

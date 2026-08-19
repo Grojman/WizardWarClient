@@ -9,6 +9,13 @@
   --overlay-dark: rgba(0, 0, 0, 0.5);
   --overlay-blur-bg: rgba(0, 0, 0, 0.6);
   --text-color: white;
+
+  --hl-red:    #b3352c;
+  --hl-green:  #2c7a51;
+  --hl-blue:   #2563a0;
+  --hl-violet: #6a4aa8;
+  --hl-amber:  #a86412;
+  --hl-slate:  #5c6470;
 }
 
 @font-face {
@@ -351,4 +358,15 @@ body {
   pointer-events: none;
   z-index: 9999;
   background-image: url("/images/board/proyectile.svg");
+}
+
+.card-text {
+  line-height: 1.6;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-text {
+    --hl-red: #f09595;  --hl-green: #7fd5b0; --hl-blue: #85b7eb;
+    --hl-violet: #b3ade8; --hl-amber: #e8b45c; --hl-slate: #a8afba;
+  }
 }

@@ -88,6 +88,12 @@ export class HomeComponent implements OnInit, AfterViewInit {
     });
 
     this.audio.startMusic("home")
+    let start = false;
+    window.addEventListener('keydown', (event) => {
+      if(start) return;
+      start = true;
+      this.audio.startMusic("home")
+    })
   }
 
   ngAfterViewInit(): void {

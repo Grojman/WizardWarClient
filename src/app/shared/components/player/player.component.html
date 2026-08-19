@@ -58,6 +58,7 @@
                 (click)="lastSpellClicked()"
                 [rival]="!visibleHand"
                 [spell]="true"
+                class="last-spell"
                 >
             </app-dock>
             
@@ -98,6 +99,7 @@
             [selected]="card.id === selectedCard?.id"
             (contextmenu)="onRightClick($event, card)"
             [canBeSelected]="true"
+            [showEffectActive]="false"
         />
 
         <p class="card-counter subtitle">

@@ -16,18 +16,21 @@
       </span>
     </div>
 
-    <div class="deck-list series-deck-list">
-      <app-deck
-        *ngFor="let deck of decks"
-        [deck]="deck"
-        [small]="true"
-        [selected]="isRivalPick(deck)"
-        [unavailable]="(isUnavailable(deck) || seriesState.snapshot!.rival.status === 'selecting') && !isRivalPick(deck)"
-        class="deck-item"
-        [infoUp]="true"
-
-      />
+    <div class="deck-list series-deck-list" [class.picked]="this.seriesState.snapshot!.rival.deckId !== null">
+      <div class="deck-slot"
+          *ngFor="let deck of decks; trackBy: trackById"
+          [class.is-picked]="isRivalPick(deck)">
+        <app-deck
+          [deck]="deck"
+          [small]="true"
+          [selected]="isRivalPick(deck)"
+          [unavailable]="(isUnavailable(deck) || this.seriesState.snapshot!.rival.status === 'hidden') && !isRivalPick(deck)"
+          [infoUp]="true" />
+      </div>
     </div>
+
+    <p class="hidden-selection" *ngIf="seriesState.snapshot!.round === 3">?</p>
+
 
   </div>
 
@@ -84,17 +87,18 @@
       <span class="series-status" *ngIf="seriesState.snapshot!.you.status === 'waiting_you'">Mazo elegido, esperando a tu rival</span>
     </div>
 
-    <div class="deck-list series-deck-list">
-      <app-deck
-        *ngFor="let deck of decks"
-        [deck]="deck"
-        [small]="true"
-        [selected]="isYourPick(deck)"
-        [unavailable]="!canSelect(deck) && !isYourPick(deck)"
-        (click)="selectDeck(deck)"
-        class="deck-item hover-grow"
-        [infoUp]="true"
-      />
+    <div class="deck-list series-deck-list" [class.picked]="this.seriesState.snapshot!.you.deckId !== null">
+      <div class="deck-slot"
+          *ngFor="let deck of decks; trackBy: trackById"
+          [class.is-picked]="isYourPick(deck)">
+        <app-deck
+          [deck]="deck"
+          [small]="true"
+          [selected]="isYourPick(deck)"
+          (click)="selectDeck(deck)"
+          [unavailable]="(isUnavailable(deck) || this.seriesState.snapshot!.you.status === 'hidden') && !isYourPick(deck)"
+          [infoUp]="true" />
+      </div>
     </div>
 
   </div>

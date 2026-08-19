@@ -32,7 +32,7 @@
         [class.selected]="deck === selectedDeck"
         (click)="selectDeck(deck)"
       >
-      <img src='{{ "images/decks/" + deck.DeckId + ".webp" }}' alt="">
+      <img src='{{ "images/decks/" + deck.DeckId + ".webp" }}' alt="" loading="lazy">
         <span class="deck-row-games">{{ deck.TotalGames }} partidas</span>
       </div>
 
@@ -122,7 +122,7 @@
 
             <div class="matchup-row" *ngFor="let matchup of selectedDeck.Matchups">
 
-              <img class="matchup-image" src='{{ "images/decks/" + matchup.OpponentDeckId + ".webp" }}' alt="">
+              <img class="matchup-image" src='{{ "images/decks/" + matchup.OpponentDeckId + ".webp" }}' alt="" loading="lazy">
 
               <span class="matchup-name">{{ matchup.OpponentDeckName }}</span>
 

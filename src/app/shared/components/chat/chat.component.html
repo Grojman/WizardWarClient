@@ -29,7 +29,7 @@
           {{ message.text }}
         </div>
 
-        <img class="reaction-image" *ngIf="isReaction(message.text)" src="{{getReactionPath(message.text)}}" />
+        <img class="reaction-image" *ngIf="isReaction(message.text)" src="{{getReactionPath(message.text)}}" loading="lazy" />
   
       </div>
   

@@ -1,3 +1,43 @@
+.deck-list {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.deck-slot {
+  flex: 0 0 auto;
+  transition:
+    opacity .25s ease,
+    transform .5s cubic-bezier(.22, 1, .36, 1),
+    flex-basis .5s cubic-bezier(.22, 1, .36, 1),
+    margin .5s cubic-bezier(.22, 1, .36, 1);
+  will-change: transform, opacity;
+}
+
+.deck-list.picked .deck-slot:not(.is-picked) {
+  opacity: 0;
+  transform: scale(.85) translateY(10px);
+  flex-basis: 0;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.deck-list.picked .deck-slot.is-picked {
+  transform: scale(1.9);
+  z-index: 5;
+  transform-origin: top;
+}
+
+.hidden-selection
+{
+  font-size: 30rem;
+  position: absolute;
+  transform: translateY(-50%);
+  z-index: 9;
+  font-family: "Text Font 3";
+}
+
 .rival, .you
 {
   background-size: contain;
@@ -66,7 +106,7 @@
 
   display: flex;
   flex-direction: column;
-  gap: 10rem;
+  gap: 7rem;
 
   width: 40%;
 }
@@ -89,29 +129,18 @@
 
 .series-player-name {
   margin: 0;
+  font-size: 2rem;
 }
 
 .series-score-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  min-width: 2.5rem;
-  height: 2.5rem;
-  padding: 0 0.5rem;
-
-  border-radius: 50%;
-  background: var(--color-wood-dark);
-  border: 2px solid var(--color-gold);
-
   font-family: "Text Font 3";
-  font-size: 1.25rem;
+  font-size: 3rem;
 }
 
 .series-status {
   font-family: "Text Font 2";
   font-style: italic;
-  font-size: 1.5rem;
+  font-size: 1rem;
 }
 
 .hidden-status {

@@ -75,7 +75,7 @@ export class CardDescriptionService
       if (data.length !== 2) return value;
       const attack = data[0];
       const health = data[1];
-      return `<span class="unit-attack">${attack}</span> <span class="unit-health">${health}</span>`;
+      return `<span class="unit-attack"><span>${attack}</span></span> <span class="unit-health"><span>${health}</span></span>`;
     }
 
     // Attempts to parse a `{class:text}` token starting at `openIndex` (the

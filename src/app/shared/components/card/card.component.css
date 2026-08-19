@@ -61,15 +61,38 @@
 
   .card.can-hover:hover {
 
+    /* Movimiento original (tilt 3D que sigue al cursor) — comentado, no borrado, para no perderlo */
+    
     transform:
 
       rotateX(var(--x-rotation))
 
       rotateY(var(--y-rotation))
       translateY(var(--y-translate))
-      
+
       scale(1.1);
-      
+   
+
+    /* animation: kickflip 0.6s ease-in-out; */
+
+  }
+
+  @keyframes kickflip {
+    0% {
+      transform: translateY(0) rotateX(0deg) rotateY(0deg) scale(1);
+    }
+    20% {
+      transform: translateY(-4vh) rotateX(10deg) rotateY(120deg) scale(1.08);
+    }
+    50% {
+      transform: translateY(-6vh) rotateX(-8deg) rotateY(240deg) scale(1.12);
+    }
+    80% {
+      transform: translateY(-2vh) rotateX(4deg) rotateY(340deg) scale(1.05);
+    }
+    100% {
+      transform: translateY(0) rotateX(0deg) rotateY(360deg) scale(1);
+    }
   }
 
   .card.can-hover:hover .card-name
@@ -263,18 +286,21 @@
     transform: translateX(-50%);
     display: flex; 
     color: white;
+    
+    & > p {
+      clip-path: polygon(50% 95%, 0 15%, 100% 15%);
+      background-color: green;
+      padding: 0.5rem 1rem;
   }
+}
 
-  .card-info.active > p
-  {
-    /* clip-path: polygon(50% 100%, 0 40%, 100% 39%); */
-    /* clip-path: polygon(50% 100%, 0 0, 100% 0); */
-    /* clip-path: polygon(51% 75%, 0 0, 100% 0); */
-    clip-path: polygon(50% 95%, 0 15%, 100% 15%);
-    background-color: green;
-    animation: heartbeat 2s ease-in-out infinite;
-    padding: 0.5rem 1rem;
-
+.card-info.active > p
+{
+  /* clip-path: polygon(50% 100%, 0 40%, 100% 39%); */
+  /* clip-path: polygon(50% 100%, 0 0, 100% 0); */
+  /* clip-path: polygon(51% 75%, 0 0, 100% 0); */
+  
+  animation: heartbeat 2s ease-in-out infinite;
   }
   @keyframes heartbeat {
     0% {

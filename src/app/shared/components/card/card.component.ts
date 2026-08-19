@@ -46,6 +46,9 @@ export class CardComponent implements OnChanges, OnInit {
   @Input()
   selected = false;
 
+  @Input()
+  showEffectActive = true;
+
   private boundingRect?: DOMRect;
 
   playHoverSound()
@@ -89,12 +92,10 @@ export class CardComponent implements OnChanges, OnInit {
   }
 
   img.onload = () => {
-    console.log('carga');
     this.backgroundImage = `url('${src}')`;
   };
 
   img.onerror = () => {
-    console.log('error');
     this.backgroundImage = `url('/images/cards/placeholder.webp')`;
   };
 

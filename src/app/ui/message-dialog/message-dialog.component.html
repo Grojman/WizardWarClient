@@ -22,14 +22,27 @@
 
     <i class="fa-solid fa-feather-pointed input-icon"></i>
 
+    <div class="reaction-suggestions panel" *ngIf="reactionSuggestions.length">
+      <button
+        type="button"
+        class="reaction-suggestion"
+        *ngFor="let r of reactionSuggestions"
+        (click)="selectReaction(r)"
+        [title]="':' + r.id + ':'"
+      >
+        <img [src]="r.path" [alt]="r.id" />
+      </button>
+    </div>
+
     <input
     #messageinput
       type="text"
       [(ngModel)]="message"
+      (ngModelChange)="onMessageChange()"
+      (blur)="hideSuggestionsDelayed()"
       placeholder="Escribe un mensaje..."
       (keyup.enter)="send()"
       autofocus
-      list="images"
     />
 
     <button

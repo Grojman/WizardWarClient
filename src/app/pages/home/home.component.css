@@ -198,7 +198,6 @@
   scroll-snap-type: x mandatory;
   flex-grow: 1;
   min-width: 0;
-  gap: 2rem;
   height: 100%;
 }
 
@@ -230,12 +229,14 @@
   list-style-type: none;
   flex: 0 0 100%;
   scroll-snap-align: center;
-  margin: auto;
-
+  margin: 1rem;
+  margin-top: 2rem;
   & > button
   {
+    font-size: 5rem;
     margin: auto;
-    font-size: 4rem;
+    width: 90%;
+    height: 90%;
     display: flex;
     justify-content: center;
   }

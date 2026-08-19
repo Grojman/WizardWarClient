@@ -1,3 +1,8 @@
+.last-spell
+{
+  transform: rotate(90deg);
+}
+
 .info-section
 {
   /* transform-style: preserve-3d; */
