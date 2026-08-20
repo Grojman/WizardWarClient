@@ -1,61 +1,47 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
-   width="55.444706mm"
-   height="57.588539mm"
-   viewBox="0 0 55.444706 57.588539"
+   width="100"
+   height="100"
+   viewBox="0 0 100 100"
    version="1.1"
    id="svg1"
-   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
-   sodipodi:docname="proyectile.svg"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#505050"
-     bordercolor="#eeeeee"
-     borderopacity="1"
-     inkscape:showpageshadow="0"
-     inkscape:pageopacity="0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#505050"
-     inkscape:document-units="mm"
-     inkscape:zoom="1.4446863"
-     inkscape:cx="151.9361"
-     inkscape:cy="70.257469"
-     inkscape:window-width="1920"
-     inkscape:window-height="991"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="layer1" />
-  <defs
-     id="defs1" />
-  <g
-     inkscape:label="Capa 1"
-     inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(-54.255269,-369.57345)">
+   xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="proj-outerGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffe3a8" stop-opacity="0.85" />
+      <stop offset="55%" stop-color="#ff9a4d" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#ff5b3d" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="proj-core" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff8e2" />
+      <stop offset="35%" stop-color="#ffd166" />
+      <stop offset="70%" stop-color="#ff8a3d" />
+      <stop offset="100%" stop-color="#e0432f" stop-opacity="0.85" />
+    </radialGradient>
+    <radialGradient id="proj-hot" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#fff2c8" stop-opacity="0" />
+    </radialGradient>
+    <filter id="proj-blur" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="2.2" />
+    </filter>
+  </defs>
+
+  <circle cx="50" cy="50" r="49" fill="url(#proj-outerGlow)" />
+
+  <g filter="url(#proj-blur)" opacity="0.9">
     <path
-       sodipodi:type="star"
-       style="fill:#ecbaba;fill-opacity:1;stroke:#f9f9f9;stroke-width:2.523;stroke-linejoin:round;stroke-miterlimit:3.6;stroke-opacity:1"
-       id="path13"
-       inkscape:flatsided="false"
-       sodipodi:sides="6"
-       sodipodi:cx="66.285118"
-       sodipodi:cy="348.34949"
-       sodipodi:r1="123.03976"
-       sodipodi:r2="61.519878"
-       sodipodi:arg1="0.71706242"
-       sodipodi:arg2="1.2406612"
-       inkscape:rounded="0.2"
-       inkscape:randomized="0.02"
-       d="m 157.39344,431.06933 c -9.64725,11.7652 -55.98969,-30.61095 -70.310522,-25.33561 -14.320832,5.27534 -27.521526,65.21104 -42.584485,62.61532 -15.06296,-2.59571 -8.200732,-62.82688 -19.398418,-73.16711 -11.197685,-10.34023 -72.982743,5.20417 -77.514,-9.19678 -4.531257,-14.40094 55.284462,-36.30856 57.9684088,-51.43139 2.6839468,-15.12283 -40.0133078,-53.99735 -29.9269588,-65.55437 10.086349,-11.55702 54.276037,25.0175 68.523344,19.96702 14.247306,-5.05048 30.618405,-65.51773 45.555718,-63.00155 14.937313,2.51618 5.128405,65.49942 16.508233,75.43443 11.37982,9.935 69.05582,-7.98586 74.21758,6.42653 5.16175,14.4124 -51.12457,39.69791 -54.48772,54.59218 -3.36315,14.89426 41.09607,56.88612 31.44882,68.65133 z"
-       inkscape:transform-center-x="-0.34480233"
-       inkscape:transform-center-y="0.31052312"
-       transform="matrix(0.23499543,0,0,0.23499543,66.925267,316.78687)" />
+       d="M 50.0,4.0 L 57.65,31.52 L 82.53,17.47 L 68.48,42.35 L 96.0,50.0 L 68.48,57.65 L 82.53,82.53 L 57.65,68.48 L 50.0,96.0 L 42.35,68.48 L 17.47,82.53 L 31.52,57.65 L 4.0,50.0 L 31.52,42.35 L 17.47,17.47 L 42.35,31.52 Z"
+       fill="url(#proj-core)" />
   </g>
+
+  <g opacity="0.95">
+    <path
+       d="M 50,10 L 55.1,32.5 L 68,22 L 59,40 L 82,50 L 59,60 L 68,78 L 55.1,67.5 L 50,90 L 44.9,67.5 L 32,78 L 41,60 L 18,50 L 41,40 L 32,22 L 44.9,32.5 Z"
+       fill="url(#proj-core)" />
+  </g>
+
+  <circle cx="50" cy="50" r="17" fill="url(#proj-hot)" />
+  <circle cx="50" cy="50" r="9" fill="#ffffff" />
+  <circle cx="46" cy="46" r="2.6" fill="#ffffff" opacity="0.9" />
 </svg>

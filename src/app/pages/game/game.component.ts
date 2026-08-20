@@ -306,9 +306,9 @@ async createAnimationDeckCardsAmount(startIcon: string, cardOrigin: string, deck
 }
 
 
-async createProyectile(source: string, target: string, optionalTarget:string = "")
+async createProyectile(source: string, target: string, optionalTarget:string = "", amount: number = 0)
 {
-  await this.animationService.createProjectile(source, target, optionalTarget);
+  await this.animationService.createProjectile(source, target, optionalTarget, amount);
 }
 
 getDeckId(id: string): string {
@@ -371,14 +371,14 @@ changeHealthAnimationDuration: number = 500;
           }
         break;
         case "PlayerHealthChanged":
-        await this.createProyectile(event.Source, event.PlayerSource);
+        await this.createProyectile(event.Source, event.PlayerSource, "", event.Amount);
         var health = this.getPlayer(event.PlayerSource).Health;
         health.changeHealth(event.Amount, this.changeHealthAnimationDuration);
         break;
         case "UnitHealthChanged":
         var arrayToFind = this.getPlayer(event.PlayerSource).Board;
-        await this.createProyectile(event.Source, event.Card);
-        
+        await this.createProyectile(event.Source, event.Card, "", event.Amount);
+
         const card = arrayToFind.find(n => n && n.id === event.Card);
 
         if (card) {
@@ -386,7 +386,7 @@ changeHealthAnimationDuration: number = 500;
         }
         break;
         case "UnitDamageChanged":
-        await this.createProyectile(event.Source, event.Card);
+        await this.createProyectile(event.Source, event.Card, "", event.Amount);
 
         var arrayToFind = this.getPlayer(event.PlayerSource).Board;
         
@@ -422,6 +422,7 @@ changeHealthAnimationDuration: number = 500;
         var player = this.getPlayer(event.PlayerSource);
         this.gameStateService.removeCardFromHand(player, event.Spell.id);
         this.gameStateService.setLastSpellPlayed(player, Card.fromJSON(event.Spell));
+        await this.animationService.animateSpellCast(event.Spell.id);
         this.checkCard(event.Spell.serverId);
         break;
 

@@ -33,47 +33,57 @@
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
-     id="defs1" />
+     id="defs1">
+    <linearGradient id="handcard-wood" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8c476" />
+      <stop offset="55%" stop-color="#b5893a" />
+      <stop offset="100%" stop-color="#8a641f" />
+    </linearGradient>
+    <linearGradient id="handcard-face" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#f1e9d2" />
+    </linearGradient>
+  </defs>
   <g
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-54.255269,-369.57345)">
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#handcard-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
        d="m 55.809284,444.10645 v -44.12041 0 -13.46813 H 101.9299 v 57.58854 z"
        id="path1"
        sodipodi:nodetypes="ccccccc" />
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.89242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#handcard-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.89242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
        d="m 90.871209,387.96412 v 25.90185"
        id="path2-0" />
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.89242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#handcard-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.89242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
        d="m 79.095446,387.96412 v 25.90185"
        id="path2-0-5" />
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.89242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#handcard-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.89242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
        d="m 67.319682,387.96412 v 25.90185"
        id="path2-0-5-9" />
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.187;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#handcard-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.187;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
        d="m 55.809284,399.98604 v 20.03859"
        id="path2" />
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.187;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#handcard-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.187;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
        d="M 101.9299,444.10645 H 55.809284 l 4.924666,8.22652 v 21.08027 h 26.947196 v -21.08027 z"
        id="path3"
        sodipodi:nodetypes="ccccccc" />
     <rect
-       style="fill:#fffcf7;fill-opacity:1;stroke:#000000;stroke-width:1.84608;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#handcard-face);fill-opacity:1;stroke:#2b2110;stroke-width:1.84608;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
        id="rect1"
        width="33.855976"
        height="49.624516"
        x="62.167458"
        y="370.49649" />
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.187;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#handcard-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.187;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
        d="m 55.809284,414.57614 9.541617,-14.44232 10.413919,4.83002 -19.955536,32.28452 z"
        id="path4"
        sodipodi:nodetypes="ccccc" />

@@ -26,6 +26,77 @@ export class GameAnimationService {
     };
   }
 
+  private spawnBurst(x: number, y: number, size: number, duration: number, extraClass: string = ''): void {
+    const layer = this.getAnimationLayer();
+    if (!layer) {
+      return;
+    }
+
+    const burst = document.createElement('div');
+    burst.classList.add('impact-burst');
+    if (extraClass) {
+      burst.classList.add(extraClass);
+    }
+    burst.style.left = `${x}px`;
+    burst.style.top = `${y}px`;
+    burst.style.width = `${size}px`;
+    burst.style.height = `${size}px`;
+    layer.appendChild(burst);
+
+    const animation = burst.animate(
+      [
+        { transform: 'translate(-50%, -50%) scale(0.25) rotate(0deg)', opacity: 0 },
+        { transform: 'translate(-50%, -50%) scale(1.05) rotate(30deg)', opacity: 1, offset: 0.35 },
+        { transform: 'translate(-50%, -50%) scale(1.55) rotate(65deg)', opacity: 0 },
+      ],
+      {
+        duration: this.animationSettingsService.getAdjustedDuration(duration),
+        easing: 'ease-out',
+      },
+    );
+
+    const cleanup = () => burst.remove();
+    animation.finished.then(cleanup).catch(cleanup);
+  }
+
+  private spawnSparks(x: number, y: number, count: number, className: string = 'spark-particle'): void {
+    const layer = this.getAnimationLayer();
+    if (!layer) {
+      return;
+    }
+
+    for (let i = 0; i < count; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add(className);
+      particle.style.left = `${x}px`;
+      particle.style.top = `${y}px`;
+      layer.appendChild(particle);
+
+      const angle = (Math.PI * 2 * i) / count + Math.random() * 0.6;
+      const distance = 36 + Math.random() * 46;
+      const dx = Math.cos(angle) * distance;
+      const dy = Math.sin(angle) * distance;
+      const spin = 160 + Math.random() * 200;
+
+      const animation = particle.animate(
+        [
+          { transform: 'translate(-50%, -50%) translate(0px, 0px) scale(1) rotate(0deg)', opacity: 1 },
+          {
+            transform: `translate(-50%, -50%) translate(${dx}px, ${dy}px) scale(0.25) rotate(${spin}deg)`,
+            opacity: 0,
+          },
+        ],
+        {
+          duration: this.animationSettingsService.getAdjustedDuration(420 + Math.random() * 220),
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        },
+      );
+
+      const cleanup = () => particle.remove();
+      animation.finished.then(cleanup).catch(cleanup);
+    }
+  }
+
 async animateAttack(
   attackerElement: HTMLElement,
   targetElement: HTMLElement,
@@ -150,6 +221,9 @@ const targetDash = targetElement.animate(
     setTimeout(resolve, this.animationSettingsService.getAdjustedDuration(220))
   );
 
+  this.spawnBurst(targetCenterX, targetCenterY, 150, 400, 'attack-burst');
+  this.spawnSparks(targetCenterX, targetCenterY, 6);
+
   switch (targetType) {
     case 'PLAYER':
       targetPlayer.Health.changeHealth(-attackerDamage, 500);
@@ -251,6 +325,9 @@ async animateSkillEfect(card: string): Promise<void>
     return;
   }
 
+  const center = this.getCenter(origin);
+  this.spawnBurst(center.x, center.y, 130, 500, 'effect-glow');
+
   const animation = el.animate(
     [
       { transform: 'translateX(-50%) translateY(0) scale(1)' },
@@ -266,13 +343,51 @@ async animateSkillEfect(card: string): Promise<void>
   await animation.finished;
 }
 
-  async createProjectile(source: string, target: string, optionalTarget: string = ""): Promise<void> {
+async animateSpellCast(cardId: string): Promise<void> {
+  await this.nextFrame();
+
+  const element = document.querySelector(`[data-game-id="${cardId}"]`) as HTMLElement | null;
+  if (!element) {
+    return;
+  }
+
+  const center = this.getCenter(element);
+  this.spawnBurst(center.x, center.y, 230, 640, 'spell-burst');
+  this.spawnSparks(center.x, center.y, 10);
+
+  element.style.transformOrigin = '50% 50%';
+  element.style.willChange = 'transform, filter';
+
+  const animation = element.animate(
+    [
+      { transform: 'scale(0.35) rotate(-16deg)', filter: 'brightness(2.6) saturate(1.7)', opacity: 0.2 },
+      { transform: 'scale(1.2) rotate(6deg)', filter: 'brightness(1.6) saturate(1.3)', opacity: 1, offset: 0.55 },
+      { transform: 'scale(0.95) rotate(-2deg)', filter: 'brightness(1.1)', offset: 0.8 },
+      { transform: 'scale(1) rotate(0deg)', filter: 'brightness(1)' },
+    ],
+    {
+      duration: this.animationSettingsService.getAdjustedDuration(650),
+      easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+    },
+  );
+
+  await animation.finished;
+  element.style.transform = '';
+  element.style.filter = '';
+}
+
+  async createProjectile(source: string, target: string, optionalTarget: string = "", amount: number = 0): Promise<void> {
   if (source === target) {
     return;
   }
 
   const projectile = document.createElement('div');
   projectile.classList.add('proyectile');
+  if (amount > 0) {
+    projectile.classList.add('heal');
+  } else if (amount < 0) {
+    projectile.classList.add('damage');
+  }
   const layer = this.getAnimationLayer();
   layer?.appendChild(projectile);
   await this.nextFrame();
@@ -347,6 +462,9 @@ async animateSkillEfect(card: string): Promise<void>
 
   await animation.finished;
   projectile.remove();
+
+  this.spawnBurst(end.x, end.y, 120, 380, amount > 0 ? 'effect-glow' : 'attack-burst');
+  this.spawnSparks(end.x, end.y, 5);
 }
 
   async animateUnitDeath(element: HTMLElement): Promise<void> {
@@ -354,6 +472,8 @@ async animateSkillEfect(card: string): Promise<void>
       return;
     }
 
+    const center = this.getCenter(element);
+    this.spawnSparks(center.x, center.y, 8, 'debris-particle');
 
     const animation = element.animate(
       [

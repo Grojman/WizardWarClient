@@ -33,34 +33,40 @@
      inkscape:window-maximized="1"
      inkscape:current-layer="layer1" />
   <defs
-     id="defs1" />
+     id="defs1">
+    <linearGradient id="hand-wood" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e8c476" />
+      <stop offset="55%" stop-color="#b5893a" />
+      <stop offset="100%" stop-color="#8a641f" />
+    </linearGradient>
+  </defs>
   <g
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1"
      transform="translate(-54.255269,-369.57345)">
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#hand-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
        d="m 56.755418,428.62713 v -44.12041 h 9.324089 v -13.46813 h 46.120613 v 57.58854 z"
        id="path1" />
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.89242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#hand-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.89242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
        d="m 101.14143,372.4848 v 25.90185"
        id="path2-0" />
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.89242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#hand-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.89242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
        d="m 89.365669,372.4848 v 25.90185"
        id="path2-0-5" />
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.89242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#hand-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.89242;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-opacity:1;paint-order:markers fill stroke"
        d="m 77.589905,372.4848 v 25.90185"
        id="path2-0-5-9" />
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.187;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#hand-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.187;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
        d="m 66.079507,384.50672 v 20.03859"
        id="path2" />
     <path
-       style="fill:#a07d30;fill-opacity:1;stroke:#715922;stroke-width:2.187;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       style="fill:url(#hand-wood);fill-opacity:1;stroke:#5c4416;stroke-width:2.187;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:14.7;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
        d="M 112.20012,428.62713 H 56.755418 l 14.248755,8.22652 v 21.08027 h 26.947196 v -21.08027 z"
        id="path3" />
   </g>
