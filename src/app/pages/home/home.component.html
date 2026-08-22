@@ -1,8 +1,145 @@
 <div class="home-container">
 
-<div class="banner">
+<div class="menu-section">
 
-  <!-- HERO -->
+  <h1 class="title">
+    <span class="capital-letter">W</span>izard bar
+  </h1>
+
+  <div class="home-sections">
+    <p id="{{s.id}}" class="home-section" [class.selected]="s.selected" *ngFor="let s of sections" (click)="sectionSelected(s)">
+      {{ s.name}}
+    </p>
+
+
+  </div>
+
+  <div class="other-sections">
+    <p class="other-section">Galería</p>
+    <p class="other-section">Stats</p>
+  </div>
+
+</div>
+
+
+<div class="banner">
+  <div id="pr-0" class="banner-content show">
+    <h3 class="subtitle"> Nombre </h3>
+    <div class="input-wrapper">
+
+      <i class="fa-solid fa-user"></i>
+
+      <input
+        type="text"
+        maxlength="40"
+        [(ngModel)]="username"
+        (change)="onUsernameChange()"
+        placeholder="Introduce tu nombre"
+        class="username-input"
+      />
+
+    </div>
+
+      <h3 class="subtitle">Buscar partida</h3>
+
+    <p class="search-disabled-reason" *ngIf="searchDisabledReason() as reason">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      {{ reason }}
+    </p>
+
+    <h3 class="subtitle">Numero de jugadores</h3>
+
+    <input type="number" value="2">
+
+    <div class="buttons-container">
+      <button *ngFor="let sel of gameOptions" (click)="selectGameOption(sel)">
+        {{sel.name}}
+      </button>
+    </div>
+  </div>
+  <div id="pr-1" class="banner-content">
+
+    <div>
+      <button (click)="leaveGameOption()">Volver atras</button>
+      <h2 class="section-title">
+  
+        <i class="fa-solid fa-layer-group"></i>
+  
+        Selecciona tu mazo
+  
+      </h2>
+    </div>
+
+    <button *ngIf="searching">Cancelar</button>
+
+    <div class="deck-list">
+
+      <app-deck
+        *ngFor="let deck of decks"
+        [deck]="deck"
+        [selected]="deck === selectedDeck"
+        (click)="selectDeck(deck)"
+        class="deck-item hover-grow"
+        [infoUp]="true"
+      />
+
+    </div>
+  </div>
+  <div class="banner-content"></div>
+  <div class="banner-content"></div>
+  <div id="rb-0" class="banner-content">
+    <h2 class="title">Envía una sugerencia / Reportar un error </h2>
+
+    <span>
+      No nos vendría mal algo de ayuda; este juego se encuentra en beta, al fin de al cabo. Cualquier tipo de problema que hayas sufrido, o una sugerencia que quieras añadir a nuestro sistema, por favor explícalo en este recuadro de aquí delante (las sugerencias son anónimas. Nos dio pereza añadir un campo de nombre):
+    </span>
+
+    <textarea 
+    [(ngModel)]="sugestion"
+    (keypress)="suggestionKeyPress($event.key)"
+      placeholder="escribe aquí..."></textarea>
+
+    <button [inert]="sugestion === ''" (click)="sendSugestion()">Enviar</button>
+  </div>
+  <div id="ab-0" class="banner-content">
+    <h2 class="footer-title">Creado por</h2>
+
+    <div class="footer-team">
+
+      <a
+        href="https://www.instagram.com/gomidev.developer/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="footer-dev hover-grow"
+      >
+        <img class="footer-dev-photo" src="/images/devs/gomidev.developer.webp" alt="gomidev.developer" loading="lazy">
+        <span class="footer-dev-name">
+          <i class="fa-brands fa-instagram"></i>
+          @gomidev.developer
+        </span>
+      </a>
+
+      <a
+        href="https://www.instagram.com/aweonao_crea/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="footer-dev hover-grow"
+      >
+        <img class="footer-dev-photo" src="/images/devs/aweonao_crea.webp" alt="aweonao_crea" loading="lazy">
+        <span class="footer-dev-name">
+          <i class="fa-brands fa-instagram"></i>
+          @aweonao_crea
+        </span>
+      </a>
+
+    </div>
+  </div>
+
+</div>
+
+
+<!-- <div class="banner">
+
 
   <div class="hero">
 
@@ -55,8 +192,6 @@
   </div>
 
 
-  <!-- SELECCIÓN DE MAZO -->
-
   <div class="card-panel">
 
     <h2 class="section-title">
@@ -83,8 +218,6 @@
   </div>
 
 
-
-  <!-- LOGIN -->
 
   <div class="card-panel">
 
@@ -365,5 +498,5 @@
 
   </footer>
 
-</div>
+</div> -->
 </div>

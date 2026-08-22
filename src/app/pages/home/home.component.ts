@@ -8,6 +8,18 @@ import { PrivateMatchModalComponent } from '../../shared/components/private-matc
 import { SeriesStateService } from '../../core/services/series-state.service';
 import { GameSessionStorageService } from '../../core/services/game-session-storage.service';
 
+interface HomeSection {
+  name: string,
+  id: string,
+  selected: boolean,
+  state: number,
+}
+
+interface GameOption {
+  name: string,
+  id: string,
+}
+
 @Component({
   selector: 'app-home',
   standalone: false,
@@ -24,6 +36,113 @@ export class HomeComponent implements OnInit, AfterViewInit {
 
   @ViewChild('playersCarousel')
   playersCarouselRef!: ElementRef<HTMLUListElement>;
+
+  sections: HomeSection[] = [
+    {
+      name: 'Partida rápida',
+      id: 'pr',
+      selected: true,
+      state: 0,
+    },
+    {
+      name: 'Mejor de 3',
+      id: 'bo3',
+      selected: false,
+      state: 0,
+    },
+    {
+      name: 'Reportar bugs',
+      id: 'rb',
+      selected: false,
+      state: 0
+    },
+    {
+      name: 'Sobre nosotros',
+      id: 'ab',
+      selected: false,
+      state: 0
+    },
+  ]
+
+  selectedSection: HomeSection = this.sections[0];
+
+  sectionSelected(section: HomeSection)
+  {
+    if (this.selectedSection.id === section.id) return;
+    this.disableCurrentSelection();
+    this.selectedSection.selected = false;
+    this.selectedSection = section;
+    this.selectedSection.selected = true;
+    this.enableCurrentSelection();
+  }
+
+  disableCurrentSelection()
+  {
+    document.querySelector('#' + this.selectedSection.id + "-" + this.selectedSection.state)?.classList.remove('show');
+  }
+
+  enableCurrentSelection()
+  {
+    document.querySelector('#' + this.selectedSection.id + "-" + this.selectedSection.state)?.classList.add('show');
+  }
+
+  gameOptions: GameOption[] = [
+    {
+      name: 'Online',
+      id: 'o'
+    },
+    {
+      name: 'Máquina',
+      id: 'ma'
+    },
+    {
+      name: 'Crear privada',
+      id: ''
+    },
+    {
+      name: 'Unirse privada',
+      id: ''
+    },
+  ]
+
+  selectedGameOption?: GameOption
+
+  selectGameOption(option: GameOption)
+  {
+    this.disableCurrentSelection();
+    this.selectedGameOption = option;
+    this.selectedSection.state++;
+    this.enableCurrentSelection();
+  }
+
+  leaveGameOption()
+  {
+    this.disableCurrentSelection();
+    this.selectedGameOption = undefined;
+    this.selectedSection.state--;
+    this.enableCurrentSelection();
+  }
+
+  selectDeck(deck: Deck) {
+    this.selectedDeck = deck;
+    this.joinGame();
+  }
+  
+  joinGame()
+  {
+    this.searching = true;
+    switch(this.selectedGameOption?.id)
+    {
+
+    }
+  }
+
+  cancelJoining()
+  {
+
+  }
+
+
 
   username = '';
 
@@ -203,10 +322,7 @@ export class HomeComponent implements OnInit, AfterViewInit {
     this.router.navigateByUrl("/series");
   }
 
-  selectDeck(deck: Deck) {
-    this.selectedDeck = deck;
-  }
-
+  
   canSearch(): boolean {
     return !!this.username && (!!this.selectedDeck || this.matchMode === "BestOfThree");
   }
