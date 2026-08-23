@@ -7,7 +7,9 @@
   </h1>
 
   <div class="home-sections">
-    <p class="home-section" [class.selected]="s.selected" [class.disabled]="sectionsBlocked()" *ngFor="let s of sections" (click)="sectionSelected(s)">
+    <p class="home-section" [class.selected]="s.selected" [class.disabled]="sectionsBlocked()" *ngFor="let s of sections" (click)="sectionSelected(s)"
+    (mouseenter)="playCrack()"
+    >
       {{ s.name}}
     </p>
 
@@ -15,7 +17,9 @@
   </div>
 
   <div class="other-sections">
-    <a *ngFor="let o of externalSections; let i = index" [routerLink]="o.url" class="other-section" [ngStyle]="otherSectionStyles[i]">
+    <a *ngFor="let o of externalSections; let i = index" [routerLink]="o.url" class="other-section" [ngStyle]="otherSectionStyles[i]"
+    (mouseenter)="playCrack()"
+    >
       
       <span>
         {{o.name}}
@@ -45,7 +49,6 @@
 
     </div>
 
-    <h3 class="subtitle">Buscar partida</h3>
 
     <p class="search-disabled-reason text" *ngIf="!username">
       <i class="fa-solid fa-circle-exclamation"></i>
@@ -59,6 +62,7 @@
         class="btn btn-gold game-type"
         [disabled]="rootButtonDisabled(sel)"
         (click)="rootButtonClick(sel)"
+        (mouseenter)="playButtonHover($event)"
       >
         <i class="fa-solid" [ngClass]="isOnlineSearchButton(sel) ? 'fa-xmark' : sel.icon"></i>
         {{ isOnlineSearchButton(sel) ? 'Cancelar' : sel.name }}
@@ -90,6 +94,20 @@
 
       </h2>
     </div>
+    <div class="pending-indicator" *ngIf="searching || searchingBot || creatingPrivate">
+      <span class="spinner"></span>
+      <span>
+        {{ searching ? 'Buscando partida...' : (searchingBot ? 'Preparando partida contra la máquina...' : 'Creando partida privada...') }}
+      </span>
+      <button
+        type="button"
+        class="btn btn-gold"
+        *ngIf="searching"
+        (click)="cancelJoining()"
+      >
+        Cancelar
+      </button>
+    </div>
 
     <div class="deck-list">
 
@@ -105,20 +123,6 @@
 
     </div>
 
-    <div class="pending-indicator" *ngIf="searching || searchingBot || creatingPrivate">
-      <span class="spinner"></span>
-      <span>
-        {{ searching ? 'Buscando partida...' : (searchingBot ? 'Preparando partida contra la máquina...' : 'Creando partida privada...') }}
-      </span>
-      <button
-        type="button"
-        class="btn btn-gold"
-        *ngIf="searching"
-        (click)="cancelJoining()"
-      >
-        Cancelar
-      </button>
-    </div>
 
   </div>
 

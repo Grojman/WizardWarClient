@@ -130,6 +130,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectedGameOption?: GameOption
 
+  playCrack()
+  {
+    this.audio.playSfx("audio/wood_creak.mp3", true)
+  }
+
   visibleGameOptions(): GameOption[]
   {
     if (this.selectedSection.id === 'bo3') {
@@ -244,6 +249,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   cancelJoining()
   {
     this.searching = false;
+    this.selectedDeck = undefined;
 
     this.ws.send({
       "$type": 'LeaveQueueAction'
@@ -340,6 +346,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     })
 
     this.createRotationStyles();
+  }
+
+  playButtonHover(event: MouseEvent)
+  {
+    const element = event.target as HTMLButtonElement;
+    if (element.inert || element.disabled ||  element.classList.contains('disabled')) return;
+    this.audio.playSfx("audio/button_hover.mp3", true)
   }
 
   createRotationStyles()
