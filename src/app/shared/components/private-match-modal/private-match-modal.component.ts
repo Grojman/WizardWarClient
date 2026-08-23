@@ -13,7 +13,6 @@ export class PrivateMatchModalComponent
   current: number = 0;
   total: number = 0;
   isHost: boolean = false;
-
   copied: boolean = false;
 
   @Output()

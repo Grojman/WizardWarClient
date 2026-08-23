@@ -64,7 +64,7 @@
 }
 
 .selected {
-  transform: translateY(-2rem) scale(1.1) !important;
+  transform: translateY(-2rem) scale(0.8  ) !important;
 }
 
 .descriptiontext {

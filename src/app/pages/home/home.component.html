@@ -7,7 +7,7 @@
   </h1>
 
   <div class="home-sections">
-    <p id="{{s.id}}" class="home-section" [class.selected]="s.selected" *ngFor="let s of sections" (click)="sectionSelected(s)">
+    <p class="home-section" [class.selected]="s.selected" [class.disabled]="sectionsBlocked()" *ngFor="let s of sections" (click)="sectionSelected(s)">
       {{ s.name}}
     </p>
 
@@ -15,19 +15,24 @@
   </div>
 
   <div class="other-sections">
-    <p class="other-section">Galería</p>
-    <p class="other-section">Stats</p>
+    <a *ngFor="let o of externalSections; let i = index" [routerLink]="o.url" class="other-section" [ngStyle]="otherSectionStyles[i]">
+      
+      <span>
+        {{o.name}}
+
+      </span>
+    </a>
   </div>
 
 </div>
 
 
-<div class="banner">
-  <div id="pr-0" class="banner-content show">
+<div class="banner" [ngClass]="selectedSection.id">
+
+  <!-- Root stage: shared by "Partida rápida" (pr) and "Mejor de 3" (bo3) -->
+  <div class="banner-content stage-root" [class.show]="isGameSection() && selectedSection.stage === 'root'">
     <h3 class="subtitle"> Nombre </h3>
     <div class="input-wrapper">
-
-      <i class="fa-solid fa-user"></i>
 
       <input
         type="text"
@@ -35,42 +40,56 @@
         [(ngModel)]="username"
         (change)="onUsernameChange()"
         placeholder="Introduce tu nombre"
-        class="username-input"
+        class="username-input text-input"
       />
 
     </div>
 
-      <h3 class="subtitle">Buscar partida</h3>
+    <h3 class="subtitle">Buscar partida</h3>
 
-    <p class="search-disabled-reason" *ngIf="searchDisabledReason() as reason">
+    <p class="search-disabled-reason text" *ngIf="!username">
       <i class="fa-solid fa-circle-exclamation"></i>
-      {{ reason }}
+      Introduce tu nombre para poder jugar
     </p>
 
-    <h3 class="subtitle">Numero de jugadores</h3>
-
-    <input type="number" value="2">
-
     <div class="buttons-container">
-      <button *ngFor="let sel of gameOptions" (click)="selectGameOption(sel)">
-        {{sel.name}}
+      <button
+        *ngFor="let sel of visibleGameOptions()"
+        type="button"
+        class="btn btn-gold game-type"
+        [disabled]="rootButtonDisabled(sel)"
+        (click)="rootButtonClick(sel)"
+      >
+        <i class="fa-solid" [ngClass]="isOnlineSearchButton(sel) ? 'fa-xmark' : sel.icon"></i>
+        {{ isOnlineSearchButton(sel) ? 'Cancelar' : sel.name }}
+        <span class="spinner" *ngIf="isOnlineSearchButton(sel)"></span>
       </button>
     </div>
   </div>
-  <div id="pr-1" class="banner-content">
 
-    <div>
-      <button (click)="leaveGameOption()">Volver atras</button>
+  <!-- Deck selection stage: only reachable from "pr", or from "bo3" when
+       creating/joining a private match (both still require a deck). -->
+  <div class="banner-content stage-deck-select" [class.show]="isGameSection() && selectedSection.stage === 'deck-select'">
+
+    <div class="stage-header">
+      <button
+        type="button"
+        class="btn btn-gold back-button"
+        [disabled]="anyActionPending() || creatingPrivate"
+        (click)="leaveGameOption()"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+        Volver atrás
+      </button>
+
       <h2 class="section-title">
-  
+
         <i class="fa-solid fa-layer-group"></i>
-  
+
         Selecciona tu mazo
-  
+
       </h2>
     </div>
-
-    <button *ngIf="searching">Cancelar</button>
 
     <div class="deck-list">
 
@@ -80,29 +99,125 @@
         [selected]="deck === selectedDeck"
         (click)="selectDeck(deck)"
         class="deck-item hover-grow"
+        [class.disabled]="!username || anyActionPending() || creatingPrivate"
         [infoUp]="true"
       />
 
     </div>
+
+    <div class="pending-indicator" *ngIf="searching || searchingBot || creatingPrivate">
+      <span class="spinner"></span>
+      <span>
+        {{ searching ? 'Buscando partida...' : (searchingBot ? 'Preparando partida contra la máquina...' : 'Creando partida privada...') }}
+      </span>
+      <button
+        type="button"
+        class="btn btn-gold"
+        *ngIf="searching"
+        (click)="cancelJoining()"
+      >
+        Cancelar
+      </button>
+    </div>
+
   </div>
-  <div class="banner-content"></div>
-  <div class="banner-content"></div>
-  <div id="rb-0" class="banner-content">
+
+  <!-- Create-private stage: shared by "pr" and "bo3" so the flow never has
+       to be duplicated per section. -->
+  <div class="banner-content stage-create-private" [class.show]="isGameSection() && selectedSection.stage === 'create-private'">
+    <h2 class="title">Partida privada</h2>
+
+    <p class="text" *ngIf="isHost">Comparte este código con tus amigos:</p>
+    <p class="text" *ngIf="!isHost">Esperando a que se completen los jugadores:</p>
+
+    <button class="code-display" (click)="copyCode()" title="Copiar código">
+      <span class="code">{{ code }}</span>
+      <i class="fa-solid" [ngClass]="copied ? 'fa-check' : 'fa-copy'"></i>
+    </button>
+
+    <p class="text player-count">
+      {{ current }} / {{ total }} jugadores
+      <span class="host-badge" *ngIf="isHost">(Eres el anfitrión)</span>
+    </p>
+
+    <div class="pending-indicator" *ngIf="current < total">
+      <span class="spinner"></span>
+      <span>Esperando jugadores...</span>
+    </div>
+
+    <button type="button" class="btn btn-gold" (click)="onPrivateMatchCancelled()">
+      <i class="fa-solid fa-arrow-left"></i>
+      Cancelar
+    </button>
+  </div>
+
+  <!-- Join-private stage: shared by "pr" and "bo3". -->
+  <div class="banner-content stage-join-private" [class.show]="isGameSection() && selectedSection.stage === 'join-private'">
+
+    <div class="stage-header">
+      <button
+        type="button"
+        class="btn btn-gold back-button"
+        [disabled]="joiningPrivate"
+        (click)="cancelJoinPrivate()"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+        Volver atrás
+      </button>
+
+      <h2 class="section-title">
+        <i class="fa-solid fa-key"></i>
+        Unirse a partida privada
+      </h2>
+    </div>
+
+    <div class="input-wrapper">
+
+      <i class="fa-solid fa-hashtag"></i>
+
+      <input
+        type="text"
+        maxlength="6"
+        [(ngModel)]="joinCode"
+        (keyup.enter)="joinPrivateMatch()"
+        placeholder="Código de partida"
+        class="username-input join-code-input"
+        [disabled]="joiningPrivate"
+      />
+
+    </div>
+
+    <button
+      class="btn btn-gold"
+      [disabled]="!joinCode || !username || joiningPrivate"
+      (click)="joinPrivateMatch()"
+    >
+      <span *ngIf="!joiningPrivate">Unirse</span>
+      <ng-container *ngIf="joiningPrivate">
+        Uniéndose...
+        <span class="spinner"></span>
+      </ng-container>
+    </button>
+
+  </div>
+
+  <div class="banner-content" [class.show]="selectedSection.id === 'rb'">
     <h2 class="title">Envía una sugerencia / Reportar un error </h2>
 
-    <span>
+    <p class="text">
       No nos vendría mal algo de ayuda; este juego se encuentra en beta, al fin de al cabo. Cualquier tipo de problema que hayas sufrido, o una sugerencia que quieras añadir a nuestro sistema, por favor explícalo en este recuadro de aquí delante (las sugerencias son anónimas. Nos dio pereza añadir un campo de nombre):
-    </span>
+    </p>
 
     <textarea 
     [(ngModel)]="sugestion"
     (keypress)="suggestionKeyPress($event.key)"
+    class="text-area"
       placeholder="escribe aquí..."></textarea>
 
-    <button [inert]="sugestion === ''" (click)="sendSugestion()">Enviar</button>
+    <button [inert]="sugestion === ''" (click)="sendSugestion()" class="btn btn-gold">Enviar</button>
   </div>
-  <div id="ab-0" class="banner-content">
-    <h2 class="footer-title">Creado por</h2>
+  <div class="banner-content" [class.show]="selectedSection.id === 'ab'">
+    <h2 class="title">Creado por:</h2>
 
     <div class="footer-team">
 
@@ -133,7 +248,13 @@
       </a>
 
     </div>
+
+    <a routerLink="/team" class="team-button btn btn-gold">
+      <i class="fa-solid fa-users"></i>
+      CONOCE AL EQUIPO
+    </a>
   </div>
+  <app-alert-modal #errorModal></app-alert-modal>
 
 </div>
 

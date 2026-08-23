@@ -124,7 +124,7 @@
 {
   background-image: url('/images/gallery/card_display.webp');
   display: flex;
-  min-width: 25vw;
+  min-width: 30vw;
   align-self: stretch;
   background-size: 100% 100%;
 
@@ -132,10 +132,14 @@
     max-width: 50%;
     text-align: center;
     font-size: xx-large;
+    font-style: italic;
+    margin-top: 90%;
   }
 
   & > * {
     margin: auto;
+  }
+  & > *:not(p) {
     margin-bottom: 10%;
   }
 
