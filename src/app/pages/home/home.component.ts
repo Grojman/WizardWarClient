@@ -130,8 +130,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectedGameOption?: GameOption
 
-  playCrack()
+  playCrack(event: MouseEvent)
   {
+    const element = event.target as HTMLButtonElement;
+    if (!element || element.disabled || element.inert || element.classList.contains('disabled')) return;
     this.audio.playSfx("audio/wood_creak.mp3", true)
   }
 

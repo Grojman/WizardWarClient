@@ -8,7 +8,7 @@
 
   <div class="home-sections">
     <p class="home-section" [class.selected]="s.selected" [class.disabled]="sectionsBlocked()" *ngFor="let s of sections" (click)="sectionSelected(s)"
-    (mouseenter)="playCrack()"
+    (mouseenter)="playCrack($event)"
     >
       {{ s.name}}
     </p>
@@ -18,7 +18,7 @@
 
   <div class="other-sections">
     <a *ngFor="let o of externalSections; let i = index" [routerLink]="o.url" class="other-section" [ngStyle]="otherSectionStyles[i]"
-    (mouseenter)="playCrack()"
+    (mouseenter)="playCrack($event)"
     >
       
       <span>
