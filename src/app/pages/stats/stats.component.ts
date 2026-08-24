@@ -14,6 +14,7 @@ export class StatsComponent implements OnInit {
   selectedDeck: DeckStats | null = null;
   getSeconds(s: number): string
   {
+    if (!s) return "";
     return new Date(s * 1000).toISOString().slice(11, 19);
   }
 

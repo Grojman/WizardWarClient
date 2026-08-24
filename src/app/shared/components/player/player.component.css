@@ -104,11 +104,6 @@
   transform: rotateX(calc(-1 * var(--table-tilt, 10deg)));
 }
 
-/* Cancels the table's rotateX tilt so the local player's health renders flat/readable. */
-.own-health
-{
-  transform: rotateX(calc(-1 * var(--table-tilt, 10deg)));
-}
 
 .board-section
 {

@@ -44,7 +44,7 @@
 .enhanced::after
 {
   content: "";
-  box-shadow: -20px 50px 60px 60px rgb(239, 255, 14);
+  box-shadow: -25px 40px 60px 60px rgb(239, 255, 14);
   position: absolute;
   z-index: -1;
 }
@@ -66,6 +66,7 @@
   height: 11rem;
   background-size: contain;
   background-repeat: no-repeat;
+  transform: rotateX(-0deg) rotate3d(1, 1, 0.25, -20deg);
 }
 .rival-health-background
 {
