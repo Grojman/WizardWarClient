@@ -2,9 +2,11 @@
 
 <div class="menu-section">
 
-  <h1 class="title">
-    <span class="capital-letter">W</span>izard bar
-  </h1>
+  <div class="image-title">
+    <h1 class="title">
+      <span class="capital-letter">W</span> izard bar
+    </h1>
+  </div>
 
   <div class="home-sections">
     <p class="home-section" [class.selected]="s.selected" [class.disabled]="sectionsBlocked()" *ngFor="let s of sections" (click)="sectionSelected(s)"

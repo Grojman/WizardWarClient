@@ -14,6 +14,7 @@ export interface DeckStats {
   Losses: number;
   TotalGames: number;
   AverageTurn: number;
+  AverageSeconds: number;
   Matchups: DeckMatchup[];
 }
 

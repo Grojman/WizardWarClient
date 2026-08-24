@@ -107,7 +107,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   gameOptions: GameOption[] = [
     {
-      name: 'Online',
+      name: 'Jugar',
       id: 'o',
       icon: 'fa-globe'
     },

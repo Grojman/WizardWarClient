@@ -523,10 +523,13 @@ async handleGameEvents(events: any[]) {
     }
   }
 
-  this.storedGameState.Me.HandData.forEach((n, i) => {
-    this.gameState.Me.HandData[i].canPlay = n.canPlay;
-    this.gameState.Me.HandData[i].conditionProgress = n.conditionProgress;
-    this.gameState.Me.HandData[i].conditionTarget = n.conditionTarget;
+  this.storedGameState.Me.HandData.forEach((n) => {
+    const card = this.gameState.Me.HandData.find((c) => c.id === n.id);
+    if (!card) return;
+
+    card.canPlay = n.canPlay;
+    card.conditionProgress = n.conditionProgress;
+    card.conditionTarget = n.conditionTarget;
   })
 
   this.isAnimating = false;
@@ -572,7 +575,7 @@ cardSelected(card: Card | null)
     this.selectedCard = null;
     this.safeSend({
       "$type": "PlayCardAction",
-      "CardIndex": this.gameState.Me.HandData.findIndex((n: Card) => n.id == card.id),
+      "CardId": card.id,
       "BoardIndex": -1
     })
   }
@@ -584,7 +587,7 @@ dockSelected(position: number)
 
     this.safeSend({
       "$type": "PlayCardAction",
-      "CardIndex": this.gameState.Me.HandData.findIndex((n: Card) => n.id == this.selectedCard?.id),
+      "CardId": this.selectedCard?.id,
       "BoardIndex": position
     })
   this.selectedCard = null;

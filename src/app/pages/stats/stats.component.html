@@ -70,6 +70,7 @@
           <div class="extra-stats">
             <p><i class="fa-solid fa-dice"></i> Partidas jugadas: {{ selectedDeck.TotalGames }}</p>
             <p><i class="fa-solid fa-hourglass-half"></i> Turno medio de finalización: {{ selectedDeck.AverageTurn | number: '1.0-1' }}</p>
+            <p>Tiempo medio de partida: {{ this.getSeconds(selectedDeck.AverageSeconds ) }}</p>
           </div>
         </div>
 

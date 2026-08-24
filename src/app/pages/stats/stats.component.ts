@@ -12,6 +12,10 @@ export class StatsComponent implements OnInit {
   stats: GameStats = { TotalGames: 0, Decks: [] };
 
   selectedDeck: DeckStats | null = null;
+  getSeconds(s: number): string
+  {
+    return new Date(s * 1000).toISOString().slice(11, 19);
+  }
 
   constructor(private ws: WebsocketService) {}
 
