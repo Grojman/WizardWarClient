@@ -118,6 +118,7 @@
 {
   margin: 0;
   background-image: url('/images/gallery/wood_deck_name.webp');
+  background-size: cover;
   font-family: "Text Font 5";
   font-size: 3rem;
   background-position: right;
