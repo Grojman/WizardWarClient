@@ -13,6 +13,8 @@ export class GalleryComponent implements OnInit {
 
   cards: DeckInfo[] = [];
 
+  loading = true;
+
   constructor(private ws: WebsocketService)
   {
     this.cards = [];
@@ -31,12 +33,7 @@ export class GalleryComponent implements OnInit {
     {
       case "get_cards":
         this.cards = [...msg.Content];
-        console.log(this.cards)
-
-//         this.cards = msg.Content.map(
-//   data => new Card(data)
-// );
-        console.log("aqui, ", this.cards)
+        this.loading = false;
         break;
       default:
         console.log("Unknown message!!");

@@ -52,16 +52,32 @@ export class GameStateService {
     };
   }
 
-  initializeFromSnapshot(snapshot: Game): Game {
+  // isResume: true when this snapshot arrived over a freshly (re)opened
+  // socket (page reload) rather than the socket that's been open since
+  // matchmaking. On a genuine new game the initial hand hasn't been "dealt"
+  // on screen yet, so the hand is zeroed here and the deck count inflated
+  // to include it — the CardDrawnEvent events that follow right behind this
+  // snapshot animate each card back in one at a time and correct the count.
+  // On resume there are no such events coming (the server has nothing
+  // pending to replay), so the snapshot's hand/deck must be trusted as-is
+  // or the player's hand and deck count are lost for the rest of the game.
+  initializeFromSnapshot(snapshot: Game, isResume: boolean = false): Game {
     const state = snapshot;
 
-    state.Me.Deck.cardAmount += state.Me.HandSize;
     state.Me.Health = this.createHealth(state.Me.Health);
+    state.Rivals.forEach((player) => {
+      player.Health = this.createHealth(player.Health);
+    });
+
+    if (isResume) {
+      return state;
+    }
+
+    state.Me.Deck.cardAmount += state.Me.HandSize;
     state.Me.HandData = [];
     state.Me.HandSize = 0;
 
     state.Rivals.forEach((player) => {
-      player.Health = this.createHealth(player.Health);
       player.Deck.cardAmount += player.HandSize;
       player.HandSize = 0;
     });

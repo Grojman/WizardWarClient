@@ -34,12 +34,17 @@
       </div>
     
       <div class="main-content">
-    
+
+        <div class="loading-indicator" *ngIf="loading">
+          <span class="spinner"></span>
+          <span>Cargando cartas...</span>
+        </div>
+
         <div
           class="deck-content"
-        
+          *ngIf="!loading"
         >
-    
+
         <div
           *ngFor="let card of cards"
         >

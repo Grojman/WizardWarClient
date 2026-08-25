@@ -1,4 +1,9 @@
 <div
+  class="health-wrapper"
+  [class.enhanced]="enhanced"
+>
+
+<div
   [ngClass]="[
     rival ? 'rival-health-background' : 'player-health-background'
   ]"
@@ -6,7 +11,6 @@
 
 <span
     class="life-text title"
-[class.enhanced]="enhanced"
     [ngClass]="{
       'health-animate-exit': health.animationState === 'exit',
       'health-animate-enter': health.animationState === 'enter',
@@ -16,5 +20,7 @@
   >
     {{ health.displayHealth }}
   </span>
+
+</div>
 
 </div>

@@ -87,9 +87,14 @@
       <span class="series-status" *ngIf="seriesState.snapshot!.you.status === 'waiting_you'">Mazo elegido, esperando a tu rival</span>
     </div>
 
-    <div class="deck-list series-deck-list" [class.picked]="this.seriesState.snapshot!.you.deckId !== null">
+    <div class="loading-indicator" *ngIf="decksLoading">
+      <span class="spinner"></span>
+      <span>Cargando mazos...</span>
+    </div>
+
+    <div class="deck-list series-deck-list" *ngIf="!decksLoading" [class.picked]="this.seriesState.snapshot!.you.deckId !== null">
       <div class="deck-slot"
-          *ngFor="let deck of decks; trackBy: trackById"
+          *ngFor="let deck of decksForSelection; trackBy: trackById"
           [class.is-picked]="isYourPick(deck)">
         <app-deck
           [deck]="deck"

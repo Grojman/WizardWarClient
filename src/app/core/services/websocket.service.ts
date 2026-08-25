@@ -7,6 +7,19 @@ export interface WebSocketMessage {
   Content?: unknown;
 }
 
+type MessageHandler = (msg: WebSocketMessage) => boolean;
+
+// A message queued for later, plus which subscriber callbacks have already
+// been offered it and rejected it (returned true = "not mine"). Tracking
+// this per-message is what makes replay-on-subscribe safe to call
+// repeatedly: a subscriber that has already rejected a message won't be
+// asked again, so a message nobody ever claims gets dropped instead of
+// being replayed forever every time something subscribes.
+interface QueuedMessage {
+  msg: WebSocketMessage;
+  rejectedBy: Set<MessageHandler>;
+}
+
 const CLIENT_ID_STORAGE_KEY = 'ww_client_id';
 
 function getOrCreateClientId(): string {
@@ -23,11 +36,11 @@ function getOrCreateClientId(): string {
 })
 export class WebsocketService {
   private messageQueue: unknown[] = [];
-  private receivedMessageQueue: WebSocketMessage[] = [];
+  private receivedMessageQueue: QueuedMessage[] = [];
   private socket?: WebSocket;
   private isConnecting = false;
   private isConnected = false;
-  private onMessage: (msg: WebSocketMessage) => boolean = () => false;
+  private onMessage: MessageHandler = () => false;
   private reconnectAttempts = 0;
   private reconnectTimer?: ReturnType<typeof setTimeout>;
   private manualDisconnect = false;
@@ -36,6 +49,16 @@ export class WebsocketService {
     private router: Router,
     private zone: NgZone,
   ) {}
+
+  // Whether the socket was already open (or opening) the moment connect()
+  // was last called. A page reload always sees this as false right before
+  // it calls connect() (services are rebuilt from scratch), while an SPA
+  // route change reuses the still-open socket — this is how GameComponent
+  // tells a genuine new match (deal-in animation wanted) apart from a
+  // reconnect after reload (snapshot is already ground truth).
+  get connected(): boolean {
+    return this.isConnected || this.isConnecting;
+  }
 
   connect(): void {
     if (this.isConnected || this.isConnecting) {
@@ -111,10 +134,22 @@ export class WebsocketService {
 
   private handleMessage(msg: WebSocketMessage): void {
     this.zone.run(() => {
-      if (this.onMessage(msg)) {
-        this.receivedMessageQueue.push(msg);
-      }
+      this.dispatch({ msg, rejectedBy: new Set() });
     });
+  }
+
+  // Offers a queued message to the current subscriber, unless that exact
+  // subscriber has already rejected it before. Re-queues it (with the
+  // rejection recorded) only if it's still unclaimed afterwards.
+  private dispatch(entry: QueuedMessage): void {
+    if (entry.rejectedBy.has(this.onMessage)) {
+      return;
+    }
+
+    if (this.onMessage(entry.msg)) {
+      entry.rejectedBy.add(this.onMessage);
+      this.receivedMessageQueue.push(entry);
+    }
   }
 
   private handleDisconnect(reason: string): void {
@@ -142,14 +177,21 @@ export class WebsocketService {
     }
   }
 
-  public subscribe(callback: (msg: WebSocketMessage) => boolean): void {
+  public subscribe(callback: MessageHandler): void {
     this.onMessage = callback;
 
-    while (this.receivedMessageQueue.length > 0) {
-      const msg = this.receivedMessageQueue.shift();
-      if (msg) {
-        this.handleMessage(msg);
-      }
+    // Replay messages left unhandled by earlier subscribers. Snapshot the
+    // queue first — dispatch() re-appends anything still unclaimed, and
+    // draining the live array instead of a snapshot would pick that
+    // re-appended entry right back up in the same pass, looping forever
+    // whenever nobody ever claims it (this used to hang the tab). The
+    // per-message rejectedBy set is the second layer: even across separate
+    // subscribe() calls, a message already rejected by this exact callback
+    // is dropped instead of being offered to it again.
+    const pending = this.receivedMessageQueue;
+    this.receivedMessageQueue = [];
+    for (const entry of pending) {
+      this.dispatch(entry);
     }
   }
 

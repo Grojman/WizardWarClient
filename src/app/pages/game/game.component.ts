@@ -210,8 +210,10 @@ export class GameComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/');
   }
 
+  private isResumedSession = false;
+
   private initializeGameState(snapshot: Game): void {
-    this.gameState = this.gameStateService.initializeFromSnapshot(snapshot);
+    this.gameState = this.gameStateService.initializeFromSnapshot(snapshot, this.isResumedSession);
   }
 
   private syncPlayerTargets(): void {
@@ -466,6 +468,12 @@ findElement(id: string): HTMLElement{
 
 ngOnInit(): void {
   this.animationLayer = document.querySelector(".animation-layer") as HTMLElement;
+  // Must be read before connect(): a fresh page load never has a socket
+  // open yet, while an in-app navigation into a just-found match reuses the
+  // one that's been open since the home page. That's the only reliable way
+  // to tell "this is a brand-new game about to deal a hand" apart from
+  // "this is a reconnect and the incoming snapshot is already accurate".
+  this.isResumedSession = !this.ws.connected;
   this.ws.connect();
   this.ws.subscribe(this.processMessage)
   this.audio.playSfx('/audio/game_start.mp3')

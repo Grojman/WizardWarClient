@@ -111,10 +111,15 @@
       </button>
     </div>
 
-    <div class="deck-list">
+    <div class="pending-indicator" *ngIf="decksLoading">
+      <span class="spinner"></span>
+      <span>Cargando mazos...</span>
+    </div>
+
+    <div class="deck-list" *ngIf="!decksLoading">
 
       <app-deck
-        *ngFor="let deck of decks"
+        *ngFor="let deck of decksForSelection"
         [deck]="deck"
         [selected]="deck === selectedDeck"
         (click)="selectDeck(deck)"

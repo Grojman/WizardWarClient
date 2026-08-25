@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Deck } from '../../models/deck.model';
+import { createRandomDeckOption, Deck, RANDOM_DECK_ID } from '../../models/deck.model';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { Router } from '@angular/router';
 import { AudioService } from '../../core/services/audio.service';
@@ -219,10 +219,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   selectDeck(deck: Deck) {
     if (!this.username || this.anyActionPending() || this.creatingPrivate) return;
-    this.selectedDeck = deck;
+    this.selectedDeck = deck.id === RANDOM_DECK_ID ? this.pickRandomDeck() : deck;
     if (this.selectedGameOption) {
       this.performGameAction(this.selectedGameOption);
     }
+  }
+
+  private pickRandomDeck(): Deck | undefined {
+    if (!this.decks.length) return undefined;
+    return this.decks[Math.floor(Math.random() * this.decks.length)];
   }
 
   startSearch()
@@ -292,6 +297,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   sugestion: string = "";
 
   decks: Deck[] = [];
+
+  // decks, with the "Aleatorio" option prepended, for the deck-select grid.
+  decksForSelection: Deck[] = [];
+
+  decksLoading = true;
+
+  // True once a match/series has actually started and we're navigating away
+  // (see ngOnDestroy).
+  private enteringMatch = false;
 
   numberOfPlayers: number = 2;
 
@@ -396,7 +410,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // Navigating away from home (e.g. to the gallery/stats) destroys this
   // component but keeps the shared WebSocket open, so the server would
   // otherwise keep the player queued/hosting a private match indefinitely.
+  // This must NOT fire when the destroy is caused by a match actually
+  // starting (startGame()/enterSeries() navigating to /game or /series):
+  // by then the server has already moved the player out of the queue and
+  // into a GameSession, so a stale LeaveQueueAction/LeavePrivateMatchAction
+  // would get routed to the in-game handler, fail to deserialize there, and
+  // come back as an error the player never asked for.
   ngOnDestroy(): void {
+    if (this.enteringMatch) return;
+
     if (this.searching) {
       this.ws.send({
         "$type": 'LeaveQueueAction'
@@ -430,11 +452,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     {
       case "get_decks":
         this.decks = [...msg.Content];
+        this.decksForSelection = [createRandomDeckOption(), ...this.decks];
+        this.decksLoading = false;
         break;
       case "start_game":
+        this.enteringMatch = true;
         this.startGame();
         break;
       case "series_state":
+        this.enteringMatch = true;
         this.seriesState.applySeriesState(msg.Content);
         this.enterSeries();
         break;

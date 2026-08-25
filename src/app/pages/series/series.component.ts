@@ -5,7 +5,7 @@ import { WebsocketService } from '../../core/services/websocket.service';
 import { SeriesStateService } from '../../core/services/series-state.service';
 import { AudioService } from '../../core/services/audio.service';
 import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
-import { Deck } from '../../models/deck.model';
+import { createRandomDeckOption, Deck, RANDOM_DECK_ID } from '../../models/deck.model';
 import { SeriesSnapshot } from '../../models/series.model';
 import { GameSessionStorageService } from '../../core/services/game-session-storage.service';
 
@@ -20,6 +20,11 @@ export class SeriesComponent implements OnInit, OnDestroy {
   errorModal!: AlertModalComponent;
 
   decks: Deck[] = [];
+
+  // decks, with the "Aleatorio" option prepended, for the deck-select grid.
+  decksForSelection: Deck[] = [];
+
+  decksLoading = true;
 
   constructor(
     private ws: WebsocketService,
@@ -47,6 +52,8 @@ export class SeriesComponent implements OnInit, OnDestroy {
     switch (msg.Type) {
       case 'get_decks':
         this.decks = [...msg.Content];
+        this.decksForSelection = [createRandomDeckOption(), ...this.decks];
+        this.decksLoading = false;
         break;
       case 'series_state':
         this.seriesState.applySeriesState(msg.Content);
@@ -108,11 +115,21 @@ export class SeriesComponent implements OnInit, OnDestroy {
     return !!snapshot && snapshot.rival.deckId !== null && snapshot.rival.deckId === Number(deck.id);
   }
 
-  isUnavailable(deck: Deck): boolean {
+  private isRealDeckUnavailable(deck: Deck): boolean {
     const snapshot = this.seriesState.snapshot;
     if (!snapshot) return true;
     if (this.isYourPick(deck)) return false;
     return !snapshot.availableDecks.some((d) => Number(d.id) === Number(deck.id));
+  }
+
+  // The "Aleatorio" option is unavailable only when every real deck is
+  // (already used elsewhere in the series), since picking it just resolves
+  // to picking one of the currently-available real decks.
+  isUnavailable(deck: Deck): boolean {
+    if (deck.id === RANDOM_DECK_ID) {
+      return !this.decks.some((d) => !this.isRealDeckUnavailable(d));
+    }
+    return this.isRealDeckUnavailable(deck);
   }
 
   canSelect(deck: Deck): boolean {
@@ -120,12 +137,21 @@ export class SeriesComponent implements OnInit, OnDestroy {
     return !!snapshot && snapshot.you.status !== "selecting" && !this.isUnavailable(deck);
   }
 
+  private pickRandomAvailableDeck(): Deck | undefined {
+    const available = this.decks.filter((d) => !this.isRealDeckUnavailable(d));
+    if (!available.length) return undefined;
+    return available[Math.floor(Math.random() * available.length)];
+  }
+
   selectDeck(deck: Deck): void {
     if (!this.canSelect(deck)) return;
 
+    const target = deck.id === RANDOM_DECK_ID ? this.pickRandomAvailableDeck() : deck;
+    if (!target) return;
+
     this.ws.send({
       '$type': 'SelectSeriesDeckAction',
-      DeckId: Number(deck.id),
+      DeckId: Number(target.id),
     });
   }
 
@@ -158,7 +184,7 @@ export class SeriesComponent implements OnInit, OnDestroy {
     return !!end && end.winnerId === this.seriesState.snapshot?.you.playerId;
   }
 
-  trackById(index: number, deck: Deck): number {
-    return Number(deck.id);
+  trackById(index: number, deck: Deck): string {
+    return deck.id;
   }
 }

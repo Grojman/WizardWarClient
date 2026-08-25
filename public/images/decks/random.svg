@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="277"
+   height="443"
+   viewBox="0 0 277 443"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <g
+     id="g1">
+    <path
+       style="fill:#cecece;fill-opacity:1;stroke:#949494;stroke-width:0;stroke-dasharray:none"
+       d="m 30.065852,415.77909 -25.68132,26.10815 243.387978,-0.81326 23.69844,-24.75957 z"
+       id="path1" />
+    <path
+       style="fill:#e3e3e3;fill-opacity:1;stroke:#949494;stroke-width:0;stroke-dasharray:none"
+       d="M 4.384532,441.88724 4.0489511,102.88017 29.999046,76.746027 30.065852,415.77909 Z"
+       id="path2" />
+    <path
+       style="fill:#ffffff;stroke:#949494;stroke-width:0;stroke-dasharray:none"
+       d="M 29.999046,76.746027 271.83185,76.561984 271.47095,416.31441 30.065852,415.77909 Z"
+       id="path3" />
+    <path
+       style="fill:#f3f3f3;fill-opacity:1;stroke:#949494;stroke-width:0;stroke-dasharray:none"
+       d="M 6.7749203,100.13487 V 0 H 250.18143 l 1.6784,76.577183 -221.860784,0.168844 z"
+       id="path4" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:266.667px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;writing-mode:lr-tb;direction:ltr;fill:#e3e3e3;fill-opacity:1;stroke:#949494;stroke-width:0;stroke-dasharray:none"
+       x="98.178146"
+       y="332.07309"
+       id="text6"><tspan
+         id="tspan6"
+         x="98.178146"
+         y="332.07309">?</tspan></text>
+  </g>
+</svg>

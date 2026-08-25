@@ -11,6 +11,8 @@ import { DeckMatchup, DeckStats, GameStats } from '../../models/stats.model';
 export class StatsComponent implements OnInit {
   stats: GameStats = { TotalGames: 0, Decks: [] };
 
+  loading = true;
+
   selectedDeck: DeckStats | null = null;
   getSeconds(s: number): string
   {
@@ -31,6 +33,7 @@ export class StatsComponent implements OnInit {
     switch (msg.Type) {
       case "get_stats":
         this.stats = msg.Content;
+        this.loading = false;
         break;
       default:
         console.log("Unknown message!!");

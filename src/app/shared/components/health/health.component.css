@@ -40,12 +40,23 @@
 
 /* Color si pierde vida */
 
+/* The glow lives on this wrapper instead of the rotated background div (or
+   its span): that div's rotate3d() transform makes it establish its own
+   stacking context, which would trap a z-index:-1 pseudo-element of its own
+   subtree in FRONT of its background image rather than behind it — negative
+   z-index only escapes behind a stacking-context-creating ancestor's own
+   background when it isn't nested inside that ancestor in the first place.
+   Keeping this wrapper untransformed lets the glow stack as a plain sibling
+   layer behind the (as a whole, still one opaque unit) rotated container. */
+.health-wrapper {
+  position: relative;
+}
 
-.enhanced::after
+.health-wrapper.enhanced .life-text::after
 {
   content: "";
-  box-shadow: -25px 40px 60px 60px rgb(239, 255, 14);
   position: absolute;
+  box-shadow: -25px 40px 60px 60px rgb(239, 255, 14);
   z-index: -1;
 }
 

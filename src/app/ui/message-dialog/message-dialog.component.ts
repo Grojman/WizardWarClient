@@ -62,6 +62,7 @@ export class MessageDialogComponent {
 
   showSuggestions()
   {
+    this.focus();
     this.reactionSuggestions = REACTIONS;
   }
 

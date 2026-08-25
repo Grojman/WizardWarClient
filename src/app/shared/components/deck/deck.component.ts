@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Deck } from '../../../models/deck.model';
+import { Deck, RANDOM_DECK_ID } from '../../../models/deck.model';
 
 @Component({
   selector: 'app-deck',
@@ -26,6 +26,9 @@ export class DeckComponent {
 
   getImagePath() : string
   {
-    return `images/decks/${this.deck.id}.webp`; 
+    if (this.deck.id === RANDOM_DECK_ID) {
+      return 'images/decks/random.svg';
+    }
+    return `images/decks/${this.deck.id}.webp`;
   }
 }

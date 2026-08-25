@@ -18,7 +18,7 @@
 
   </div>
 
-  <div class="main-content">
+  <div class="main-content" *ngIf="!loading; else statsLoading">
 
     <div class="deck-list-panel">
 
@@ -148,5 +148,12 @@
     </div>
 
   </div>
+
+  <ng-template #statsLoading>
+    <div class="loading-indicator">
+      <span class="spinner"></span>
+      <span>Cargando estadísticas...</span>
+    </div>
+  </ng-template>
 
 </div>
