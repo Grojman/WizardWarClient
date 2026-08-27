@@ -41,8 +41,14 @@
         </div>
 
         <div
-          class="deck-content"
+          class="deck-content-wrapper"
           *ngIf="!loading"
+        >
+
+        <div
+          class="deck-content"
+          #deckContent
+          (scroll)="updateScrollFade()"
         >
 
         <div
@@ -76,10 +82,16 @@
         </div>
     
         </div>
-    
+
+        <div class="has-scroll-fade" *ngIf="showScrollFade">
+          <i class="fa-solid fa-caret-down" style="color: rgb(255, 212, 59);"></i>
         </div>
-    
-        
+
+        </div>
+
+        </div>
+
+
       </div>
 
   </div>

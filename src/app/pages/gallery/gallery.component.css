@@ -20,6 +20,11 @@
 
   background-image: url('/images/stones_opac.webp');
 
+  & > *:first-child
+  {
+    align-self: stretch;
+  }
+
 }
 
 
@@ -28,6 +33,8 @@
   text-align: center;
 
   animation: fadeInUp 1s ease;
+
+  height: 30vh;
 
 }
 
@@ -146,11 +153,44 @@
   
 }
 
+.deck-content-wrapper
+{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
 .deck-content
 {
   display: flex;
   flex-direction: column;
   overflow-y: scroll;
+  flex: 1;
+  min-height: 0;
+}
+
+.has-scroll-fade {
+
+  pointer-events: none;
+
+  position: absolute;
+  bottom: 0;
+
+  width: 100%;
+  background: linear-gradient(
+  to bottom,
+  rgba(255,255,255,0),
+  rgba(0, 0, 0, 0.6)
+  );
+
+  display: flex;
+  justify-content: center;
+  font-size: xx-large;
+
+  & > * {
+    font-size: 4rem;
+  }
 }
 
 .loading-indicator {
