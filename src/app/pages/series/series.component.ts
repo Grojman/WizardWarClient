@@ -134,7 +134,7 @@ export class SeriesComponent implements OnInit, OnDestroy {
 
   canSelect(deck: Deck): boolean {
     const snapshot = this.seriesState.snapshot;
-    return !!snapshot && snapshot.you.status !== "selecting" && !this.isUnavailable(deck);
+    return !!snapshot && (snapshot.you.status !== "selecting" || snapshot.round === 3) && !this.isUnavailable(deck);
   }
 
   private pickRandomAvailableDeck(): Deck | undefined {

@@ -75,7 +75,7 @@
   </div>
 
   <div class="series-row card-panel you"
-  [class.disabled]="seriesState.snapshot!.you.status !== 'waiting'"
+  [class.disabled]="seriesState.snapshot!.you.status !== 'waiting' && seriesState.snapshot!.round !== 3"
   >
 
     <div class="series-player-info">
