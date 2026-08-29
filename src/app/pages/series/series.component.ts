@@ -8,6 +8,7 @@ import { AlertModalComponent } from '../../shared/components/alert-modal/alert-m
 import { createRandomDeckOption, Deck, RANDOM_DECK_ID } from '../../models/deck.model';
 import { SeriesSnapshot } from '../../models/series.model';
 import { GameSessionStorageService } from '../../core/services/game-session-storage.service';
+import { TranslationService } from '../../core/services/translation.service';
 
 @Component({
   selector: 'app-series',
@@ -32,6 +33,7 @@ export class SeriesComponent implements OnInit, OnDestroy {
     public seriesState: SeriesStateService,
     private audio: AudioService,
     private gameSessionStorage: GameSessionStorageService,
+    private translation: TranslationService,
   ) {}
 
   ngOnInit(): void {
@@ -66,6 +68,9 @@ export class SeriesComponent implements OnInit, OnDestroy {
         break;
       case 'error':
         this.errorModal.open(msg.Content?.message ?? 'Ha ocurrido un error inesperado.');
+        break;
+      case 'translations':
+        this.translation.setDictionary(msg.Content?.values ?? {});
         break;
       default:
         return true;

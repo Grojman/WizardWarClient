@@ -1,5 +1,17 @@
 <div class="home-container">
 
+<div class="language-list">
+  <button
+    type="button"
+    class="language-option"
+    *ngFor="let l of languages"
+    [class.active]="l.code === languageService.getLanguage()"
+    (click)="changeLanguage(l.code)"
+  >
+    {{ l.label }}
+  </button>
+</div>
+
 <div class="menu-section">
 
   <div class="image-title">
@@ -12,7 +24,7 @@
     <p class="home-section" [class.selected]="s.selected" [class.disabled]="sectionsBlocked()" *ngFor="let s of sections" (click)="sectionSelected(s)"
     (mouseenter)="playCrack($event)"
     >
-      {{ s.name}}
+      {{ s.name | translate }}
     </p>
 
 
@@ -24,7 +36,7 @@
     >
       
       <span>
-        {{o.name}}
+        {{o.name | translate}}
 
       </span>
     </a>

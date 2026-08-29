@@ -6,6 +6,9 @@ import { AudioService } from '../../core/services/audio.service';
 import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
 import { SeriesStateService } from '../../core/services/series-state.service';
 import { GameSessionStorageService } from '../../core/services/game-session-storage.service';
+import { TranslationService } from '../../core/services/translation.service';
+import { LanguageSettingsService } from '../../core/services/language.service';
+import { LANGUAGE_OPTIONS } from '../../core/config/language-config';
 
 type SectionStage = 'root' | 'deck-select' | 'create-private' | 'join-private';
 
@@ -40,25 +43,25 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   sections: HomeSection[] = [
     {
-      name: 'Partida rápida',
+      name: 'HOME_SECTION_QUICK_MATCH',
       id: 'pr',
       selected: true,
       stage: 'root',
     },
     {
-      name: 'Mejor de 3',
+      name: 'HOME_SECTION_BEST_OF_3',
       id: 'bo3',
       selected: false,
       stage: 'root',
     },
     {
-      name: 'Reportar bugs',
+      name: 'HOME_SECTION_REPORT_BUGS',
       id: 'rb',
       selected: false,
       stage: 'root'
     },
     {
-      name: 'Sobre nosotros',
+      name: 'HOME_SECTION_ABOUT_US',
       id: 'ab',
       selected: false,
       stage: 'root'
@@ -67,11 +70,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   externalSections: ExternalSection[] = [
     {
-      name: 'Galería',
+      name: 'HOME_SECTION_GALLERY',
       url: '/gallery'
     },
     {
-      name: 'Estadísticas',
+      name: 'HOME_SECTION_STATS',
       url: '/stats'
     },
   ]
@@ -341,10 +344,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private router: Router,
     private audio: AudioService,
     private seriesState: SeriesStateService,
-    private gameSessionStorage: GameSessionStorageService
+    private gameSessionStorage: GameSessionStorageService,
+    protected translation: TranslationService,
+    protected languageService: LanguageSettingsService
   )
   {
 
+  }
+
+  languages = LANGUAGE_OPTIONS;
+
+  changeLanguage(code: string): void {
+    this.languageService.setLanguage(code);
   }
   ngOnInit(): void {
     this.ws.connect();
@@ -480,6 +491,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.creatingPrivate = false;
         this.joiningPrivate = false;
         this.errorModal.open(msg.Content?.message ?? 'Ha ocurrido un error inesperado.');
+        break;
+      case "translations":
+        this.translation.setDictionary(msg.Content?.values ?? {});
         break;
       default:
         console.log("Unknown message!!");

@@ -29,6 +29,7 @@ import { AlertModalComponent } from './shared/components/alert-modal/alert-modal
 import { PrivateMatchModalComponent } from './shared/components/private-match-modal/private-match-modal.component';
 import { TeamComponent } from './pages/team/team.component';
 import { SeriesComponent } from './pages/series/series.component';
+import { TranslatePipe } from './shared/pipes/translate.pipe';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { SeriesComponent } from './pages/series/series.component';
     AlertModalComponent,
     PrivateMatchModalComponent,
     TeamComponent,
-    SeriesComponent
+    SeriesComponent,
+    TranslatePipe
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],
   providers: [

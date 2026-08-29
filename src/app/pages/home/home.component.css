@@ -1,3 +1,32 @@
+.language-list {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 20;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.language-option {
+  font-family: "Text Font 5";
+  color: var(--text-color);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  padding: 0.35rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.language-option:hover {
+  transform: scale(1.08);
+}
+
+.language-option.active {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: var(--text-color);
+}
+
 .image-title
 {
   background-image: url('/images/wood.webp');

@@ -3,7 +3,7 @@
 <div class="settings-container overlay-backdrop" (click)="close()" *ngIf="isOpen">
   <div class="settings-panel" (click)="$event.stopPropagation()">
     <div class="settings-header">
-      <span class="title">Settings</span>
+      <span class="title">{{ 'SETTINGS_TITLE' | translate }}</span>
 
       <button class="close-btn btn-icon" type="button" (click)="close()">
         ✕
@@ -12,10 +12,26 @@
     
     <div class="settings-content">
 
+      <!-- Language -->
+      <div class="setting-group">
+        <label class="setting-label">{{ 'SETTINGS_LANGUAGE' | translate }}</label>
+
+        <div class="speed-options">
+          <button
+            *ngFor="let l of languages"
+            class="speed-btn"
+            [class.active]="l.code === languageService.getLanguage()"
+            (click)="changeLanguage(l.code)"
+          >
+            {{ l.label }}
+          </button>
+        </div>
+      </div>
+
       <!-- Animation Speed -->
       <div class="setting-group">
-        <label class="setting-label">Animation Speed</label>
-        <p class="current-speed">Current: {{ getCurrentSpeedLabel() }}</p>
+        <label class="setting-label">{{ 'SETTINGS_ANIMATION_SPEED' | translate }}</label>
+        <p class="current-speed">{{ 'SETTINGS_CURRENT_LABEL' | translate }} {{ getCurrentSpeedLabel() }}</p>
 
         <div class="speed-options">
           <button
@@ -32,7 +48,7 @@
 
       <!-- Music -->
       <div class="setting-group">
-        <label class="setting-label">Music</label>
+        <label class="setting-label">{{ 'SETTINGS_MUSIC' | translate }}</label>
 
         <label class="checkbox-label">
           <input
@@ -40,7 +56,7 @@
             [checked]="musicEnabled"
             (change)="setMusicEnabled($any($event.target).checked)"
           />
-          Enabled
+          {{ 'SETTINGS_ENABLED' | translate }}
         </label>
 
         <input
@@ -57,7 +73,7 @@
 
       <!-- Sound Effects -->
       <div class="setting-group">
-        <label class="setting-label">Sound Effects</label>
+        <label class="setting-label">{{ 'SETTINGS_SOUND_EFFECTS' | translate }}</label>
 
         <label class="checkbox-label">
           <input
@@ -65,7 +81,7 @@
             [checked]="sfxEnabled"
             (change)="setSfxEnabled($any($event.target).checked)"
           />
-          Enabled
+          {{ 'SETTINGS_ENABLED' | translate }}
         </label>
 
         <input

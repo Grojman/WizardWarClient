@@ -20,6 +20,7 @@ import { HelpComponent } from '../../shared/components/help/help.component';
 import { AlertModalComponent } from '../../shared/components/alert-modal/alert-modal.component';
 import { SeriesStateService } from '../../core/services/series-state.service';
 import { GameSessionStorageService } from '../../core/services/game-session-storage.service';
+import { TranslationService } from '../../core/services/translation.service';
 
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
@@ -44,7 +45,8 @@ export class GameComponent implements OnInit, OnDestroy {
     private animationService: GameAnimationService,
     private audioService: AudioService,
     private seriesStateService: SeriesStateService,
-    private gameSessionStorage: GameSessionStorageService
+    private gameSessionStorage: GameSessionStorageService,
+    private translation: TranslationService
   )
   {
     this.gameState = this.createInitialGameState();
@@ -114,6 +116,9 @@ export class GameComponent implements OnInit, OnDestroy {
         break;
       case "error":
         this.handleErrorMessage(msg.Content);
+        break;
+      case "translations":
+        this.translation.setDictionary(msg.Content?.values ?? {});
         break;
       default:
         console.error("Unknown message!!!");

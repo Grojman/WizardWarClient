@@ -2,6 +2,8 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { AnimationSettingsService } from '../../../core/services/animation-settings.service';
 import { ANIMATION_SPEED_OPTIONS } from '../../../core/config/animation-config';
 import { AudioSettingsService } from '../../../core/services/audio-settings-service';
+import { LanguageSettingsService } from '../../../core/services/language.service';
+import { LANGUAGE_OPTIONS } from '../../../core/config/language-config';
 
 @Component({
   selector: 'app-settings',
@@ -16,8 +18,15 @@ export class SettingsComponent implements OnInit {
 
   constructor(
   private animationSettingsService: AnimationSettingsService,
-  private audioSettings: AudioSettingsService
+  private audioSettings: AudioSettingsService,
+  protected languageService: LanguageSettingsService
 ) {}
+
+  languages = LANGUAGE_OPTIONS;
+
+  changeLanguage(code: string): void {
+    this.languageService.setLanguage(code);
+  }
 
 
   /**
