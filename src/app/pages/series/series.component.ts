@@ -67,7 +67,7 @@ export class SeriesComponent implements OnInit, OnDestroy {
         this.startRound();
         break;
       case 'error':
-        this.errorModal.open(msg.Content?.message ?? 'Ha ocurrido un error inesperado.');
+        this.errorModal.open(msg.Content?.message ?? this.translation.translate('ERR_UNEXPECTED'));
         break;
       case 'translations':
         this.translation.setDictionary(msg.Content?.values ?? {});
@@ -168,11 +168,11 @@ export class SeriesComponent implements OnInit, OnDestroy {
     const status = this.seriesState.snapshot?.rival.status;
     switch (status) {
       case 'selecting':
-        return 'Esperando a que elijas';
+        return this.translation.translate('SERIES_SECTION_RIVAL_SELECTING');
       case 'waiting':
-        return 'Seleccionando mazo...';
+        return this.translation.translate('SERIES_SECTION_RIVAL_WAITING');
         case 'waiting_you':
-          return 'Eligiendo mazo...';
+          return this.translation.translate('SERIES_SECTION_RIVAL_WAITING_YOU');
       default:
         return '';
     }

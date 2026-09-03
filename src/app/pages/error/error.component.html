@@ -7,24 +7,24 @@
       </div>
 
       <h1>
-        Conexión perdida con el servidor
+        
+        {{ 'ERROR_SECTION_TITLE' | translate }}
       </h1>
 
       <p class="message">
-        Lo sentimos, parece que se ha perdido la conexión con el servidor.
+        {{ 'ERROR_SECTION_MESSAGE' | translate }}
       </p>
 
       <p class="sub-message">
-        Nuestro equipo ya puede estar trabajando en solucionarlo.
-        Por favor, vuelve a intentarlo más adelante.
+        {{ 'ERROR_SECTION_SUB_MESSAGE' | translate }}
       </p>
 
       <button (click)="tryReload()" class="retry-button btn btn-gold">
-        Reintentar conexión
+        {{ 'ERROR_SECTION_RETRY' | translate }}
       </button>
 
       <p class="footer">
-        Gracias por tu paciencia.
+        {{ 'ERROR_SECTION_FOOTER' | translate }}
       </p>
 
     </div>

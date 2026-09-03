@@ -26,7 +26,6 @@
   >
 </app-player>
 </div>
-<!-- Rivales -->
 <div
 class="player-slot rival"
 *ngFor="let player of gameState.Rivals; let i = index"
@@ -50,24 +49,23 @@ class="player-slot rival"
 
 
 <div class="animation-layer">
-  <div class="proyectile" style="display: none;">
-    
-  </div>
-  
+  <div class="proyectile" style="display: none;"></div>
   <div class="icon-hand" style="display: none;"></div>
   <div class="icon-hand-card" style="display: none;"></div>
   <div class="icon-hand-wrench" style="display: none;"></div>
+
+  <img class="card-icon" src="/images/cards/reverse_card.svg" style="display: none;"/>
 </div>
 </div>
 
 <div class="action-buttons">
   <p class="turn-text">
     <span>
-      Ronda {{ gameState.CurrentTurn }}
+      {{ 'GAME_SECTION_TURN' | translate }} {{ gameState.CurrentTurn }}
     </span>
     
     <span *ngIf="gameState.CurrentTurn % 2 !== 0" 
-    title="Al acabar este turno, todos los jugadores roban una carta"
+      [title]="'GAME_SECTION_TURN_PLAYER' | translate"
     >
     <i class="fa-solid fa-copy"></i>
     <i class="fa-solid fa-plus"></i>
@@ -97,17 +95,19 @@ class="btn btn-gold btn-action"
 </div>
 <div class="disconnect-banner" *ngIf="opponentDisconnected">
   <i class="fa-solid fa-triangle-exclamation"></i>
-  <span>{{ getPlayer(opponentDisconnected.playerId).Name }} se ha desconectado. Finalizando la partida en {{ secondsRemaining }}s si no vuelve...</span>
+  <span>{{ getPlayer(opponentDisconnected.playerId).Name }} {{ 'GAME_SECTION_DISCONNECTED' | translate }} {{ secondsRemaining }}s {{ 'GAME_SECTION_DISCONNECTED_SUBTEXT' | translate }}</span>
 </div>
 
 <div class="winner-overlay">
   <div #winnerboard class="winner-board">
     <p>
-      <span class="winner-name">Jugador 1</span>
-      es el ganador y le deben una cerveza.
+      <span class="winner-name">{{ 'GAME_SECTION_WINNER_PLACEHOLDER' | translate }}</span>
+      {{ 'GAME_SECTION_WINNER' | translate }}
     </p>
     
-    <button class="btn btn-gold btn-action" (click)="leaveGame()">Aceptar</button>
+    <button class="btn btn-gold btn-action" (click)="leaveGame()">
+      {{ 'GAME_SECTION_RETURN_HOME' | translate }}
+    </button>
   </div>
 </div>
 
@@ -150,6 +150,6 @@ class="btn btn-gold btn-action"
   </div>
   
   <p>
-    Por favor, rota tu teléfono para jugar
+    {{ 'GAME_SECTION_ROTATE_PHONE' | translate }}
   </p>
 </div>

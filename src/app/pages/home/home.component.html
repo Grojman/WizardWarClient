@@ -48,8 +48,8 @@
 <div class="banner" [ngClass]="selectedSection.id">
 
   <!-- Root stage: shared by "Partida rápida" (pr) and "Mejor de 3" (bo3) -->
-  <div class="banner-content stage-root" [class.show]="isGameSection() && selectedSection.stage === 'root'">
-    <h3 class="subtitle"> Nombre </h3>
+  <div class="banner-content stage-root" [class.show]="isGameSection() && selectedSection.stage === 'root' && !hasActiveMatch">
+    <h3 class="subtitle"> {{ 'HOME_SECTION_NAME_LABEL' | translate }} </h3>
     <div class="input-wrapper">
 
       <input
@@ -57,16 +57,16 @@
         maxlength="40"
         [(ngModel)]="username"
         (change)="onUsernameChange()"
-        placeholder="Introduce tu nombre"
+        [placeholder]="'HOME_SECTION_SET_NAME' | translate"
         class="username-input text-input"
+        [disabled]="hasActiveMatch"
       />
-
     </div>
 
 
     <p class="search-disabled-reason text" *ngIf="!username">
       <i class="fa-solid fa-circle-exclamation"></i>
-      Introduce tu nombre para poder jugar
+      {{ 'HOME_SECTION_DISABLED_NAME' | translate }}
     </p>
 
     <div class="buttons-container">
@@ -79,14 +79,68 @@
         (mouseenter)="playButtonHover($event)"
       >
         <i class="fa-solid" [ngClass]="isOnlineSearchButton(sel) ? 'fa-xmark' : sel.icon"></i>
-        {{ isOnlineSearchButton(sel) ? 'Cancelar' : sel.name }}
+        {{ isOnlineSearchButton(sel) ? ('HOME_SECTION_CANCEL' | translate) : (sel.name | translate) }}
         <span class="spinner" *ngIf="isOnlineSearchButton(sel)"></span>
       </button>
     </div>
   </div>
 
-  <!-- Deck selection stage: only reachable from "pr", or from "bo3" when
-       creating/joining a private match (both still require a deck). -->
+  <!-- Shown instead of the root stage above whenever the server still has us
+  inside an unfinished GameSession from before a reload/navigation back to
+  home (see HomeComponent.ngOnInit / handleActiveMatchState). -->
+  <div class="banner-content stage-active-match" [class.show]="isGameSection() && !!hasActiveMatch">
+    <h2 class="title">
+      {{ 'HOME_SECTION_ACTIVE_MATCH_TITLE' | translate }}
+    </h2>
+
+    <div class="pending-indicator" *ngIf="activeMatchChecking">
+      <span class="spinner"></span>
+      <span>
+        {{ 'HOME_SECTION_ACTIVE_MATCH_CHECKING' | translate }}
+      </span>
+    </div>
+
+    <ng-container *ngIf="!activeMatchChecking && activeMatch as match">
+      <p class="text">
+        {{ 'HOME_SECTION_ACTIVE_MATCH_MESSAGE' | translate }}
+      </p>
+
+      <div class="deck-list">
+        <div class="deck-slot">
+          <p class="text deck-slot-name">{{ match.me.Name }}</p>
+          <app-deck [deck]="match.me.Deck" [small]="true" [infoUp]="true" />
+        </div>
+
+        <div class="deck-slot" *ngFor="let rival of match.rivals">
+          <p class="text deck-slot-name">{{ rival.Name }}</p>
+          <app-deck [deck]="rival.Deck" [small]="true" [infoUp]="true" />
+        </div>
+      </div>
+
+      <div class="buttons-container">
+        <button
+          type="button"
+          class="btn btn-gold"
+          (click)="continueMatch()"
+        >
+          <i class="fa-solid fa-play"></i>
+          {{ 'HOME_SECTION_CONTINUE_MATCH' | translate }}
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-gold"
+          [disabled]="cancellingMatch"
+          (click)="cancelMatch()"
+        >
+          <i class="fa-solid fa-xmark" *ngIf="!cancellingMatch"></i>
+          {{ cancellingMatch ? ('HOME_SECTION_CANCELLING_MATCH' | translate) : ('HOME_SECTION_CANCEL_MATCH' | translate) }}
+          <span class="spinner" *ngIf="cancellingMatch"></span>
+        </button>
+      </div>
+    </ng-container>
+  </div>
+
   <div class="banner-content stage-deck-select" [class.show]="isGameSection() && selectedSection.stage === 'deck-select'">
 
     <div class="stage-header">
@@ -97,21 +151,21 @@
         (click)="leaveGameOption()"
       >
         <i class="fa-solid fa-arrow-left"></i>
-        Volver atrás
+        {{ 'HOME_SECTION_BACK' | translate }}
       </button>
 
       <h2 class="section-title">
 
         <i class="fa-solid fa-layer-group"></i>
 
-        Selecciona tu mazo
+        {{ 'HOME_SECTION_SELECT_DECK' | translate }}
 
       </h2>
     </div>
     <div class="pending-indicator" *ngIf="searching || searchingBot || creatingPrivate">
       <span class="spinner"></span>
       <span>
-        {{ searching ? 'Buscando partida...' : (searchingBot ? 'Preparando partida contra la máquina...' : 'Creando partida privada...') }}
+        {{ searching ? ('HOME_SECTION_SEARCHING' | translate) : (searchingBot ? ('HOME_SECTION_SEARCHING_BOT' | translate) : 'HOME_SECTION_CREATING_PRIVATE' | translate) }}
       </span>
       <button
         type="button"
@@ -119,13 +173,15 @@
         *ngIf="searching"
         (click)="cancelJoining()"
       >
-        Cancelar
+        {{ 'HOME_SECTION_CANCEL' | translate }}
       </button>
     </div>
 
     <div class="pending-indicator" *ngIf="decksLoading">
       <span class="spinner"></span>
-      <span>Cargando mazos...</span>
+      <span>
+        {{ 'HOME_SECTION_LOADING_DECKS' | translate }}
+      </span>
     </div>
 
     <div class="deck-list" *ngIf="!decksLoading">
@@ -145,32 +201,40 @@
 
   </div>
 
-  <!-- Create-private stage: shared by "pr" and "bo3" so the flow never has
-       to be duplicated per section. -->
   <div class="banner-content stage-create-private" [class.show]="isGameSection() && selectedSection.stage === 'create-private'">
-    <h2 class="title">Partida privada</h2>
+    <h2 class="title">
+      {{ 'HOME_SECTION_PRIVATE_TITLE' | translate }}
+    </h2>
 
-    <p class="text" *ngIf="isHost">Comparte este código con tus amigos:</p>
-    <p class="text" *ngIf="!isHost">Esperando a que se completen los jugadores:</p>
+    <p class="text" *ngIf="isHost">
+      {{ 'HOME_SECTION_PRIVATE_WAITING' | translate }}
+    </p>
+    <p class="text" *ngIf="!isHost">
+      {{ 'HOME_SECTION_PRIVATE_WAITING_JOIN' | translate }}
+    </p>
 
-    <button class="code-display" (click)="copyCode()" title="Copiar código">
+    <button class="code-display" (click)="copyCode()" [title]="'HOME_SECTION_COPY_CODE_TITLE' | translate">
       <span class="code">{{ code }}</span>
       <i class="fa-solid" [ngClass]="copied ? 'fa-check' : 'fa-copy'"></i>
     </button>
 
     <p class="text player-count">
-      {{ current }} / {{ total }} jugadores
-      <span class="host-badge" *ngIf="isHost">(Eres el anfitrión)</span>
+      {{ current }} / {{ total }} {{ 'HOME_SECTION_PRIVATE_PLAYERS' | translate }}
+      <span class="host-badge" *ngIf="isHost">
+        {{ 'HOME_SECTION_PRIVATE_HOST' | translate }}
+      </span>
     </p>
 
     <div class="pending-indicator" *ngIf="current < total">
       <span class="spinner"></span>
-      <span>Esperando jugadores...</span>
+      <span>
+        {{ 'HOME_SECTION_PRIVATE_WAITING_PLAYERS' | translate }}
+      </span>
     </div>
 
     <button type="button" class="btn btn-gold" (click)="onPrivateMatchCancelled()">
       <i class="fa-solid fa-arrow-left"></i>
-      Cancelar
+      {{ 'HOME_SECTION_CANCEL' | translate }}
     </button>
   </div>
 
@@ -185,12 +249,12 @@
         (click)="cancelJoinPrivate()"
       >
         <i class="fa-solid fa-arrow-left"></i>
-        Volver atrás
+        {{ 'HOME_SECTION_BACK' | translate }}
       </button>
 
       <h2 class="section-title">
         <i class="fa-solid fa-key"></i>
-        Unirse a partida privada
+        {{ 'HOME_SECTION_JOIN_PRIVATE' | translate }}
       </h2>
     </div>
 
@@ -203,7 +267,7 @@
         maxlength="6"
         [(ngModel)]="joinCode"
         (keyup.enter)="joinPrivateMatch()"
-        placeholder="Código de partida"
+        [placeholder]="'HOME_SECTION_JOIN_CODE_PLACEHOLDER' | translate"
         class="username-input join-code-input"
         [disabled]="joiningPrivate"
       />
@@ -215,9 +279,12 @@
       [disabled]="!joinCode || !username || joiningPrivate"
       (click)="joinPrivateMatch()"
     >
-      <span *ngIf="!joiningPrivate">Unirse</span>
+      <span *ngIf="!joiningPrivate">
+        {{ 'HOME_SECTION_JOIN' | translate }}
+      </span>
       <ng-container *ngIf="joiningPrivate">
-        Uniéndose...
+        
+        {{ 'HOME_SECTION_JOINING' | translate }}
         <span class="spinner"></span>
       </ng-container>
     </button>
@@ -225,22 +292,31 @@
   </div>
 
   <div class="banner-content" [class.show]="selectedSection.id === 'rb'">
-    <h2 class="title">Envía una sugerencia / Reportar un error </h2>
+    <h2 class="title">
+      {{ 'HOME_SECTION_SUGGESTION' | translate }}
+    </h2>
 
     <p class="text">
-      No nos vendría mal algo de ayuda; este juego se encuentra en beta, al fin de al cabo. Cualquier tipo de problema que hayas sufrido, o una sugerencia que quieras añadir a nuestro sistema, por favor explícalo en este recuadro de aquí delante (las sugerencias son anónimas. Nos dio pereza añadir un campo de nombre):
+      
+      {{ 'HOME_SECTION_SUGGESTION_TEXT' | translate }}
     </p>
 
     <textarea 
     [(ngModel)]="sugestion"
     (keypress)="suggestionKeyPress($event.key)"
     class="text-area"
-      placeholder="escribe aquí..."></textarea>
+      +[placeholder]="'HOME_SECTION_SUGGESTION_PLACEHOLDER' | translate"
+      
+      ></textarea>
 
-    <button [inert]="sugestion === ''" (click)="sendSugestion()" class="btn btn-gold">Enviar</button>
+    <button [inert]="sugestion === ''" (click)="sendSugestion()" class="btn btn-gold">
+      {{ 'HOME_SECTION_SEND' | translate }}
+    </button>
   </div>
   <div class="banner-content" [class.show]="selectedSection.id === 'ab'">
-    <h2 class="title">Creado por:</h2>
+    <h2 class="title">
+      {{ 'HOME_SECTION_ABOUT' | translate }}
+    </h2>
 
     <div class="footer-team">
 
@@ -274,373 +350,10 @@
 
     <a routerLink="/team" class="team-button btn btn-gold">
       <i class="fa-solid fa-users"></i>
-      CONOCE AL EQUIPO
+      {{ 'HOME_SECTION_ABOUT_TEAM' | translate }}
     </a>
   </div>
   <app-alert-modal #errorModal></app-alert-modal>
 
 </div>
-
-
-<!-- <div class="banner">
-
-
-  <div class="hero">
-
-    <h1 class="title">
-      <span class="capital-letter">E</span>l bar de los 
-       <span class="capital-letter">M</span>agos
-
-    </h1>
-
-    <h2 class="subtitle">
-
-      <i class="fa-solid fa-book-open"></i>
-
-      Mira las cartas del juego
-
-      <a routerLink="/gallery" class="gallery-link">
-
-        aquí
-
-      </a>
-
-    </h2>
-
-    <h2 class="subtitle">
-
-      <i class="fa-solid fa-chart-simple"></i>
-
-      Consulta las estadísticas de las barajas
-
-      <a routerLink="/stats" class="gallery-link">
-
-        aquí
-
-      </a>
-
-    </h2>
-
-  </div>
-
-  <div class="info-panel">
-
-    <h2 class="title">⚠️ESTO ES UNA BETA⚠️ </h2>
-
-    <img class="skeleton-image" src="/images/home/skeleton.jpg" alt="Esqueleto">
-
-    <p class="text">
-      Este juego se encuentra ahora mismo en beta, lo que significa que hay muchas cosas por terminar y/o cambiar, como podrían ser los sprites de las cartas, ciertas funcionalidades, nuevos mazos, y demás. Tenedlo en cuenta antes de realizar vuestra crítica :).
-    </p>
-
-  </div>
-
-
-  <div class="card-panel">
-
-    <h2 class="section-title">
-
-      <i class="fa-solid fa-layer-group"></i>
-
-      Selecciona tu mazo
-
-    </h2>
-
-    <div class="deck-list">
-
-      <app-deck
-        *ngFor="let deck of decks"
-        [deck]="deck"
-        [selected]="deck === selectedDeck"
-        (click)="selectDeck(deck)"
-        class="deck-item hover-grow"
-        [infoUp]="true"
-      />
-
-    </div>
-
-  </div>
-
-
-
-  <div class="card-panel">
-
-    <h2 class="section-title">
-
-      <i class="fa-solid fa-crosshairs"></i>
-
-      Preparado para el duelo
-
-    </h2>
-
-    <div class="match-mode-selector">
-
-      <button
-      type="button"
-      class="btn btn-gold"
-      [class.active]="matchMode === 'Single'"
-      [disabled]="matchMode === 'Single' || anyActionPending()"
-      (click)="selectMatchMode('Single')"
-      >
-        <i class="fa-solid fa-chess-board"></i>
-        Normal
-      </button>
-
-      <button
-      type="button"
-      class="btn btn-gold"
-      [class.active]="matchMode === 'BestOfThree'"
-      [disabled]="matchMode === 'BestOfThree' || anyActionPending()"
-      (click)="selectMatchMode('BestOfThree')"
-      >
-        <i class="fa-solid fa-trophy"></i>
-        Mejor de 3
-      </button>
-
-    </div>
-
-    <div class="login-container">
-
-      <div *ngIf="matchMode === 'Single'">
-      <h3 class="subtitle"> Nº Jugadores </h3>
-
-        <div class="number-players-carousel">
-
-          <button
-          type="button"
-          class="carousel-arrow btn btn-gold"
-          (click)="shiftPlayerCount(-1)"
-          [disabled]="numberOfPlayers === playerCountOptions[0]"
-          aria-label="Menos jugadores"
-          >
-            <i class="fa-solid fa-chevron-left"></i>
-          </button>
-
-          <ul
-          class="buttons-container number-players-container"
-          #playersCarousel
-          >
-
-            <li
-            class="players-button"
-            *ngFor="let i of playerCountOptions"
-            >
-              <button
-              (click)="selectPlayerCount(i)"
-              [class.active]="i === numberOfPlayers"
-              [disabled]="i === numberOfPlayers"
-              class="text btn-gold btn"
-              >
-                {{ i }}
-              </button>
-            </li>
-
-
-          </ul>
-
-          <button
-          type="button"
-          class="carousel-arrow btn btn-gold"
-          (click)="shiftPlayerCount(1)"
-          [disabled]="numberOfPlayers === playerCountOptions[playerCountOptions.length - 1]"
-          aria-label="Más jugadores"
-          >
-            <i class="fa-solid fa-chevron-right"></i>
-          </button>
-
-        </div>
-      </div>
-      
-      
-      <div>
-        <h3 class="subtitle"> Nombre </h3>
-  
-        <div class="input-wrapper">
-  
-          <i class="fa-solid fa-user"></i>
-  
-          <input
-            type="text"
-            maxlength="40"
-            [(ngModel)]="username"
-            (change)="onUsernameChange()"
-            placeholder="Introduce tu nombre"
-            class="username-input"
-          />
-  
-        </div>
-
-        <h3 class="subtitle">Buscar partida</h3>
-
-        <p class="search-disabled-reason" *ngIf="searchDisabledReason() as reason">
-          <i class="fa-solid fa-circle-exclamation"></i>
-          {{ reason }}
-        </p>
-
-        <div class="buttons-container" [class.column]="matchMode === 'Single'">
-
-          <button
-          class="search-button btn btn-gold"
-          [disabled]="!canSearch() || searchingBot || privateMatchPending"
-          (click)="toggleSearch()"
-          >
-
-            <i
-              class="fa-solid"
-              [ngClass]="searching ? 'fa-xmark' : 'fa-globe'"
-            ></i>
-
-            {{ searching ? 'Cancelar' : 'Online' }}
-
-            <span
-              *ngIf="searching"
-              class="spinner"
-            ></span>
-
-          </button>
-
-          <button
-          *ngIf="matchMode === 'Single'"
-          class="search-button btn btn-gold"
-          [disabled]="!canSearch() || searching || privateMatchPending"
-          (click)="startBotGame()"
-        >
-
-          <i
-            class="fa-solid"
-            [ngClass]="searchingBot ? 'fa-xmark' : 'fa-robot'"
-          ></i>
-
-          {{ searchingBot ? 'Cancelar' : 'Máquina' }}
-
-          <span
-            *ngIf="searchingBot"
-            class="spinner"
-          ></span>
-
-        </button>
-
-          <button
-          class="search-button btn btn-gold"
-          [disabled]="!canSearch() || searching || searchingBot || privateMatchPending"
-          (click)="createPrivateMatch()"
-          >
-
-            <i class="fa-solid fa-lock"></i>
-
-            Crear privada
-
-          </button>
-
-          <button
-          class="search-button btn btn-gold"
-          [disabled]="!canSearch() || searching || searchingBot || privateMatchPending"
-          (click)="toggleJoinInput()"
-          >
-
-            <i
-              class="fa-solid"
-              [ngClass]="showJoinInput ? 'fa-xmark' : 'fa-key'"
-            ></i>
-
-            {{ showJoinInput ? 'Cancelar' : 'Unirse a privada' }}
-
-          </button>
-
-        </div>
-
-        <div class="input-wrapper join-code-wrapper" *ngIf="showJoinInput">
-
-          <i class="fa-solid fa-hashtag"></i>
-
-          <input
-            type="text"
-            maxlength="6"
-            [(ngModel)]="joinCode"
-            (keyup.enter)="joinPrivateMatch()"
-            placeholder="Código de partida"
-            class="username-input join-code-input"
-          />
-
-          <button
-          class="btn btn-gold"
-          [disabled]="!joinCode"
-          (click)="joinPrivateMatch()"
-          >
-            Unirse
-          </button>
-
-        </div>
-      </div>
-
-    </div>    
-
-  </div>
-
-  <a routerLink="/team" class="team-button btn btn-gold">
-    <i class="fa-solid fa-users"></i>
-    CONOCE AL EQUIPO
-  </a>
-
-  <div class="info-panel">
-    <h2 class="title">Envía una sugerencia / Reportar un error </h2>
-
-    <span>
-      No nos vendría mal algo de ayuda; este juego se encuentra en beta, al fin de al cabo. Cualquier tipo de problema que hayas sufrido, o una sugerencia que quieras añadir a nuestro sistema, por favor explícalo en este recuadro de aquí delante (las sugerencias son anónimas. Nos dio pereza añadir un campo de nombre):
-    </span>
-
-    <textarea 
-    [(ngModel)]="sugestion"
-    (keypress)="suggestionKeyPress($event.key)"
-      placeholder="escribe aquí..."></textarea>
-
-    <button [inert]="sugestion === ''" (click)="sendSugestion()">Enviar</button>
-
-  </div>
-
-
-  <app-alert-modal #errorModal></app-alert-modal>
-
-  <app-private-match-modal
-    #privateMatchModal
-    (cancelled)="onPrivateMatchCancelled()"
-  ></app-private-match-modal>
-
-  <footer class="footer">
-
-    <h2 class="footer-title">Creado por</h2>
-
-    <div class="footer-team">
-
-      <a
-        href="https://www.instagram.com/gomidev.developer/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="footer-dev hover-grow"
-      >
-        <img class="footer-dev-photo" src="/images/devs/gomidev.developer.webp" alt="gomidev.developer" loading="lazy">
-        <span class="footer-dev-name">
-          <i class="fa-brands fa-instagram"></i>
-          @gomidev.developer
-        </span>
-      </a>
-
-      <a
-        href="https://www.instagram.com/aweonao_crea/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="footer-dev hover-grow"
-      >
-        <img class="footer-dev-photo" src="/images/devs/aweonao_crea.webp" alt="aweonao_crea" loading="lazy">
-        <span class="footer-dev-name">
-          <i class="fa-brands fa-instagram"></i>
-          @aweonao_crea
-        </span>
-      </a>
-
-    </div>
-
-  </footer>
-
-</div> -->
 </div>

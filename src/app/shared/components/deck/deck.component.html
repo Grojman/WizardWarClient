@@ -23,7 +23,7 @@
       <p
       *ngIf="deck.cardAmount"
       >
-        Cartas en el mazo: {{ deck.cardAmount }}
+        {{ 'DECK_SECTION_CARDS' | translate }} {{ deck.cardAmount }}
         
       </p>
     </span>
@@ -32,7 +32,7 @@
   <p class="deck-name" 
   *ngIf="deck.name"
   >
-    {{ deck.name }}
+    {{ deck.name | translate }}
   </p>
 
 </div>

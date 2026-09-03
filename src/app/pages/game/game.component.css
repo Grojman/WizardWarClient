@@ -124,7 +124,7 @@
 
   overflow: visible;
 
-  position: rotateX(10deg);
+  transform: rotateX(10deg);
 
 }
 
@@ -399,4 +399,11 @@ box-shadow: inset 0px 15px 50px 0px #000000;
     font-size: small;
   }
   
+}
+
+.card-icon
+{
+  background-color: var(--color-wood-dark);
+  aspect-ratio: 5 / 7;
+  height: 15vh;
 }

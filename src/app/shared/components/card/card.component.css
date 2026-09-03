@@ -383,15 +383,20 @@
     pointer-events: none;
     animation: floatUpFade 0.75s ease-out forwards;
     z-index: 9999;
+    border: 3px solid black;
   }
 
 
   .floating-number.positive {
     color: #00c552;
+    border-color: #00c552;
+    background: #6ef8a8
   }
 
   .floating-number.negative {
     color: #ab1100;
+    border-color: #ab1100;
+    background: #f86e6e;
   }
 
 

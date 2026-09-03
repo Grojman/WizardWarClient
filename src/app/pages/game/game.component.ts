@@ -207,7 +207,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private handleErrorMessage(content: any): void {
-    this.errorModal.open(content?.message ?? 'Ha ocurrido un error inesperado.');
+    this.errorModal.open(content?.message ?? this.translation.translate('ERR_UNEXPECTED'));
   }
 
   onErrorClosed(): void {
@@ -292,24 +292,25 @@ async animateAttack(
   );
 }
 
-async animateCardDrawn(cardOrigin: string, deckEnd: string, duration: number = 750)
+async animateCardDrawn(deckEnd: string, up: boolean, duration: number = 750)
 {
-  await this.createAnimationDeckCardsAmount(".icon-hand", cardOrigin, deckEnd, duration)
+  await this.createAnimationDeckCardsAmount(deckEnd, duration, up)
 }
 
 async animateAddCard(cardOrigin: string, deckEnd: string, duration: number = 750)
 {
-  await this.createAnimationDeckCardsAmount(".icon-hand-card", cardOrigin, deckEnd, duration)
+  // await this.createAnimationDeckCardsAmount(".icon-hand-card", cardOrigin, deckEnd, duration)
 }
 
 async animateModifyDeck(cardOrigin: string, deckEnd: string, duration: number = 750)
 {
-  await this.createAnimationDeckCardsAmount(".icon-hand-wrench", cardOrigin, deckEnd, duration)
+  // await this.createAnimationDeckCardsAmount(".icon-hand-wrench", cardOrigin, deckEnd, duration)
 }
 
-async createAnimationDeckCardsAmount(startIcon: string, cardOrigin: string, deckEnd: string, duration: number)
+async createAnimationDeckCardsAmount(deckEnd: string, duration: number, up: boolean)
 {
-  await this.animationService.animateDeckCard(startIcon, cardOrigin, deckEnd, duration);
+  await this.animationService.animateCardDrawn(deckEnd, duration, up);
+  // await this.animationService.animateDeckCard(startIcon, cardOrigin, deckEnd, duration);
 }
 
 
@@ -369,7 +370,8 @@ changeHealthAnimationDuration: number = 500;
         break;
         case "CardDrawnEvent":  
           var player = this.getPlayer(event.PlayerSource);
-          await this.animateCardDrawn(event.Source, this.getDeckId(player.Id))
+          this.audioService.playSfx('/audio/card_drawn.mp3', true);
+          await this.animateCardDrawn(this.getDeckId(player.Id), player.Id !== this.gameState.Me.Id,750)
 
           this.gameStateService.addCardToHand(player, Card.fromJSON(event.Card));
           if(event.FromDeck)
@@ -409,6 +411,7 @@ changeHealthAnimationDuration: number = 500;
         var index = arrayToFind.findIndex(n => n && n.id === event.Unit);
         if (index !== -1) {
           if (visualElement) {
+            this.audio.playSfx('/audio/unit_death.mp3', true);
             await this.animationService.animateUnitDeath(visualElement);
           }
           arrayToFind[index] = null;
@@ -420,6 +423,7 @@ changeHealthAnimationDuration: number = 500;
         var player = this.getPlayer(event.PlayerSource);
         this.gameStateService.removeCardFromHand(player, event.Unit.id);
         if (event.Unit) {
+          this.audioService.playSfx('/audio/unit_played.mp3', true);
           this.gameStateService.placeCardOnBoard(player, Card.fromJSON(event.Unit), event.BoardPosition);
         }
         this.checkCard(event.Unit.serverId);
@@ -478,7 +482,7 @@ ngOnInit(): void {
   // one that's been open since the home page. That's the only reliable way
   // to tell "this is a brand-new game about to deal a hand" apart from
   // "this is a reconnect and the incoming snapshot is already accurate".
-  this.isResumedSession = !this.ws.connected;
+  this.isResumedSession = !this.ws.connected || this.gameSessionStorage.consumeResumingFromHome();
   this.ws.connect();
   this.ws.subscribe(this.processMessage)
   this.audio.playSfx('/audio/game_start.mp3')

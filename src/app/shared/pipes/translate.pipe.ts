@@ -9,7 +9,8 @@ import { TranslationService } from '../../core/services/translation.service';
 export class TranslatePipe implements PipeTransform {
   constructor(private translation: TranslationService) {}
 
-  transform(key: string): string {
+  transform(key: string | null | undefined): string {
+    if (!key) return '';
     return this.translation.translate(key);
   }
 }

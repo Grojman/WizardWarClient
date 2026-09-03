@@ -4,16 +4,16 @@
 
     <h1 class="title">
       <i class="fa-solid fa-users title-icon"></i>
-      Conoce al equipo
+      {{ 'TEAM_SECTION_TITLE' | translate }}
     </h1>
 
     <h2 class="subtitle">
-      Un equipo de decenas de profesionales, que resultan ser las mismas 2 personas.
+      {{ 'TEAM_SECTION_SUBTITLE' | translate }}
     </h2>
 
     <a routerLink="/" class="back-button btn btn-gold">
       <i class="fa-solid fa-arrow-left"></i>
-      Volver a inicio
+      {{ 'TEAM_SECTION_BACK' | translate }}
     </a>
 
   </div>
@@ -42,19 +42,19 @@
             @{{ member.name }}
           </span>
   
-          <span class="member-lead">{{ member.roleLead }}</span>
-  
+          <span class="member-lead">{{ member.roleLead | translate }}</span>
+
         </a>
-  
+
         <ul class="member-titles">
-          <li *ngFor="let title of member.titles">{{ title }}</li>
+          <li *ngFor="let title of member.titles">{{ title | translate }}</li>
         </ul>
   
       </div>
   
     </div>
     <div>
-      <h2 class="title">COLABORADOR@S</h2>
+      <h2 class="title">{{ 'TEAM_SECTION_COLLABORATORS' | translate }}</h2>
   
       <div class="members-list">
   
@@ -66,7 +66,7 @@
             {{ col.name }}
           </span>
   
-          <span class="collaborator-lead">{{ col.roleLead }}</span>
+          <span class="collaborator-lead">{{ col.roleLead | translate }}</span>
         </div>
   
       </div>

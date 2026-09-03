@@ -12,7 +12,7 @@ export class HelpComponent
   cardWithAbilityExample: Card = {
     id: "",
     serverId: "",
-    name: "Carta con habilidad",
+    name: "HELP_CARD_EXAMPLE_ABILITY_NAME",
     hasEffect: true,
     canPlay: true,
     imageUrl: "example",
@@ -29,11 +29,11 @@ export class HelpComponent
   cardSpellExample: Card = {
     id: "",
     serverId: "",
-    name: "Hechizo",
+    name: "HELP_CARD_EXAMPLE_SPELL_NAME",
     type: "Spell",
     canPlay: true,
     imageUrl: "example",
-    description: "Este es un ejemplo de carta de hechizo.",
+    description: "HELP_CARD_EXAMPLE_SPELL_DESC",
     changeHealth: function (amount: number, durationAnimation: number): void {
       throw new Error("Function not implemented.");
     },
@@ -45,11 +45,11 @@ export class HelpComponent
   cardUnitExample: Card = {
     id: "",
     serverId: "31",
-    name: "Unidad",
+    name: "HELP_CARD_EXAMPLE_UNIT_NAME",
     canPlay: true,
     type: "Unit",
     imageUrl: "example",
-    description: "Este es un ejemplo de carta de unidad.",
+    description: "HELP_CARD_EXAMPLE_UNIT_DESC",
     attack: 3,
     health: 3,
     changeHealth: function (amount: number, durationAnimation: number): void {
@@ -61,13 +61,13 @@ export class HelpComponent
   }
 
     videos: HelpVideo[] = [
-      { source: "/video/play_unit.webm", title: "Jugar una unidad"},
-      { source: "/video/use_ability.webm", title: "Usar habilidad"},
-      { source: "/video/play_spell.webm", title: "Jugar hechizo"},
-      { source: "/video/attack_unit.webm", title: "Atacar"},
-      { source: "/video/draw_card.webm", title: "Robar carta"},
-      { source: "/video/attack_rival_health.webm", title: "Atacar vida del rival"},
-      { source: "/video/inspect_card.webm", title: "Inspeccionar carta"},
+      { source: "/video/play_unit.webm", title: "HELP_VIDEO_PLAY_UNIT"},
+      { source: "/video/use_ability.webm", title: "HELP_VIDEO_USE_ABILITY"},
+      { source: "/video/play_spell.webm", title: "HELP_VIDEO_PLAY_SPELL"},
+      { source: "/video/attack_unit.webm", title: "HELP_VIDEO_ATTACK"},
+      { source: "/video/draw_card.webm", title: "HELP_VIDEO_DRAW_CARD"},
+      { source: "/video/attack_rival_health.webm", title: "HELP_VIDEO_ATTACK_RIVAL_HEALTH"},
+      { source: "/video/inspect_card.webm", title: "HELP_VIDEO_INSPECT_CARD"},
     ]
     isOpen: boolean = false;
       open(): void {

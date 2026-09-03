@@ -12,7 +12,7 @@
         {{ statusText }}
       </span>
       <span class="series-status hidden-status" *ngIf="seriesState.snapshot!.rival.status === 'hidden'">
-        Mazo oculto hasta que empiece la partida
+        {{ 'SERIES_HIDDEN_STATUS' | translate }}
       </span>
     </div>
 
@@ -36,17 +36,23 @@
 
   <div class="series-banner">
 
-    <h1 class="title">Mejor de 3</h1>
+    <h1 class="title">
+      {{ 'SERIES_SECTION_TITLE' | translate }}
+    </h1>
 
     <ng-container *ngIf="seriesState.endResult as end; else selecting">
 
       <div class="series-end-panel panel slideUpFade">
 
-        <h2 class="subtitle" *ngIf="end.forfeited">Tu rival ha abandonado la serie</h2>
-        <h2 class="subtitle" *ngIf="!end.forfeited">¡Serie terminada!</h2>
+        <h2 class="subtitle" *ngIf="end.forfeited">
+          {{ 'SERIES_SECTION_FORFEITED' | translate }}
+        </h2>
+        <h2 class="subtitle" *ngIf="!end.forfeited">
+          {{ 'SERIES_SECTION_WINNER' | translate }}
+        </h2>
 
         <p class="text winner-text" [class.win]="isYouWinner()">
-          {{ isYouWinner() ? '¡Has ganado la serie!' : winnerName() + ' ha ganado la serie' }}
+          {{ isYouWinner() ? ('SERIES_SECTION_WINNER_YOU' | translate) : winnerName() + ('SERIES_SECTION_WINNER_RIVAL' | translate) }}
         </p>
 
         <div class="final-scores">
@@ -56,7 +62,9 @@
           </div>
         </div>
 
-        <button class="btn btn-gold" (click)="returnHome()">Volver al inicio</button>
+        <button class="btn btn-gold" (click)="returnHome()">
+          {{ 'SERIES_SECTION_RETURN_HOME' | translate }}
+        </button>
 
       </div>
 
@@ -66,7 +74,7 @@
 
       
       <h2 class="subtitle round-indicator">
-        Ronda {{ seriesState.snapshot!.round }} de 3
+        '{{ 'SERIES_SECTION_ROUND' | translate }}' {{ seriesState.snapshot!.round }} {{ 'SERIES_SECTION_ROUND_OF' | translate }} 3
       </h2>
 
 
@@ -79,17 +87,23 @@
   >
 
     <div class="series-player-info">
-      <h3 class="subtitle series-player-name">{{ seriesState.snapshot!.you.name || 'Tú' }}</h3>
+      <h3 class="subtitle series-player-name">{{ seriesState.snapshot!.you.name || ('SERIES_SECTION_YOU' | translate) }}</h3>
       <span class="series-score-badge">
         {{ scoreFor(seriesState!.snapshot, seriesState.snapshot!.you.playerId) }}
       </span>
-      <span class="series-status" *ngIf="seriesState.snapshot!.you.status === 'waiting'">Elige tu mazo</span>
-      <span class="series-status" *ngIf="seriesState.snapshot!.you.status === 'waiting_you'">Mazo elegido, esperando a tu rival</span>
+      <span class="series-status" *ngIf="seriesState.snapshot!.you.status === 'waiting'">
+        {{ 'SERIES_SECTION_WAITING' | translate }}
+      </span>
+      <span class="series-status" *ngIf="seriesState.snapshot!.you.status === 'waiting_you'">
+        {{ 'SERIES_SECTION_WAITING_YOU' | translate }}
+      </span>
     </div>
 
     <div class="loading-indicator" *ngIf="decksLoading">
       <span class="spinner"></span>
-      <span>Cargando mazos...</span>
+      <span>
+        {{ 'SERIES_SECTION_LOADING_DECKS' | translate }}
+      </span>
     </div>
 
     <div class="deck-list series-deck-list" *ngIf="!decksLoading" [class.picked]="this.seriesState.snapshot!.you.deckId !== null">

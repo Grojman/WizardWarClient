@@ -79,20 +79,17 @@
   background-repeat: no-repeat;
   transform: rotateX(-0deg) rotate3d(1, 1, 0.25, -20deg);
 }
-.rival-health-background
-{
-  background-image: url('/images/board/rival_life_container.svg')
-}
-
+.rival-health-background,
 .player-health-background
 {
-  background-image: url('/images/board/player_life_container.svg')
+  background-image: url('/images/board/player_life.webp')
 }
 
 .life-text
 {
   margin: auto;
-  margin-top: 2rem;
+  margin-top: 1rem;
   font-size: xx-large;
+  font-style: italic;
   color:white;
 }

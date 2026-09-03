@@ -37,7 +37,7 @@
         *ngIf="card.conditionTarget"
         class="card-condition-progress"
         >
-            Progreso: {{ card.conditionProgress }} / {{ card.conditionTarget }}
+            {{ 'CARD_CONDITION_PROGRESS' | translate }} {{ card.conditionProgress }} / {{ card.conditionTarget }}
         </p>
     </div>
 

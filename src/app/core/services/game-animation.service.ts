@@ -258,6 +258,50 @@ const targetDash = targetElement.animate(
   targetElement.style.transform = '';
   targetElement.style.filter = '';
 }
+  async animateCardDrawn(deck: string, duration:number, up: boolean): Promise<void> {
+    await this.nextFrame();
+
+    const deckElement = document.querySelector(`[data-game-id="${deck}"]`) as HTMLElement | null;
+    const cardImageElement = document.querySelector('.card-icon') as HTMLElement | null;
+
+    if (!deckElement || !cardImageElement) {
+      return;
+    }
+
+    cardImageElement.style.display = 'block';
+    const deckRect = deckElement.getBoundingClientRect();
+    const startX = deckRect.left + deckRect.width / 2 - cardImageElement.offsetWidth / 2;
+    const startY = deckRect.top + deckRect.height / 2 - cardImageElement.offsetHeight / 2;
+
+    cardImageElement.style.position = 'fixed';
+    cardImageElement.style.left = `${startX}px`;
+    cardImageElement.style.top = `${startY}px`;
+    cardImageElement.style.willChange = 'transform, opacity';
+
+    const animation = cardImageElement.animate(
+      [
+        { transform: 'translate(0px, 0px) scale(0.5) rotate(-45deg)', opacity: 1, offset: 0 },
+        { transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(0)`, opacity: 1, offset: 0.3 },
+        { transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(45deg)`, opacity: 1, offset: 0.6 },
+        { transform: `translate(${-deckRect.width / 2}px, ${up? '-1000px': '1000px'}) scale(1) rotate(90deg)`, opacity: 0, offset: 1 },
+      ],
+      {
+        duration: this.animationSettingsService.getAdjustedDuration(duration),
+        easing: 'ease-out',
+      },
+    );
+
+    await animation.finished;
+
+    cardImageElement.style.display = 'none';
+    cardImageElement.style.transform = '';
+    cardImageElement.style.opacity = '';
+    cardImageElement.style.position = '';
+    cardImageElement.style.left = '';
+    cardImageElement.style.top = '';
+    cardImageElement.style.willChange = '';
+    return;
+  }
 
   async animateDeckCard(startIcon: string, cardOrigin: string, deckEnd: string, duration: number): Promise<void> {
     await this.nextFrame();

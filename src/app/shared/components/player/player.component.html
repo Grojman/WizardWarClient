@@ -2,7 +2,7 @@
 [class.dead]="player.Health.displayHealth <= 0"
 >
     <div class="effects-section">
-        <h3 class="effects-title subtitle">Efectos:</h3>
+        <h3 class="effects-title subtitle">{{ 'GAME_SECTION_EFFECTS' | translate }}</h3>
         
         <div class="effects">
             <p class="effect panel" *ngFor="let e of this.player.GlobalEffects">
@@ -73,7 +73,7 @@
         ></app-deck>
 
         <p class="target-player" *ngIf="showTarget">
-            Jugador objetivo:
+            {{ 'GAME_SECTION_TARGET_PLAYER' | translate }}
             <br>
             <span>{{ player.TargetPlayer }}</span>
         </p>

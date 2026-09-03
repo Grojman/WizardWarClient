@@ -9,6 +9,13 @@ import { GameSessionStorageService } from '../../core/services/game-session-stor
 import { TranslationService } from '../../core/services/translation.service';
 import { LanguageSettingsService } from '../../core/services/language.service';
 import { LANGUAGE_OPTIONS } from '../../core/config/language-config';
+import { Game } from '../../models/game.model';
+import { Player } from '../../models/player.model';
+
+interface ActiveMatchInfo {
+  me: Player;
+  rivals: Player[];
+}
 
 type SectionStage = 'root' | 'deck-select' | 'create-private' | 'join-private';
 
@@ -110,22 +117,22 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   gameOptions: GameOption[] = [
     {
-      name: 'Jugar',
+      name: 'HOME_OPTION_PLAY',
       id: 'o',
       icon: 'fa-globe'
     },
     {
-      name: 'Crear',
+      name: 'HOME_OPTION_CREATE',
       id: 'pr',
       icon: 'fa-lock'
     },
     {
-      name: 'Unirse',
+      name: 'HOME_OPTION_JOIN',
       id: 'jo',
       icon: 'fa-key'
     },
     {
-      name: 'Máquina',
+      name: 'HOME_OPTION_BOT',
       id: 'ma',
       icon: 'fa-robot'
     },
@@ -321,6 +328,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   joinCode = '';
 
   sendSugestion() {
+    if (this.hasActiveMatch) return;
 
     this.ws.send({
       "$type": "SendSuggestion",
@@ -357,12 +365,31 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   changeLanguage(code: string): void {
     this.languageService.setLanguage(code);
   }
+  // Set as soon as we know (from GameSessionStorageService, see ngOnInit)
+  // that the server may still be holding us inside an unfinished GameSession
+  // from before a reload/navigation back to home — until this is resolved
+  // (continue or cancel), the buttons that start a new game stay hidden so
+  // we never send a lobby-only action while the server still routes our
+  // messages to that GameSession (see GameManager.HandleMessage).
+  hasActiveMatch = false;
+  activeMatchChecking = false;
+  activeMatch: ActiveMatchInfo | null = null;
+  cancellingMatch = false;
+  private activeMatchWatchdog?: ReturnType<typeof setTimeout>;
+
   ngOnInit(): void {
     this.ws.connect();
     this.ws.subscribe(this.processMessage);
-    this.ws.send({
-      "$type" : "GetDecksAction"
-    });
+
+    if (this.gameSessionStorage.isActive()) {
+      this.hasActiveMatch = true;
+      this.activeMatchChecking = true;
+      this.startActiveMatchWatchdog();
+    } else {
+      this.ws.send({
+        "$type" : "GetDecksAction"
+      });
+    }
 
     this.audio.startMusic("home")
     let start = false;
@@ -428,6 +455,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   // would get routed to the in-game handler, fail to deserialize there, and
   // come back as an error the player never asked for.
   ngOnDestroy(): void {
+    this.clearActiveMatchWatchdog();
+
     if (this.enteringMatch) return;
 
     if (this.searching) {
@@ -451,6 +480,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   onUsernameChange()
   {
+    if (this.hasActiveMatch) return;
+
     this.ws.send({
       "$type" : "ChangeNameAction",
       "NewName" : this.username
@@ -485,12 +516,32 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         this.isHost = !!msg.Content?.isHost;
         this.selectedSection.stage = 'create-private';
         break;
+      case "game_state":
+        // Pushed unprompted by the server the moment it resumes us into a
+        // GameSession we never properly left (see GameSession.TryReconnect).
+        // Reject it (return true below) so it stays queued for GameComponent
+        // to consume once the player actually continues into /game.
+        this.handleActiveMatchState(msg.Content);
+        return true;
+      case "end_game":
+        // Either our own cancelMatch() was acked, or the match we were
+        // resumed into ended for some other reason (e.g. the rival also
+        // cancelled) while we were sitting here on home.
+        this.clearActiveMatch();
+        break;
+      case "series_end":
+        // Cancelling a resumed series round (see cancelMatch()) ends the
+        // whole series server-side, which pushes this here too (in addition
+        // to the "end_game" ack above). Home has nothing to do with it —
+        // consume it so it doesn't sit in the WebsocketService replay queue
+        // and get wrongly picked up by a later, unrelated SeriesComponent.
+        break;
       case "error":
         this.searching = false;
         this.searchingBot = false;
         this.creatingPrivate = false;
         this.joiningPrivate = false;
-        this.errorModal.open(msg.Content?.message ?? 'Ha ocurrido un error inesperado.');
+        this.errorModal.open(msg.Content?.message ?? this.translation.translate('ERR_UNEXPECTED'));
         break;
       case "translations":
         this.translation.setDictionary(msg.Content?.values ?? {});
@@ -502,6 +553,68 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     return false;
 
     }
+
+  private startActiveMatchWatchdog(): void {
+    this.clearActiveMatchWatchdog();
+    // Mirrors GameComponent's own resume watchdog: if the server never
+    // confirms an active match (e.g. the disconnect grace period had
+    // already expired while we were away), don't leave the player stuck
+    // behind a permanently-disabled "start new game" screen.
+    this.activeMatchWatchdog = setTimeout(() => {
+      if (this.activeMatchChecking) {
+        this.clearActiveMatch();
+      }
+    }, 2000);
+  }
+
+  private clearActiveMatchWatchdog(): void {
+    clearTimeout(this.activeMatchWatchdog);
+    this.activeMatchWatchdog = undefined;
+  }
+
+  private handleActiveMatchState(content: Game | null): void {
+    if (!content) return;
+
+    this.clearActiveMatchWatchdog();
+    this.gameSessionStorage.markActive();
+    this.hasActiveMatch = true;
+    this.activeMatchChecking = false;
+    this.activeMatch = { me: content.Me, rivals: content.Rivals };
+  }
+
+  private clearActiveMatch(): void {
+    this.clearActiveMatchWatchdog();
+    this.hasActiveMatch = false;
+    this.activeMatchChecking = false;
+    this.activeMatch = null;
+    this.cancellingMatch = false;
+    this.gameSessionStorage.markInactive();
+
+    // Skipped at ngOnInit while we still thought there was a match to
+    // resume into — safe to fetch now that there isn't one.
+    if (this.decksLoading) {
+      this.ws.send({
+        "$type" : "GetDecksAction"
+      });
+    }
+  }
+
+  continueMatch(): void {
+    if (!this.hasActiveMatch || this.activeMatchChecking) return;
+
+    this.gameSessionStorage.markResumingFromHome();
+    this.enteringMatch = true;
+    this.router.navigateByUrl('/game');
+  }
+
+  cancelMatch(): void {
+    if (!this.hasActiveMatch || this.activeMatchChecking || this.cancellingMatch) return;
+
+    this.cancellingMatch = true;
+    this.ws.send({
+      "$type": 'LeaveGame'
+    });
+  }
 
   async startGame()
   {

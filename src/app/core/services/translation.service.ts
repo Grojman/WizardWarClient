@@ -11,6 +11,7 @@ export class TranslationService {
 
   setDictionary(values: Record<string, string>): void {
     this.dictionary = values ?? {};
+    console.log(this.dictionary);
     this.updatedSubject.next();
   }
 

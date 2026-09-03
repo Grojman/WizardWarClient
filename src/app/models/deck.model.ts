@@ -17,7 +17,7 @@ export const RANDOM_DECK_ID = 'random';
 export function createRandomDeckOption(): Deck {
   return {
     id: RANDOM_DECK_ID,
-    name: 'Aleatorio',
+    name: 'DECK_RANDOM_NAME',
     description: '',
     cardAmount: 0,
   };

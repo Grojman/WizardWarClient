@@ -10,7 +10,7 @@
 
     <i class="fa-solid fa-scroll"></i>
 
-    <span>Mensaje Arcano</span>
+    <span>{{ 'CHAT_SECTION_MESSAGE_TITLE' | translate }}</span>
 
 
   </div>
@@ -40,7 +40,7 @@
       [(ngModel)]="message"
       (ngModelChange)="onMessageChange()"
       (blur)="hideSuggestionsDelayed()"
-      placeholder="Escribe un mensaje..."
+      [placeholder]="'CHAT_SECTION_PLACEHOLDER' | translate"
       (keyup.enter)="send()"
       autofocus
     />
@@ -52,7 +52,7 @@
 
       <i class="fa-solid fa-paper-plane"></i>
 
-      Enviar
+      {{ 'CHAT_SECTION_SEND' | translate }}
 
     </button>
 

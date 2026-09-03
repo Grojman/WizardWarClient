@@ -1,21 +1,21 @@
 <div class="private-match-window overlay-backdrop" *ngIf="isOpen">
     <div class="private-match-container panel">
 
-    <h2 class="title">Partida privada</h2>
+    <h2 class="title">{{ 'HOME_SECTION_PRIVATE_TITLE' | translate }}</h2>
 
-    <p class="text" *ngIf="isHost">Comparte este código con tus amigos:</p>
-    <p class="text" *ngIf="!isHost">Esperando a que se completen los jugadores:</p>
+    <p class="text" *ngIf="isHost">{{ 'HOME_SECTION_PRIVATE_WAITING' | translate }}</p>
+    <p class="text" *ngIf="!isHost">{{ 'HOME_SECTION_PRIVATE_WAITING_JOIN' | translate }}</p>
 
-    <button class="code-display" (click)="copyCode()" title="Copiar código">
+    <button class="code-display" (click)="copyCode()" [title]="'HOME_SECTION_COPY_CODE_TITLE' | translate">
       <span class="code">{{ code }}</span>
       <i class="fa-solid" [ngClass]="copied ? 'fa-check' : 'fa-copy'"></i>
     </button>
 
     <p class="text player-count">
-      {{ current }} / {{ total }} jugadores
-      <span class="host-badge" *ngIf="isHost">(Eres el anfitrión)</span>
+      {{ current }} / {{ total }} {{ 'HOME_SECTION_PRIVATE_PLAYERS' | translate }}
+      <span class="host-badge" *ngIf="isHost">{{ 'HOME_SECTION_PRIVATE_HOST' | translate }}</span>
     </p>
 
-    <button (click)="cancel()">Cancelar</button>
+    <button (click)="cancel()">{{ 'HOME_SECTION_CANCEL' | translate }}</button>
     </div>
 </div>

@@ -2,18 +2,22 @@
     <div class="help-container panel" (click)="$event.stopPropagation()">
         
     <div class="help-header">
-        <h2 class="title">CÓMO JUGAR</h2>
+        <h2 class="title">
+            {{ 'HELP_SECTION_TITLE' | translate }}
+        </h2>
 
         <button (click)="close()" class="btn-icon">x</button>
     </div>
 
-    <h2 class="title">TIPOS DE CARTAS</h2>
+    <h2 class="title">
+        {{ 'HELP_SECTION_CARD_TYPES' | translate }}
+    </h2>
 
     <div class="card-types">
 
         <div>
 
-            <h3 class="subtitle">HECHIZO</h3>
+            <h3 class="subtitle">{{ 'HELP_CARD_TYPE_SPELL' | translate }}</h3>
             
             <app-card
                 [card]="cardSpellExample"
@@ -23,27 +27,26 @@
                 ></app-card>
 
             <p class="text">
-                Los hechizos son cartas que se juegan y se descartan inmediatamente después de su uso. 
-                Pueden tener efectos que afectan a las unidades en juego, al jugador o al oponente.
+                {{ 'HELP_CARD_TYPE_SPELL_DESC' | translate }}
             </p>
         </div>
 
         <div>
 
-            <h3 class="subtitle">UNIDAD</h3>
-            
+            <h3 class="subtitle">{{ 'HELP_CARD_TYPE_UNIT' | translate }}</h3>
+
             <app-card
                 [card]="cardUnitExample"
                 [canBeSelected]="false"
                 [class.large]="true"></app-card>
 
             <p class="text">
-                Las unidades son cartas que se juegan y permanecen en el campo de batalla hasta que sean destruidas. Tienen ataque (izq) y vida (drcha). Pueden atacar al oponente y defender al jugador.
+                {{ 'HELP_CARD_TYPE_UNIT_DESC' | translate }}
             </p>
         </div>
 
         <div>
-            <h3 class="subtitle">HABILIDAD</h3>
+            <h3 class="subtitle">{{ 'HELP_CARD_TYPE_ABILITY' | translate }}</h3>
             <app-card
                 [card]="cardWithAbilityExample"
                 [canBeSelected]="false"
@@ -51,20 +54,20 @@
                 [faceDown]="false"
                 ></app-card>
             <p class="text">
-                Algunas cartas, independientemente de su tipo, pueden tener habilidades. Las habilidades no gastan turno y solo se pueden usar cuando la carta esté en la mesa o se haya jugado, como los hechizos. Las habilidades pueden tener efectos que afectan a las unidades en juego, al jugador o al oponente.
+                {{ 'HELP_CARD_TYPE_ABILITY_DESC' | translate }}
             </p>
         </div>
 
     </div>
 
-    <h2 class="title">ACCIONES</h2>
+    <h2 class="title">{{ 'HELP_SECTION_ACTIONS' | translate }}</h2>
 
     <div class="actions-container">
 
         <div
         *ngFor="let help of videos"
         >
-            <p class="text">{{ help.title }}</p>
+            <p class="text">{{ help.title | translate }}</p>
             <video 
             src='{{ help.source }}'
             class="gray"

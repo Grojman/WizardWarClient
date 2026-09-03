@@ -8,15 +8,16 @@
     
           <i class="fa-solid fa-book-sparkles title-icon"></i>
     
-          Galería de Cartas
+          
+          {{ 'GALLERY_SECTION_TITLE' | translate }}
     
         </h1>
     
         <h2 class="subtitle">
     
           <i class="fa-solid fa-scroll"></i>
-    
-          Explora todas las cartas y descubre sus poderes
+  
+          {{ 'GALLERY_SECTION_SUBTITLE' | translate }}
     
         </h2>
     
@@ -27,7 +28,7 @@
     
           <i class="fa-solid fa-arrow-left"></i>
     
-          Volver a inicio
+          {{ 'GALLERY_SECTION_BACK' | translate }}
     
         </a>
     
@@ -37,7 +38,7 @@
 
         <div class="loading-indicator" *ngIf="loading">
           <span class="spinner"></span>
-          <span>Cargando cartas...</span>
+          <span>{{ 'GALLERY_LOADING' | translate }}</span>
         </div>
 
         <div
@@ -106,7 +107,7 @@
       </app-cardvisualizer>
 
       <p *ngIf="!hoverCard" >
-        Haz click en una carta para ver lo que hace
+        {{ 'GALLERY_SECTION_SELECT_CARD' | translate }}
       </p>
 
   </div>
