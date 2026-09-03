@@ -31,6 +31,7 @@ export class MessageDialogComponent {
 
   focus()
   {
+    if (this.input.nativeElement == document.activeElement) return;
     this.input.nativeElement.focus();
   }
 

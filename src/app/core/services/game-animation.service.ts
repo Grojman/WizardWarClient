@@ -269,27 +269,89 @@ const targetDash = targetElement.animate(
     }
 
     cardImageElement.style.display = 'block';
+    cardImageElement.style.position = 'fixed';
     const deckRect = deckElement.getBoundingClientRect();
-    const startX = deckRect.left + deckRect.width / 2 - cardImageElement.offsetWidth / 2;
+    const startX = deckRect.left + deckRect.width / 2 - cardImageElement.offsetWidth;
     const startY = deckRect.top + deckRect.height / 2 - cardImageElement.offsetHeight / 2;
 
-    cardImageElement.style.position = 'fixed';
     cardImageElement.style.left = `${startX}px`;
     cardImageElement.style.top = `${startY}px`;
     cardImageElement.style.willChange = 'transform, opacity';
+    cardImageElement.style.transformOrigin = '50% 0%';
 
     const animation = cardImageElement.animate(
-      [
-        { transform: 'translate(0px, 0px) scale(0.5) rotate(-45deg)', opacity: 1, offset: 0 },
-        { transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(0)`, opacity: 1, offset: 0.3 },
-        { transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(45deg)`, opacity: 1, offset: 0.6 },
-        { transform: `translate(${-deckRect.width / 2}px, ${up? '-1000px': '1000px'}) scale(1) rotate(90deg)`, opacity: 0, offset: 1 },
-      ],
-      {
-        duration: this.animationSettingsService.getAdjustedDuration(duration),
-        easing: 'ease-out',
-      },
-    );
+  [
+    {
+      transform: 'translate(0px, 0px) scale(0.8) rotate(-45deg)',
+      opacity: 1,
+      offset: 0
+    },
+
+    // Card comes out of deck
+    {
+      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(25deg)`,
+      opacity: 1,
+      offset: 0.3
+    },
+
+    // Start swinging
+    {
+      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(35deg)`,
+      opacity: 1,
+      offset: 0.35
+    },
+    {
+      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(-20deg)`,
+      opacity: 1,
+      offset: 0.45
+    },
+    {
+      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(-30deg)`,
+      opacity: 1,
+      offset: 0.55
+    },
+    {
+      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(0deg)`,
+      opacity: 1,
+      offset: 0.6
+    },
+
+    // Moving sideways
+    {
+      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(30deg)`,
+      opacity: 1,
+      offset: 0.65
+    },
+
+    // Smaller swings as it leaves
+    {
+      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(-15deg)`,
+      opacity: 1,
+      offset: 0.75
+    },
+    {
+      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(10deg)`,
+      opacity: 1,
+      offset: 0.82
+    },
+    {
+      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(-5deg)`,
+      opacity: 1,
+      offset: 0.88
+    },
+
+    // Fly away
+    {
+      transform: `translate(${-deckRect.width / 2}px, ${up ? '-1000px' : '1000px'}) scale(1) rotate(90deg)`,
+      opacity: 0,
+      offset: 1
+    }
+  ],
+  {
+    duration: this.animationSettingsService.getAdjustedDuration(duration),
+    easing: 'ease-out',
+  }
+);
 
     await animation.finished;
 
@@ -302,6 +364,161 @@ const targetDash = targetElement.animate(
     cardImageElement.style.willChange = '';
     return;
   }
+
+
+async animateAddedCard(
+  cardId: string,
+  deckEnd: string,
+  cardOrigin: string,
+  duration: number
+) {
+  await this.nextFrame();
+
+  const origin = document.querySelector(
+    `[data-game-id="${cardOrigin}"]`
+  ) as HTMLElement | null;
+
+  const destination = document.querySelector(
+    `[data-game-id="${deckEnd}"]`
+  ) as HTMLElement | null;
+
+  const cardImageElement = document.querySelector(
+    '.card-icon'
+  ) as HTMLImageElement | null;
+
+  if (!origin || !destination || !cardImageElement) return;
+
+  cardImageElement.style.display = 'block';
+  cardImageElement.style.position = 'fixed';
+  cardImageElement.src = `/images/cards/${cardId}.webp`;
+  cardImageElement.style.willChange = 'transform, opacity';
+  cardImageElement.style.transformOrigin = '50% 0%';
+
+  const destRect = destination.getBoundingClientRect();
+  const originRect = origin.getBoundingClientRect();
+
+  // Position the card at the origin
+  cardImageElement.style.left = `${originRect.left}px`;
+  cardImageElement.style.top = `${originRect.top}px`;
+
+  // Force layout so cardRect is correct
+  const cardRect = cardImageElement.getBoundingClientRect();
+
+  // Distance from origin -> destination
+  const endX =
+    destRect.left - originRect.left + originRect.width / 2;
+
+  const endY =
+    destRect.top - originRect.top - originRect.height;
+
+  const animation = cardImageElement.animate(
+    [
+      // Start
+      {
+        transform: 'translate(0px, 0px) scale(0.6) rotate(-10deg)',
+        opacity: 1,
+        offset: 0
+      },
+
+      // Move towards destination
+      {
+        transform: `translate(${endX * 0.25}px, ${endY * 0.25}px)
+                    scale(0.75) rotate(15deg)`,
+        opacity: 1,
+        offset: 0.15
+      },
+
+      // First swing
+      {
+        transform: `translate(${endX * 0.45}px, ${endY * 0.45}px)
+                    scale(0.85) rotate(-18deg)`,
+        opacity: 1,
+        offset: 0.25
+      },
+
+      // Swing back
+      {
+        transform: `translate(${endX * 0.6}px, ${endY * 0.6}px)
+                    scale(0.9) rotate(20deg)`,
+        opacity: 1,
+        offset: 0.35
+      },
+
+      // Smaller swing
+      {
+        transform: `translate(${endX * 0.72}px, ${endY * 0.72}px)
+                    scale(0.93) rotate(-14deg)`,
+        opacity: 1,
+        offset: 0.43
+      },
+
+      // Swing back again
+      {
+        transform: `translate(${endX * 0.82}px, ${endY * 0.82}px)
+                    scale(0.96) rotate(12deg)`,
+        opacity: 1,
+        offset: 0.51
+      },
+
+      // Smaller movement
+      {
+        transform: `translate(${endX * 0.89}px, ${endY * 0.89}px)
+                    scale(0.98) rotate(-8deg)`,
+        opacity: 1,
+        offset: 0.59
+      },
+
+      // Almost settled
+      {
+        transform: `translate(${endX * 0.94}px, ${endY * 0.94}px)
+                    scale(1) rotate(5deg)`,
+        opacity: 1,
+        offset: 0.67
+      },
+
+      // Final small wiggle
+      {
+        transform: `translate(${endX * 0.97}px, ${endY * 0.97}px)
+                    scale(1) rotate(-3deg)`,
+        opacity: 1,
+        offset: 0.75
+      },
+
+      // Arrive at destination
+      {
+        transform: `translate(${endX}px, ${endY}px)
+                    scale(1) rotate(0deg)`,
+        opacity: 1,
+        offset: 0.85
+      },
+
+      // Shrink into deck
+      {
+        transform: `translate(${endX}px, ${endY + originRect.height}px)
+                    scale(0.2) rotate(3deg)`,
+        opacity: 0,
+        offset: 1
+      }
+    ],
+    {
+      duration: this.animationSettingsService.getAdjustedDuration(duration),
+      easing: 'ease-out'
+    }
+  );
+
+  await animation.finished;
+
+  cardImageElement.src = '/images/cards/reverse_card.svg';
+  cardImageElement.style.display = 'none';
+  cardImageElement.style.transform = '';
+  cardImageElement.style.opacity = '';
+  cardImageElement.style.position = '';
+  cardImageElement.style.left = '';
+  cardImageElement.style.top = '';
+  cardImageElement.style.willChange = '';
+}
+
+
 
   async animateDeckCard(startIcon: string, cardOrigin: string, deckEnd: string, duration: number): Promise<void> {
     await this.nextFrame();

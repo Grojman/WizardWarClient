@@ -297,8 +297,9 @@ async animateCardDrawn(deckEnd: string, up: boolean, duration: number = 750)
   await this.createAnimationDeckCardsAmount(deckEnd, duration, up)
 }
 
-async animateAddCard(cardOrigin: string, deckEnd: string, duration: number = 750)
+async animateAddCard(cardId: string, cardOrigin: string, deckEnd: string, duration: number = 750)
 {
+  await this.animationService.animateAddedCard(cardId,deckEnd, cardOrigin, duration)
   // await this.createAnimationDeckCardsAmount(".icon-hand-card", cardOrigin, deckEnd, duration)
 }
 
@@ -432,13 +433,14 @@ changeHealthAnimationDuration: number = 500;
         case "SpellPlayed":
         var player = this.getPlayer(event.PlayerSource);
         this.gameStateService.removeCardFromHand(player, event.Spell.id);
+        this.audioService.playSfx('/audio/unit_played.mp3', true);
         this.gameStateService.setLastSpellPlayed(player, Card.fromJSON(event.Spell));
         await this.animationService.animateSpellCast(event.Spell.id);
         this.checkCard(event.Spell.serverId);
         break;
 
         case "AddedCardToDeck":
-          await this.animateAddCard(event.Source, this.getDeckId(event.TargetedPlayer))
+          await this.animateAddCard(event.CardId, event.Source, this.getDeckId(event.TargetedPlayer))
           this.gameStateService.updateDeckAmount(this.getPlayer(event.TargetedPlayer), 1);
             break;
         case "DeckModifiedStats":
