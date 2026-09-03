@@ -52,6 +52,21 @@
   position: relative;
 }
 
+.health-wrapper.health-shake {
+  animation: healthShake 500ms ease-in-out;
+}
+
+/* Decaying shake along the impact direction (--shake-x/--shake-y, a unit
+   vector set from the attacker->target line so the hit reads as a knockback
+   rather than a generic wobble). */
+@keyframes healthShake {
+  0%, 100% { transform: translate(0, 0); }
+  15% { transform: translate(calc(var(--shake-x, 0) * 12px), calc(var(--shake-y, 0) * 12px)); }
+  35% { transform: translate(calc(var(--shake-x, 0) * -8px), calc(var(--shake-y, 0) * -8px)); }
+  55% { transform: translate(calc(var(--shake-x, 0) * 5px), calc(var(--shake-y, 0) * 5px)); }
+  75% { transform: translate(calc(var(--shake-x, 0) * -2px), calc(var(--shake-y, 0) * -2px)); }
+}
+
 .health-wrapper.enhanced .life-text::after
 {
   content: "";

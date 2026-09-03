@@ -45,18 +45,6 @@
            {{ card?.attack }}
          </p>
 
-        <span
-        *ngIf="card?.attackChanged"
-          class="floating-number attack-change text"
-          [class.positive]="(card?.attackChangedAmount || 0) > 0"
-          [class.negative]="(card?.attackChangedAmount || 0) < 0"
-        >
-          {{ (card?.attackChangedAmount || 0) > 0 ? '+' : '' }}
-          {{ card?.attackChangedAmount }}
-          
-
-        </span>
-
       </span>
 
       <span class="health">
@@ -66,16 +54,6 @@
 
         </p>
         <!-- <i class="fa-solid fa-heart"></i> -->
-
-        <span
-          *ngIf="card?.healthChanged"
-          class="floating-number health-change text"
-          [class.positive]="(card?.healthChangedAmount || 0) > 0"
-          [class.negative]="(card?.healthChangedAmount || 0) < 0"
-        >
-          {{ (card?.healthChangedAmount || 0) > 0 ? '+' : '' }}
-          {{ card?.healthChangedAmount }}
-        </span>
 
       </span>
 

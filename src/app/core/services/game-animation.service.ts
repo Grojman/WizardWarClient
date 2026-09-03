@@ -97,15 +97,83 @@ export class GameAnimationService {
     }
   }
 
+  // Spawns a floating +/- number over a card's attack or health stat, anchored to that
+  // stat's own on-screen position rather than living inside the card, so it always reads
+  // clearly above neighbouring cards instead of being clipped/overlapped by them.
+  spawnFloatingNumber(cardId: string, amount: number, stat: 'attack' | 'health'): void {
+    if (!amount) {
+      return;
+    }
+
+    const layer = this.getAnimationLayer();
+    const cardElement = document.querySelector(`[data-game-id="${cardId}"]`) as HTMLElement | null;
+    const anchor = cardElement?.querySelector(stat === 'attack' ? '.attack-value' : '.health') as HTMLElement | null;
+
+    if (!layer || !anchor) {
+      return;
+    }
+
+    const rect = anchor.getBoundingClientRect();
+    const originX = rect.left + rect.width / 2;
+    const originY = rect.top + rect.height / 2;
+
+    const el = document.createElement('div');
+    el.classList.add('floating-number', amount > 0 ? 'positive' : 'negative');
+    el.textContent = `${amount > 0 ? '+' : ''}${amount}`;
+    el.style.left = `${originX}px`;
+    el.style.top = `${originY}px`;
+
+    layer.appendChild(el);
+
+    // Randomised per-hit so several floating numbers landing at once (a multi-target
+    // effect, a counter-attack) drift apart instead of stacking exactly on top of each other.
+    const drift = (Math.random() - 0.5) * 46;
+    const tilt = (Math.random() - 0.5) * 18;
+
+    const animation = el.animate(
+      [
+        {
+          transform: 'translate(-50%, -50%) translate(0px, 8px) scale(0.35) rotate(0deg)',
+          opacity: 0,
+          filter: 'blur(0px)',
+        },
+        {
+          transform: `translate(-50%, -50%) translate(${drift * 0.2}px, -20px) scale(1.4) rotate(${tilt}deg)`,
+          opacity: 1,
+          filter: 'blur(0px)',
+          offset: 0.25,
+        },
+        {
+          transform: `translate(-50%, -50%) translate(${drift * 0.55}px, -38px) scale(1) rotate(${tilt * 0.3}deg)`,
+          opacity: 1,
+          filter: 'blur(0px)',
+          offset: 0.6,
+        },
+        {
+          transform: `translate(-50%, -50%) translate(${drift}px, -78px) scale(0.85) rotate(0deg)`,
+          opacity: 0,
+          filter: 'blur(3px)',
+        },
+      ],
+      {
+        duration: this.animationSettingsService.getAdjustedDuration(950),
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      },
+    );
+
+    const cleanup = () => el.remove();
+    animation.finished.then(cleanup).catch(cleanup);
+  }
+
 async animateAttack(
   attackerElement: HTMLElement,
   targetElement: HTMLElement,
-  targetPlayer: { Health: { changeHealth: (amount: number, duration: number) => void } },
+  targetPlayer: { Health: { changeHealth: (amount: number, duration: number, originX?: number, originY?: number) => void } },
   targetIndex: number,
   targetType: 'BOARD' | 'PLAYER',
   attackerDamage: number,
   defenderDamage: number,
-  attackerPlayer: { Board: Array<{ id: string; changeHealth: (amount: number, duration: number) => void } | null> },
+  attackerPlayer: { Board: Array<{ id: string; changeHealth: (amount: number) => void } | null> },
   attackerId: string,
 ): Promise<void> {
   attackerElement.style.transformOrigin = '50% 100%';
@@ -142,7 +210,11 @@ async animateAttack(
     targetRecoil = 0;
   }
 
-  const swing = attackerElement.animate(
+  // Wind-up: both combatants rotate the same amount before moving, each in the
+  // opposite direction, like they're squaring up before the clash. Only the
+  // target rotates too when it's an actual card (attacking player life has
+  // nothing on the target side to wind up).
+  const attackerWindup = attackerElement.animate(
     [
       { transform: 'rotate(0deg) translateY(0px) scale(1)', filter: 'brightness(1)' },
       { transform: `rotate(${swingAngle}deg) translateY(${lift}px) scale(1.03)`, filter: 'brightness(1.15)' },
@@ -153,7 +225,23 @@ async animateAttack(
     },
   );
 
-  await swing.finished;
+  const windupFinished = [attackerWindup.finished];
+
+  if (targetType === 'BOARD') {
+    const targetWindup = targetElement.animate(
+      [
+        { transform: 'rotate(0deg) scale(1)' },
+        { transform: `rotate(${-swingAngle}deg) scale(1.03)` },
+      ],
+      {
+        duration: this.animationSettingsService.getAdjustedDuration(240),
+        easing: 'ease-out',
+      },
+    );
+    windupFinished.push(targetWindup.finished);
+  }
+
+  await Promise.all(windupFinished);
 
   const pulse = targetElement.animate(
     [
@@ -166,6 +254,8 @@ async animateAttack(
       easing: 'ease-out',
     },
   );
+
+  const targetRotatePeak = targetType === 'BOARD' ? -swingAngle : 0;
 
   const attackerDash = attackerElement.animate(
   [
@@ -195,20 +285,20 @@ async animateAttack(
 const targetDash = targetElement.animate(
   [
     {
-      transform: 'translate(0px,0px) scale(1)',
+      transform: 'translate(0px,0px) rotate(0deg) scale(1)',
     },
     {
       transform: `translate(${-dx * targetTravel}px, ${-dy * targetTravel}px)
-                  scale(1.05)`,
+                  rotate(${targetRotatePeak}deg) scale(1.05)`,
       offset: 0.45,
     },
     {
       transform: `translate(${-dx * targetRecoil}px, ${-dy * targetRecoil}px)
-                  scale(1.02)`,
+                  rotate(${targetRotatePeak * 0.5}deg) scale(1.02)`,
       offset: 0.60,
     },
     {
-      transform: 'translate(0px,0px) scale(1)',
+      transform: 'translate(0px,0px) rotate(0deg) scale(1)',
     },
   ],
   {
@@ -226,20 +316,25 @@ const targetDash = targetElement.animate(
 
   switch (targetType) {
     case 'PLAYER':
-      targetPlayer.Health.changeHealth(-attackerDamage, 500);
+      targetPlayer.Health.changeHealth(-attackerDamage, 500, dx, dy);
       break;
 
     case 'BOARD':
       if (targetPlayer && targetIndex >= 0) {
         const boardTarget = targetPlayer as unknown as {
-          Board: Array<{ changeHealth: (amount: number, duration: number) => void } | null>;
+          Board: Array<{ changeHealth: (amount: number) => void } | null>;
         };
-        boardTarget.Board[targetIndex]?.changeHealth?.(-attackerDamage, 500);
+        boardTarget.Board[targetIndex]?.changeHealth?.(-attackerDamage);
+        const targetCardId = targetElement.getAttribute('data-game-id');
+        if (targetCardId) {
+          this.spawnFloatingNumber(targetCardId, -attackerDamage, 'health');
+        }
       }
 
       const attackerIndex = attackerPlayer.Board.findIndex(card => card?.id === attackerId);
       if (attackerIndex !== -1) {
-        attackerPlayer.Board[attackerIndex]?.changeHealth?.(-defenderDamage, 500);
+        attackerPlayer.Board[attackerIndex]?.changeHealth?.(-defenderDamage);
+        this.spawnFloatingNumber(attackerId, -defenderDamage, 'health');
       }
 
       break;
@@ -282,31 +377,31 @@ const targetDash = targetElement.animate(
     const animation = cardImageElement.animate(
   [
     {
-      transform: 'translate(0px, 0px) scale(0.8) rotate(-45deg)',
+      transform: 'translate(0px, 0px) scale(0.8) rotate(-22deg)',
       opacity: 1,
       offset: 0
     },
 
     // Card comes out of deck
     {
-      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(25deg)`,
+      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(12deg)`,
       opacity: 1,
       offset: 0.3
     },
 
     // Start swinging
     {
-      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(35deg)`,
+      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(18deg)`,
       opacity: 1,
       offset: 0.35
     },
     {
-      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(-20deg)`,
+      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(-10deg)`,
       opacity: 1,
       offset: 0.45
     },
     {
-      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(-30deg)`,
+      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(-15deg)`,
       opacity: 1,
       offset: 0.55
     },
@@ -318,24 +413,24 @@ const targetDash = targetElement.animate(
 
     // Moving sideways
     {
-      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(30deg)`,
+      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(15deg)`,
       opacity: 1,
       offset: 0.65
     },
 
     // Smaller swings as it leaves
     {
-      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(-15deg)`,
+      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(-7deg)`,
       opacity: 1,
       offset: 0.75
     },
     {
-      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(10deg)`,
+      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(5deg)`,
       opacity: 1,
       offset: 0.82
     },
     {
-      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(-5deg)`,
+      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(-2deg)`,
       opacity: 1,
       offset: 0.88
     },
@@ -374,7 +469,7 @@ async animateAddedCard(
 ) {
   await this.nextFrame();
 
-  const origin = document.querySelector(
+  let origin = document.querySelector(
     `[data-game-id="${cardOrigin}"]`
   ) as HTMLElement | null;
 
@@ -386,7 +481,12 @@ async animateAddedCard(
     '.card-icon'
   ) as HTMLImageElement | null;
 
-  if (!origin || !destination || !cardImageElement) return;
+  if (!destination || !cardImageElement) return;
+
+  if(!origin)
+  {
+    origin = destination;
+  }
 
   cardImageElement.style.display = 'block';
   cardImageElement.style.position = 'fixed';
@@ -423,7 +523,7 @@ async animateAddedCard(
       // Move towards destination
       {
         transform: `translate(${endX * 0.25}px, ${endY * 0.25}px)
-                    scale(0.75) rotate(15deg)`,
+                    scale(0.75) rotate(7deg)`,
         opacity: 1,
         offset: 0.15
       },
@@ -431,7 +531,7 @@ async animateAddedCard(
       // First swing
       {
         transform: `translate(${endX * 0.45}px, ${endY * 0.45}px)
-                    scale(0.85) rotate(-18deg)`,
+                    scale(0.85) rotate(-9deg)`,
         opacity: 1,
         offset: 0.25
       },
@@ -439,7 +539,7 @@ async animateAddedCard(
       // Swing back
       {
         transform: `translate(${endX * 0.6}px, ${endY * 0.6}px)
-                    scale(0.9) rotate(20deg)`,
+                    scale(0.9) rotate(10deg)`,
         opacity: 1,
         offset: 0.35
       },
@@ -447,7 +547,7 @@ async animateAddedCard(
       // Smaller swing
       {
         transform: `translate(${endX * 0.72}px, ${endY * 0.72}px)
-                    scale(0.93) rotate(-14deg)`,
+                    scale(0.93) rotate(-7deg)`,
         opacity: 1,
         offset: 0.43
       },
@@ -455,7 +555,7 @@ async animateAddedCard(
       // Swing back again
       {
         transform: `translate(${endX * 0.82}px, ${endY * 0.82}px)
-                    scale(0.96) rotate(12deg)`,
+                    scale(0.96) rotate(6deg)`,
         opacity: 1,
         offset: 0.51
       },
@@ -463,7 +563,7 @@ async animateAddedCard(
       // Smaller movement
       {
         transform: `translate(${endX * 0.89}px, ${endY * 0.89}px)
-                    scale(0.98) rotate(-8deg)`,
+                    scale(0.98) rotate(-4deg)`,
         opacity: 1,
         offset: 0.59
       },
@@ -471,7 +571,7 @@ async animateAddedCard(
       // Almost settled
       {
         transform: `translate(${endX * 0.94}px, ${endY * 0.94}px)
-                    scale(1) rotate(5deg)`,
+                    scale(1) rotate(2deg)`,
         opacity: 1,
         offset: 0.67
       },
@@ -479,7 +579,7 @@ async animateAddedCard(
       // Final small wiggle
       {
         transform: `translate(${endX * 0.97}px, ${endY * 0.97}px)
-                    scale(1) rotate(-3deg)`,
+                    scale(1) rotate(-1deg)`,
         opacity: 1,
         offset: 0.75
       },
@@ -495,7 +595,7 @@ async animateAddedCard(
       // Shrink into deck
       {
         transform: `translate(${endX}px, ${endY + originRect.height}px)
-                    scale(0.2) rotate(3deg)`,
+                    scale(0.2) rotate(1deg)`,
         opacity: 0,
         offset: 1
       }

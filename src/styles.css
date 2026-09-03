@@ -367,7 +367,17 @@ body {
 }
 }
 
-.proyectile
+/* These classes style elements that game-animation.service.ts creates with
+   document.createElement and appends straight into .animation-layer, outside
+   Angular's template. Angular's emulated view encapsulation only rewrites
+   selectors defined in a component stylesheet to also require that
+   component's own generated attribute, which these elements never get since
+   Angular never rendered them — so component-scoped copies of these rules
+   silently never match. They have to live in this global stylesheet instead. */
+.proyectile,
+.icon-hand,
+.icon-hand-card,
+.icon-hand-wrench
 {
   height: 4rem;
   width: 4rem;
@@ -378,7 +388,119 @@ body {
   position: fixed;
   pointer-events: none;
   z-index: 9999;
+}
+
+.proyectile {
   background-image: url("/images/board/proyectile.svg");
+  height: 22rem;
+  width: 22rem;
+  filter: drop-shadow(0 0 14px rgba(255, 150, 60, 0.85));
+}
+
+.proyectile.heal {
+  filter: hue-rotate(130deg) saturate(1.35) drop-shadow(0 0 14px rgba(110, 255, 150, 0.85));
+}
+
+.proyectile.damage {
+  filter: hue-rotate(-18deg) saturate(1.15) drop-shadow(0 0 14px rgba(255, 80, 80, 0.85));
+}
+
+.icon-hand,
+.icon-hand-card,
+.icon-hand-wrench {
+  filter: drop-shadow(0 3px 4px rgba(58, 42, 8, 0.55));
+}
+
+.icon-hand {
+  background-image: url("/images/board/hand.svg");
+}
+
+.icon-hand-card {
+  background-image: url("/images/board/hand_card.svg");
+}
+
+.icon-hand-wrench {
+  background-image: url("/images/board/hand_wrench.svg");
+}
+
+.impact-burst {
+  position: fixed;
+  background-image: url("/images/board/impact_burst.svg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 10000;
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%);
+}
+
+.impact-burst.attack-burst {
+  filter: hue-rotate(-10deg) saturate(1.2);
+}
+
+.impact-burst.effect-glow {
+  filter: hue-rotate(150deg) saturate(1.4) brightness(1.1);
+}
+
+.impact-burst.spell-burst {
+  filter: hue-rotate(190deg) saturate(1.5) brightness(1.2);
+}
+
+.spark-particle {
+  position: fixed;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-image: url("/images/board/spark.svg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 10000;
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%);
+}
+
+.debris-particle {
+  position: fixed;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-image: url("/images/board/spark.svg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 9998;
+  filter: grayscale(0.35) sepia(0.35) hue-rotate(-25deg) brightness(0.85);
+  transform: translate(-50%, -50%);
+}
+
+.floating-number {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 10001;
+  font-family: 'Text Font 3', sans-serif;
+  font-size: 4rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.floating-number.positive {
+  color: #7dffb0;
+  text-shadow:
+    0 0 6px rgba(0, 197, 82, 0.9),
+    0 0 18px rgba(0, 197, 82, 0.55),
+    0 2px 0 rgba(0, 40, 15, 0.8);
+}
+
+.floating-number.negative {
+  color: #ff8a7a;
+  text-shadow:
+    0 0 6px rgba(171, 17, 0, 0.9),
+    0 0 18px rgba(171, 17, 0, 0.55),
+    0 2px 0 rgba(40, 0, 0, 0.8);
 }
 
 .card-text {

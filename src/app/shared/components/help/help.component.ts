@@ -18,10 +18,10 @@ export class HelpComponent
     imageUrl: "example",
     effectTimes: 1,
     description: "",
-    changeHealth: function (amount: number, durationAnimation: number): void {
+    changeHealth: function (amount: number): void {
       throw new Error("Function not implemented.");
     },
-    changeDamage: function (amount: number, durationAnimation: number): void {
+    changeDamage: function (amount: number): void {
       throw new Error("Function not implemented.");
     }
   }
@@ -34,10 +34,10 @@ export class HelpComponent
     canPlay: true,
     imageUrl: "example",
     description: "HELP_CARD_EXAMPLE_SPELL_DESC",
-    changeHealth: function (amount: number, durationAnimation: number): void {
+    changeHealth: function (amount: number): void {
       throw new Error("Function not implemented.");
     },
-    changeDamage: function (amount: number, durationAnimation: number): void {
+    changeDamage: function (amount: number): void {
       throw new Error("Function not implemented.");
     }
   }
@@ -52,10 +52,10 @@ export class HelpComponent
     description: "HELP_CARD_EXAMPLE_UNIT_DESC",
     attack: 3,
     health: 3,
-    changeHealth: function (amount: number, durationAnimation: number): void {
+    changeHealth: function (amount: number): void {
       throw new Error("Function not implemented.");
     },
-    changeDamage: function (amount: number, durationAnimation: number): void {
+    changeDamage: function (amount: number): void {
       throw new Error("Function not implemented.");
     }
   }

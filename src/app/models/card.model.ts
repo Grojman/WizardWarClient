@@ -16,12 +16,6 @@ export class Card {
   conditionProgress?: number | null = null;
   conditionTarget?: number | null = null;
 
-  attackChanged?: boolean = false;
-  healthChanged?: boolean = false;
-
-  attackChangedAmount?: number = 0;
-  healthChangedAmount?: number = 0;
-
   constructor(data?: Partial<Card>) {
     if (data) {
       Object.assign(this, data);
@@ -32,30 +26,17 @@ export class Card {
     return new Card(data);
   }
 
-
-
-  changeHealth(amount: number, durationAnimation: number)
+  changeHealth(amount: number)
   {
-    this.healthChanged = true;
-    this.healthChangedAmount = amount;
-    if(this.health != null ) {
-      this.health += this.healthChangedAmount;
+    if (this.health != null) {
+      this.health += amount;
     }
-    setTimeout(() => {
-      this.healthChanged = false;
-    }, durationAnimation)
   }
 
-  changeDamage(amount: number, durationAnimation: number)
+  changeDamage(amount: number)
   {
-    this.attackChanged = true;
-    this.attackChangedAmount = amount;
-    if(this.attack != null){
-      this.attack += this.attackChangedAmount;
-    } 
-
-    setTimeout(() => {
-      this.attackChanged = false;
-    }, durationAnimation)
+    if (this.attack != null) {
+      this.attack += amount;
+    }
   }
 }

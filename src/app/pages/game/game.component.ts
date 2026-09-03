@@ -392,18 +392,20 @@ changeHealthAnimationDuration: number = 500;
         const card = arrayToFind.find(n => n && n.id === event.Card);
 
         if (card) {
-          card.changeHealth(event.Amount, this.changeHealthAnimationDuration);
+          card.changeHealth(event.Amount);
+          this.animationService.spawnFloatingNumber(card.id, event.Amount, 'health');
         }
         break;
         case "UnitDamageChanged":
         await this.createProyectile(event.Source, event.Card, "", event.Amount);
 
         var arrayToFind = this.getPlayer(event.PlayerSource).Board;
-        
+
         const ard = arrayToFind.find(n => n && n.id === event.Card);
 
         if (ard) {
-          ard.changeDamage(event.Amount, this.changeHealthAnimationDuration);
+          ard.changeDamage(event.Amount);
+          this.animationService.spawnFloatingNumber(ard.id, event.Amount, 'attack');
         }
         break;
         case "UnitDeath":
