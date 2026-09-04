@@ -305,6 +305,7 @@ async animateAddCard(cardId: string, cardOrigin: string, deckEnd: string, durati
 
 async animateModifyDeck(cardOrigin: string, deckEnd: string, duration: number = 750)
 {
+  await this.animationService.animateModifyDeck(deckEnd, cardOrigin, duration);
   // await this.createAnimationDeckCardsAmount(".icon-hand-wrench", cardOrigin, deckEnd, duration)
 }
 

@@ -353,6 +353,126 @@ const targetDash = targetElement.animate(
   targetElement.style.transform = '';
   targetElement.style.filter = '';
 }
+
+  async animateModifyDeck(
+  deck: string,
+  origin: string,
+  duration: number
+): Promise<void> {
+
+  await this.nextFrame();
+
+  const deckElement = document.querySelector(
+    `[data-game-id="${deck}"]`
+  ) as HTMLElement | null;
+
+  const originElement = document.querySelector(
+    `[data-game-id="${origin}"]`
+  ) as HTMLElement | null;
+
+  const wand = document.querySelector('.wand-icon') as HTMLElement | null;
+
+  if (!deckElement || !originElement || !wand) {
+    return;
+  }
+
+  wand.style.display = 'block';
+  wand.style.position = 'fixed';
+
+  const deckRect = deckElement.getBoundingClientRect();
+  const originRect = originElement.getBoundingClientRect();
+  const wandRect = wand.getBoundingClientRect();
+
+  const startX =
+    originRect.left +
+    originRect.width / 2 -
+    wandRect.width / 2;
+
+  const startY =
+    originRect.top +
+    originRect.height / 2 -
+    wandRect.height / 2;
+
+  const endX =
+    deckRect.left -
+    wandRect.width / 2;
+
+  const endY =
+    deckRect.top -
+    wandRect.height / 2;
+
+  // Distance to travel from origin to deck
+  const deltaX = endX - startX;
+  const deltaY = endY - startY;
+
+  // Put wand at origin
+  wand.style.left = `${startX}px`;
+  wand.style.top = `${startY}px`;
+
+  const adjustedDuration = this.animationSettingsService.getAdjustedDuration(duration);
+
+  const animation = wand.animate(
+    [
+      {
+        transform: 'translate(0px, 0px) scale(0.2) rotate(0deg)',
+        opacity: 0,
+        offset: 0
+      },
+      {
+        transform: `translate(${deltaX}px, ${deltaY}px) scale(1) rotate(0deg)`,
+        opacity: 1,
+        offset: 0.3
+      },
+      {
+        transform: `translate(${deltaX}px, ${deltaY}px) scale(1) rotate(90deg)`,
+        opacity: 1,
+        offset: 0.5
+      },
+      {
+        transform: `translate(${deltaX}px, ${deltaY}px) scale(1) rotate(0deg)`,
+        opacity: 1,
+        offset: 0.7
+      },
+      {
+        transform: `translate(${deltaX}px, ${deltaY}px) scale(1) rotate(90deg)`,
+        opacity: 1,
+        offset: 0.8
+      },
+      {
+        transform: `translate(${deltaX}px, ${deltaY}px) scale(1) rotate(0deg)`,
+        opacity: 1,
+        offset: 0.9
+      },
+      {
+        transform: `translate(${deltaX}px, ${deltaY}px) scale(0) rotate(0deg)`,
+        opacity: 0,
+        offset: 1
+      }
+    ],
+    {
+      duration: adjustedDuration,
+      easing: 'ease-out'
+    }
+  );
+
+  // The wand strikes the deck each time its rotation snaps back from 90deg to
+  // 0deg (offsets 0.7 and 0.9 above) - spawn a spark burst at the wand's tip
+  // at those exact instants to sell the impact.
+  const sparkAtTip = () => {
+    const tipRect = wand.getBoundingClientRect();
+    this.spawnSparks(tipRect.right, tipRect.top + tipRect.height / 2, 8);
+  };
+  setTimeout(sparkAtTip, adjustedDuration * 0.7);
+  setTimeout(sparkAtTip, adjustedDuration * 0.9);
+
+  await animation.finished;
+
+  wand.style.display = 'none';
+  wand.style.left = '';
+  wand.style.top = '';
+  wand.style.position = '';
+}
+
   async animateCardDrawn(deck: string, duration:number, up: boolean): Promise<void> {
     await this.nextFrame();
 
