@@ -13,6 +13,8 @@ export class MessageDialogComponent {
 
   reactionSuggestions: Reaction[] = [];
 
+  private hideSuggestionsTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
   @ViewChild('messageinput')
   input!: ElementRef<HTMLInputElement>;
 
@@ -50,6 +52,7 @@ export class MessageDialogComponent {
 
   selectReaction(r: Reaction)
   {
+    this.cancelHideSuggestions();
     this.message = `:${r.id}:`;
     this.reactionSuggestions = [];
     this.focus();
@@ -58,13 +61,26 @@ export class MessageDialogComponent {
 
   hideSuggestionsDelayed()
   {
-    setTimeout(() => this.reactionSuggestions = [], 150);
+    this.cancelHideSuggestions();
+    this.hideSuggestionsTimeoutId = setTimeout(() => this.reactionSuggestions = [], 150);
   }
 
   showSuggestions()
   {
+    // A blur on the message input (e.g. from clicking this very button) schedules
+    // hideSuggestionsDelayed() just before this runs; without cancelling it, that
+    // timeout fires ~150ms later and wipes the list we're about to show.
+    this.cancelHideSuggestions();
     this.focus();
     this.reactionSuggestions = REACTIONS;
+  }
+
+  private cancelHideSuggestions()
+  {
+    if (this.hideSuggestionsTimeoutId !== null) {
+      clearTimeout(this.hideSuggestionsTimeoutId);
+      this.hideSuggestionsTimeoutId = null;
+    }
   }
 
 }

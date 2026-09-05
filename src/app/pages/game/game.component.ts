@@ -108,6 +108,12 @@ export class GameComponent implements OnInit, OnDestroy {
       case "opponent_reconnected":
         this.handleOpponentReconnected();
         break;
+      case "no_active_match":
+        // Explicit negative ack from GameManager.TryResumeGame (e.g. a
+        // direct/refreshed load of /game whose disconnect grace period has
+        // already expired) — no need to sit out the watchdog below.
+        this.handleNoActiveMatch();
+        break;
       case "series_state":
         this.seriesStateService.applySeriesState(msg.Content);
         break;
@@ -180,6 +186,10 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private startResumeWatchdog(): void {
+    // Safety net only: the server now answers explicitly (either a
+    // "game_state" push or a "no_active_match" ack, see processMessage), so
+    // this should normally never fire. It stays as a fallback in case that
+    // message is ever lost (e.g. a dropped/reconnecting socket).
     this.resumeWatchdogTimer = setTimeout(() => {
       if (this.gameState.Me.Id === "") {
         this.gameSessionStorage.markInactive();
@@ -191,6 +201,14 @@ export class GameComponent implements OnInit, OnDestroy {
   private clearResumeWatchdog(): void {
     clearTimeout(this.resumeWatchdogTimer);
     this.resumeWatchdogTimer = undefined;
+  }
+
+  private handleNoActiveMatch(): void {
+    this.clearResumeWatchdog();
+    if (this.gameState.Me.Id === "") {
+      this.gameSessionStorage.markInactive();
+      this.router.navigateByUrl('/');
+    }
   }
 
   private pendingEndGame: any = null;

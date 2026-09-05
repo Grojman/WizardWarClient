@@ -523,6 +523,15 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         // to consume once the player actually continues into /game.
         this.handleActiveMatchState(msg.Content);
         return true;
+      case "no_active_match":
+        // Explicit negative ack from GameManager.TryResumeGame: there's
+        // nothing to resume, so there's no need to sit out the watchdog
+        // timeout below. Ignored if we weren't waiting on a resume in the
+        // first place (this is sent unprompted on every connection).
+        if (this.activeMatchChecking) {
+          this.clearActiveMatch();
+        }
+        break;
       case "end_game":
         // Either our own cancelMatch() was acked, or the match we were
         // resumed into ended for some other reason (e.g. the rival also
@@ -556,10 +565,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   private startActiveMatchWatchdog(): void {
     this.clearActiveMatchWatchdog();
-    // Mirrors GameComponent's own resume watchdog: if the server never
-    // confirms an active match (e.g. the disconnect grace period had
-    // already expired while we were away), don't leave the player stuck
-    // behind a permanently-disabled "start new game" screen.
+    // Safety net only: the server now answers explicitly (either a
+    // "game_state" push or a "no_active_match" ack, see processMessage), so
+    // this should normally never fire. It stays as a fallback in case that
+    // message is ever lost (e.g. a dropped/reconnecting socket) so the
+    // player isn't stuck behind a permanently-disabled "start new game"
+    // screen.
     this.activeMatchWatchdog = setTimeout(() => {
       if (this.activeMatchChecking) {
         this.clearActiveMatch();

@@ -455,17 +455,12 @@ const targetDash = targetElement.animate(
     }
   );
 
-  // The wand strikes the deck each time its rotation snaps back from 90deg to
-  // 0deg (offsets 0.7 and 0.9 above) - spawn a spark burst at the wand's tip
-  // at those exact instants to sell the impact.
-  const sparkAtTip = () => {
-    const tipRect = wand.getBoundingClientRect();
-    this.spawnSparks(tipRect.right, tipRect.top + tipRect.height / 2, 8);
-  };
-  setTimeout(sparkAtTip, adjustedDuration * 0.7);
-  setTimeout(sparkAtTip, adjustedDuration * 0.9);
-
   await animation.finished;
+
+  // Single spark once the whole strike sequence is done, instead of a burst
+  // spawned mid-animation for every wand tap.
+  const tipRect = wand.getBoundingClientRect();
+  this.spawnSparks(tipRect.right, tipRect.top + tipRect.height / 2, 1);
 
   wand.style.display = 'none';
   wand.style.left = '';
@@ -494,6 +489,15 @@ const targetDash = targetElement.animate(
     cardImageElement.style.willChange = 'transform, opacity';
     cardImageElement.style.transformOrigin = '50% 0%';
 
+    // Position keeps changing at every offset below (never repeated verbatim
+    // between consecutive keyframes) and the animation uses 'linear' easing,
+    // so the browser doesn't decelerate-to-zero and re-accelerate at each
+    // keyframe boundary - that combination is what previously made the card
+    // look like it "stopped" at each pose instead of flowing between them.
+    const midX = -deckRect.width / 2;
+    const peakY = -deckRect.height * 1.15;
+    const finalY = up ? -1000 : 1000;
+
     const animation = cardImageElement.animate(
   [
     {
@@ -502,69 +506,57 @@ const targetDash = targetElement.animate(
       offset: 0
     },
 
-    // Card comes out of deck
+    // Card comes out of the deck, settling upright
     {
-      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(12deg)`,
+      transform: `translate(0px, ${peakY * 0.5}px) scale(0.92) rotate(-8deg)`,
       opacity: 1,
-      offset: 0.3
+      offset: 0.14
+    },
+    {
+      transform: `translate(${midX * 0.2}px, ${peakY * 0.95}px) scale(1) rotate(0deg)`,
+      opacity: 1,
+      offset: 0.28
     },
 
-    // Start swinging
+    // Drifting sideways, upright
     {
-      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(18deg)`,
+      transform: `translate(${midX * 0.45}px, ${peakY}px) scale(1) rotate(0deg)`,
       opacity: 1,
-      offset: 0.35
+      offset: 0.42
     },
     {
-      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(-10deg)`,
+      transform: `translate(${midX * 0.7}px, ${peakY * 0.85}px) scale(1) rotate(0deg)`,
       opacity: 1,
-      offset: 0.45
+      offset: 0.56
     },
     {
-      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(-15deg)`,
+      transform: `translate(${midX * 0.9}px, ${peakY * 0.55}px) scale(1) rotate(0deg)`,
       opacity: 1,
-      offset: 0.55
-    },
-    {
-      transform: `translate(0px, ${-deckRect.height}px) scale(1) rotate(0deg)`,
-      opacity: 1,
-      offset: 0.6
+      offset: 0.7
     },
 
-    // Moving sideways
+    // Settling into the exit line
     {
-      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(15deg)`,
-      opacity: 1,
-      offset: 0.65
-    },
-
-    // Smaller swings as it leaves
-    {
-      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(-7deg)`,
-      opacity: 1,
-      offset: 0.75
-    },
-    {
-      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(5deg)`,
+      transform: `translate(${midX}px, ${peakY * 0.15}px) scale(1) rotate(0deg)`,
       opacity: 1,
       offset: 0.82
     },
     {
-      transform: `translate(${-deckRect.width / 2}px, ${-deckRect.height}px) scale(1) rotate(-2deg)`,
+      transform: `translate(${midX}px, ${finalY * 0.35}px) scale(1) rotate(20deg)`,
       opacity: 1,
-      offset: 0.88
+      offset: 0.92
     },
 
     // Fly away
     {
-      transform: `translate(${-deckRect.width / 2}px, ${up ? '-1000px' : '1000px'}) scale(1) rotate(90deg)`,
+      transform: `translate(${midX}px, ${finalY}px) scale(1) rotate(90deg)`,
       opacity: 0,
       offset: 1
     }
   ],
   {
     duration: this.animationSettingsService.getAdjustedDuration(duration),
-    easing: 'ease-out',
+    easing: 'linear',
   }
 );
 
@@ -617,105 +609,84 @@ async animateAddedCard(
   const destRect = destination.getBoundingClientRect();
   const originRect = origin.getBoundingClientRect();
 
-  // Position the card at the origin
   cardImageElement.style.left = `${originRect.left}px`;
   cardImageElement.style.top = `${originRect.top}px`;
 
-  // Force layout so cardRect is correct
   const cardRect = cardImageElement.getBoundingClientRect();
 
-  // Distance from origin -> destination
   const endX =
     destRect.left - originRect.left + originRect.width / 2;
 
   const endY =
-    destRect.top - originRect.top - originRect.height;
+    destRect.top - originRect.top;
 
   const animation = cardImageElement.animate(
     [
-      // Start
       {
-        transform: 'translate(0px, 0px) scale(0.6) rotate(-10deg)',
-        opacity: 1,
+        transform: 'translate(0px, 0px) scale(0.4) rotate(-10deg)',
+        opacity: 0,
         offset: 0
       },
 
-      // Move towards destination
       {
-        transform: `translate(${endX * 0.25}px, ${endY * 0.25}px)
-                    scale(0.75) rotate(7deg)`,
+        transform: 'translate(0px, 0px) scale(1.5) rotate(0)',
         opacity: 1,
-        offset: 0.15
+        offset: 0.2
       },
 
-      // First swing
       {
-        transform: `translate(${endX * 0.45}px, ${endY * 0.45}px)
-                    scale(0.85) rotate(-9deg)`,
+        transform: 'translate(0px, 0px) scale(1.5) rotate(0deg)',
         opacity: 1,
-        offset: 0.25
+        offset: 0.6
       },
 
-      // Swing back
+      // Move towards destination, swinging while it shrinks and fades
       {
-        transform: `translate(${endX * 0.6}px, ${endY * 0.6}px)
-                    scale(0.9) rotate(10deg)`,
+        transform: `translate(${endX * 0.15}px, ${endY * 0.15}px)
+                    scale(1) rotate(8deg)`,
         opacity: 1,
-        offset: 0.35
+        offset: 0.7
       },
-
-      // Smaller swing
       {
-        transform: `translate(${endX * 0.72}px, ${endY * 0.72}px)
-                    scale(0.93) rotate(-7deg)`,
+        transform: `translate(${endX * 0.35}px, ${endY * 0.35}px)
+                    scale(0.9) rotate(-9deg)`,
         opacity: 1,
-        offset: 0.43
+        offset: 0.73
       },
-
-      // Swing back again
       {
-        transform: `translate(${endX * 0.82}px, ${endY * 0.82}px)
-                    scale(0.96) rotate(6deg)`,
-        opacity: 1,
-        offset: 0.51
+        transform: `translate(${endX * 0.5}px, ${endY * 0.5}px)
+                    scale(0.8) rotate(8deg)`,
+        opacity: 0.95,
+        offset: 0.76
       },
-
-      // Smaller movement
       {
-        transform: `translate(${endX * 0.89}px, ${endY * 0.89}px)
-                    scale(0.98) rotate(-4deg)`,
-        opacity: 1,
-        offset: 0.59
+        transform: `translate(${endX * 0.65}px, ${endY * 0.65}px)
+                    scale(0.7) rotate(-6deg)`,
+        opacity: 0.85,
+        offset: 0.8
       },
-
-      // Almost settled
       {
-        transform: `translate(${endX * 0.94}px, ${endY * 0.94}px)
-                    scale(1) rotate(2deg)`,
-        opacity: 1,
-        offset: 0.67
-      },
-
-      // Final small wiggle
-      {
-        transform: `translate(${endX * 0.97}px, ${endY * 0.97}px)
-                    scale(1) rotate(-1deg)`,
-        opacity: 1,
-        offset: 0.75
-      },
-
-      // Arrive at destination
-      {
-        transform: `translate(${endX}px, ${endY}px)
-                    scale(1) rotate(0deg)`,
-        opacity: 1,
+        transform: `translate(${endX * 0.78}px, ${endY * 0.78}px)
+                    scale(0.6) rotate(4deg)`,
+        opacity: 0.7,
         offset: 0.85
       },
+      {
+        transform: `translate(${endX * 0.88}px, ${endY * 0.88}px)
+                    scale(0.45) rotate(-2deg)`,
+        opacity: 0.5,
+        offset: 0.9
+      },
+      {
+        transform: `translate(${endX * 0.95}px, ${endY * 0.95}px)
+                    scale(0.3) rotate(1deg)`,
+        opacity: 0.3,
+        offset: 0.95
+      },
 
-      // Shrink into deck
       {
         transform: `translate(${endX}px, ${endY + originRect.height}px)
-                    scale(0.2) rotate(1deg)`,
+                    scale(0.15) rotate(0deg)`,
         opacity: 0,
         offset: 1
       }
