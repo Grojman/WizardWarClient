@@ -105,7 +105,7 @@ body {
   border-radius: 12px;
   padding: 10px;
   color: var(--text-color);
-  font-family: "Text Font 5";
+  font-family: "Text Font 2";
   font-size: 1rem;
 }
 
@@ -219,6 +219,35 @@ body {
   border: 0;
 }
 
+/* Shown globally (see app.html) whenever the device is in portrait mode -
+   the game requires landscape, so every page is blocked behind this notice
+   until the phone is rotated. */
+.rotate-phone {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+  z-index: 100000;
+  background-color: var(--color-wood-dark);
+}
+
+.rotate-phone i {
+  font-size: 4rem;
+}
+
+.rotate-phone i.fa-rotate {
+  animation: spin 1.6s ease-in-out infinite;
+}
+
+.rotate-phone p {
+  font-size: 1.5rem;
+  max-width: 24rem;
+  margin: 0;
+}
+
 @media screen and (orientation: portrait) {
     .rotate-phone
     {
@@ -228,31 +257,6 @@ body {
 
 @media (max-width: 900px) {
 
-  .banner
-  {
-    padding: 3rem;
-  }
-  .title
-  {
-    font-size: 1.5rem !important;
-  }
-  .subtitle
-  {
-    font-size: 1rem !important;
-  }
-
-  .hero .subtitle
-  {
-    margin: 0 2rem;
-  }
-  .text, *
-  {
-    font-size: 1rem !important;
-  }
-  .capital-letter
-  {
-    font-size: 3rem !important;
-  }
   .main-content
   {
     flex-direction: column-reverse;
@@ -294,17 +298,6 @@ body {
   .skeleton-image
   {
     width: 50vw;
-  }
-
-  .login-container
-  {
-    flex-direction: column;
-    margin: 0 2rem;
-  }
-
-  .login-container button, input
-  {
-    padding: 0.25rem !important;
   }
 
   .card-info
@@ -449,8 +442,8 @@ body {
 
 .spark-particle {
   position: fixed;
-  width: 0.5rem;
-  height: 0.5rem;
+  width: 12rem;
+  height: 12rem;
   background-image: url("/images/board/spark.svg");
   background-size: contain;
   background-position: center;

@@ -50,6 +50,11 @@
   <!-- Root stage: shared by "Partida rápida" (pr) and "Mejor de 3" (bo3) -->
   <div class="banner-content stage-root" [class.show]="isGameSection() && selectedSection.stage === 'root' && !hasActiveMatch">
     <h3 class="subtitle"> {{ 'HOME_SECTION_NAME_LABEL' | translate }} </h3>
+
+    <p class="text">
+      {{ (selectedSection.id === 'pr' ? 'HOME_SECTION_DES_PR' : 'HOME_SECTION_DES_BO3') | translate }}
+    </p>
+
     <div class="input-wrapper">
 
       <input

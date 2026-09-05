@@ -402,3 +402,117 @@
 {
   color: var(--text-color);
 }
+
+/* Phone-sized screens only ever reach this page in landscape - portrait is
+   caught by the global .rotate-phone overlay (see app.html / styles.css) -
+   so this targets the short viewport height a landscape phone actually has,
+   rather than max-width (which stays wide in landscape). */
+@media (max-height: 500px) {
+
+  .language-list {
+    top: 0.5rem;
+    right: 0.5rem;
+    gap: 0.35rem;
+  }
+
+  .language-option {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.8rem;
+  }
+
+  .image-title {
+    padding: 0.75rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .capital-letter {
+    font-size: 2.5rem;
+  }
+
+  .menu-section {
+    gap: 0.25rem;
+  }
+
+  .home-sections {
+    gap: 0.4rem;
+  }
+
+  .home-section {
+    font-size: 1.1rem;
+    padding: 0.5rem 1.5rem 0.5rem 2.5rem;
+    transform: translateX(-8%);
+  }
+
+  .home-section:hover {
+    transform: translateX(-12%);
+  }
+
+  .home-section.selected {
+    transform: translateX(0);
+  }
+
+  .home-section.disabled {
+    transform: translateX(-8%);
+  }
+
+  .other-sections {
+    display: none;
+  }
+
+  .banner {
+    width: 60vw;
+    margin: 0 1rem;
+    padding: 1rem;
+    gap: 0.75rem;
+  }
+
+  .subtitle {
+    font-size: 1.5rem;
+    margin: 0.25rem;
+  }
+
+  .text {
+    font-size: 1rem;
+  }
+
+  .text-input {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .game-type {
+    font-size: 1rem;
+  }
+
+  .game-type:first-child {
+    font-size: 1.5rem;
+    width: auto;
+    padding: 0.75rem 1.5rem;
+    margin: 0;
+  }
+
+  .banner-content {
+    margin: 0 1rem;
+  }
+
+  .footer-team {
+    margin: 1rem;
+    gap: 0.5rem;
+  }
+
+  .footer-dev {
+    gap: 0.35rem;
+
+    & > img {
+      width: 5rem;
+      height: 5rem;
+    }
+
+    & > .footer-dev-name {
+      font-size: 0.9rem;
+    }
+  }
+}
