@@ -311,8 +311,8 @@ const targetDash = targetElement.animate(
     setTimeout(resolve, this.animationSettingsService.getAdjustedDuration(220))
   );
 
-  this.spawnBurst(targetCenterX, targetCenterY, 150, 400, 'attack-burst');
-  this.spawnSparks(targetCenterX, targetCenterY, 6);
+  this.spawnBurst(targetCenterX + targetRect.width, targetCenterY, 150, 400, 'attack-burst');
+  this.spawnSparks(targetCenterX + targetRect.width, targetCenterY, 6);
 
   switch (targetType) {
     case 'PLAYER':
@@ -495,7 +495,7 @@ const targetDash = targetElement.animate(
     // keyframe boundary - that combination is what previously made the card
     // look like it "stopped" at each pose instead of flowing between them.
     const midX = -deckRect.width / 2;
-    const peakY = -deckRect.height * 1.15;
+    const peakY = ( (up ? 1 : -1) * deckRect.height) * 1.15;
     const finalY = up ? -1000 : 1000;
 
     const animation = cardImageElement.animate(
@@ -673,20 +673,20 @@ async animateAddedCard(
       },
       {
         transform: `translate(${endX * 0.88}px, ${endY * 0.88}px)
-                    scale(0.45) rotate(-2deg)`,
+                    scale(0.6) rotate(-2deg)`,
         opacity: 0.5,
         offset: 0.9
       },
       {
         transform: `translate(${endX * 0.95}px, ${endY * 0.95}px)
-                    scale(0.3) rotate(1deg)`,
+                    scale(0.6) rotate(1deg)`,
         opacity: 0.3,
         offset: 0.95
       },
 
       {
         transform: `translate(${endX}px, ${endY + originRect.height}px)
-                    scale(0.15) rotate(0deg)`,
+                    scale(0.6) rotate(0deg)`,
         opacity: 0,
         offset: 1
       }

@@ -1,6 +1,6 @@
 .small
 {
-  height: 20vh;
+  height: 10rem;
 }
 .deck {
 
@@ -10,7 +10,7 @@
 
   cursor: pointer;
 
-  width: 12vw;
+  width: 8rem;
   transition: all 0.2s ease-in-out;
 
   border: 2px solid transparent;
