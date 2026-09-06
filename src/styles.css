@@ -256,6 +256,17 @@ body {
 }
 
 @media (max-width: 900px) {
+  .deck-small
+  {
+    height: 4rem !important;
+  }
+  .deck-image{
+    height: 4rem !important;
+  }
+  .title
+  {
+    font-size: 1rem !important;
+  }
   .effects-title
   {
     font-size: 1rem !important;
@@ -273,11 +284,6 @@ body {
   .hand
   {
     min-height: none !important;
-  }
-
-  .deck
-  {
-    height: 4rem !important;
   }
 
   .health-wrapper > div
@@ -299,8 +305,20 @@ body {
     }
   }
 
+   .unit-attack, .unit-health
+   {
+    width: 1.5rem !important;
+    height: 1rem !important;
+
+    & > span
+    {
+      padding: 0 0.25rem !important;
+    }
+   }
+
   .attack-value, .health
   {
+    font-size: 0.75rem !important;
     width: 1rem !important;
     height: 1rem !important;
     padding: 0.25rem;
@@ -350,15 +368,12 @@ body {
   .hand
   {
     margin: 0;
+    min-height: none !important;
   }
 
-  .info-section
-  {
-    gap: 1rem !important;
-  }
   .card-counter
   {
-    bottom: -2rem !important;
+    font-size: 1rem !important;
   }
 
   .player-slot

@@ -82,9 +82,7 @@
 
 
 .title {
-
-  font-size: 4rem;
-
+  font-size: 3rem;
   letter-spacing: 4px;
 
   margin: 0;
@@ -422,10 +420,6 @@
 
   .image-title {
     padding: 0.75rem;
-  }
-
-  .title {
-    font-size: 1.5rem;
   }
 
   .capital-letter {
