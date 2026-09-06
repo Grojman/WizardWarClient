@@ -407,6 +407,8 @@ changeHealthAnimationDuration: number = 500;
         case "UnitHealthChanged":
         var arrayToFind = this.getPlayer(event.PlayerSource).Board;
         await this.createProyectile(event.Source, event.Card, "", event.Amount);
+        this.audioService.playSfx('/audio/unit_health_changed.mp3', true);
+
 
         const card = arrayToFind.find(n => n && n.id === event.Card);
 

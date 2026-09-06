@@ -34,10 +34,9 @@
 
   }
 
-  @media (max-width: 800px) {
+  @media (max-width: 900px) {
     .card {
-      width: 7rem;
-      height: 10rem;
+      height: 5rem;
     }
   }
 

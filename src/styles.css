@@ -256,6 +256,34 @@ body {
 }
 
 @media (max-width: 900px) {
+  .effects-title
+  {
+    font-size: 1rem !important;
+  }
+  .effects-section
+  {
+    width: 6rem !important;
+  }
+
+  .player-name
+  {
+    font-size: 1rem !important;
+  }
+
+  .hand
+  {
+    min-height: none !important;
+  }
+
+  .deck
+  {
+    height: 4rem !important;
+  }
+
+  .health-wrapper > div
+  {
+    height: 4rem !important;
+  }
 
   .main-content
   {
@@ -310,11 +338,6 @@ body {
     padding: 1rem;
   }
 
-  .card, .dock
-  {
-    width: 12vw !important;
-    height: 36vh !important;
-  }
 
   .board-section, .hand, .info-section, .board-row
   {
@@ -331,7 +354,6 @@ body {
 
   .info-section
   {
-    flex-direction: row !important;
     gap: 1rem !important;
   }
   .card-counter
@@ -350,7 +372,7 @@ body {
 }    
   .life-text
   {
-    font-size: small;
+    font-size: 1rem !important;
     margin-top: 0.5rem !important;
   }
 
