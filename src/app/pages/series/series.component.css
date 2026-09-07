@@ -176,6 +176,7 @@
   flex-wrap: wrap;
   justify-content: center;
   z-index: 9;
+  margin: 0 2rem;
 }
 
 .series-end-panel {

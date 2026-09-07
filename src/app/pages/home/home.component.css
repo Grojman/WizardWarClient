@@ -47,19 +47,41 @@
   justify-content: space-between;
 }
 
+div:has(> .banner)
+{
+  overflow-y: scroll;
+  max-height: 100vh;
+  padding: 0;
+}
+
+.description
+{
+  font-size: 1rem;
+  color: lightgray;
+  font-style: italic;
+}
+
+.separator
+{
+  align-self: stretch;
+  border: 1px solid #ccc;
+  background-color: #ccc;
+  margin: 2rem 3rem;
+}
+
+
 .banner
 {
   background-image: url('/images/blue_b_opac.webp');
-  background-size: cover;
+  background-size: 100%;
+  background-attachment: scroll;
   color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 60vw;
   gap: 2rem;
-  margin: 0 2rem;
-  overflow-y: scroll;
-  max-height: 100vh;
+  min-height: 100vh;
+  width: 60vw;
 }
 .banner.player-count{
   background-image: url('/images/home/banner_game.webp');
@@ -93,6 +115,11 @@
   width: 90%;
   height: 10rem;
   margin: 1rem; 
+}
+
+.input-wrapper
+{
+  margin-top: 3rem;
 }
 
 .text-input
@@ -242,6 +269,7 @@
   align-items: center;
   gap: 0.5rem;
   margin: 1rem;
+  margin-top: 0;
   color: var(--color-accent-orange);
   font-size: 1.5rem;
 }

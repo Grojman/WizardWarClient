@@ -54,7 +54,7 @@ export class SeriesComponent implements OnInit, OnDestroy {
     switch (msg.Type) {
       case 'get_decks':
         this.decks = [...msg.Content];
-        this.decksForSelection = [createRandomDeckOption(), ...this.decks];
+        this.decksForSelection = [...this.decks, createRandomDeckOption()];
         this.decksLoading = false;
         break;
       case 'series_state':

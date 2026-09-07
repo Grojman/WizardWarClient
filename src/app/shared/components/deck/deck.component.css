@@ -1,7 +1,4 @@
-.small
-{
-  height: 10rem;
-}
+
 .deck {
 
   display: flex;
@@ -148,4 +145,9 @@
 
   opacity: 1;
 
+}
+
+.small
+{
+  height: 10rem;
 }

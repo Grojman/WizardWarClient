@@ -299,4 +299,6 @@ box-shadow: inset 0px 15px 50px 0px #000000;
   background-color: var(--color-wood-dark);
   aspect-ratio: 5 / 7;
   height: 15vh;
+  image-rendering: pixelated;
+  border-radius: 10px;
 }
