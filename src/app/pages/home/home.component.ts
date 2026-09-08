@@ -84,6 +84,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       name: 'HOME_SECTION_STATS',
       url: '/stats'
     },
+    {
+      name: 'HOME_SECTION_KOFI',
+      url: 'https://ko-fi.com/summerproductions'
+    }
   ]
 
   otherSectionStyles: {
@@ -113,6 +117,11 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   isGameSection(): boolean
   {
     return this.selectedSection.id === 'pr' || this.selectedSection.id === 'bo3';
+  }
+
+  isExternalUrl(url: string): boolean
+  {
+    return url.startsWith('https://');
   }
 
   gameOptions: GameOption[] = [

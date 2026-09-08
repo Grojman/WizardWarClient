@@ -31,15 +31,19 @@
   </div>
 
   <div class="other-sections">
-    <a *ngFor="let o of externalSections; let i = index" [routerLink]="o.url" class="other-section" [ngStyle]="otherSectionStyles[i]"
+    <a *ngFor="let o of externalSections; let i = index"
+    [href]="o.url"
+    [target]="isExternalUrl(o.url) ? '_blank' : '_self'"
+    [rel]="isExternalUrl(o.url) ? 'noopener noreferrer' : null"
+    class="other-section" [ngStyle]="otherSectionStyles[i]"
     (mouseenter)="playCrack($event)"
     >
-      
       <span>
         {{o.name | translate}}
 
       </span>
     </a>
+
   </div>
 
 </div>
