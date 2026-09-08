@@ -31,18 +31,32 @@
   </div>
 
   <div class="other-sections">
-    <a *ngFor="let o of externalSections; let i = index"
-    [href]="o.url"
-    [target]="isExternalUrl(o.url) ? '_blank' : '_self'"
-    [rel]="isExternalUrl(o.url) ? 'noopener noreferrer' : null"
-    class="other-section" [ngStyle]="otherSectionStyles[i]"
-    (mouseenter)="playCrack($event)"
-    >
-      <span>
-        {{o.name | translate}}
+    <ng-container *ngFor="let o of externalSections; let i = index">
+      <a *ngIf="isExternalUrl(o.url); else internalSection"
+      [href]="o.url"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="other-section" [ngStyle]="otherSectionStyles[i]"
+      (mouseenter)="playCrack($event)"
+      >
+        <span>
+          {{o.name | translate}}
 
-      </span>
-    </a>
+        </span>
+      </a>
+      <ng-template #internalSection>
+        <a
+        [routerLink]="o.url"
+        class="other-section" [ngStyle]="otherSectionStyles[i]"
+        (mouseenter)="playCrack($event)"
+        >
+          <span>
+            {{o.name | translate}}
+
+          </span>
+        </a>
+      </ng-template>
+    </ng-container>
 
   </div>
 
