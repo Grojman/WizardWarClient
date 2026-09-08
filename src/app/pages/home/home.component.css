@@ -400,6 +400,8 @@ div:has(> .banner)
 
 .other-section{
 
+  --rotate: 0deg;
+
   background-image: url('/images/home/small_post.webp');
   background-size: contain;
   font-family: "Text Font 5";
@@ -410,9 +412,11 @@ div:has(> .banner)
   text-decoration:none;
   display: flex;
 
-  transition: all 0.25s ease-in-out;
+  /* translateY runs before rotateZ, so it moves along the post's own tilt. */
+  transform: rotateZ(var(--rotate)) translateY(20px);
+  transition: transform 0.25s ease-in-out;
 
-  & > span 
+  & > span
   {
     margin:auto;
     margin-top: 20%;
@@ -420,7 +424,7 @@ div:has(> .banner)
 
   &:hover
   {
-    transform:scale(1.2) !important;
+    transform: rotateZ(var(--rotate)) translateY(6px);
   }
 }
 
@@ -539,4 +543,14 @@ div:has(> .banner)
       font-size: 0.9rem;
     }
   }
+}
+
+.privacy-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+  color: var(--color-gold);
+  text-decoration: underline;
+  font-size: 0.85rem;
 }

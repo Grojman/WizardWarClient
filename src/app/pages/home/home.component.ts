@@ -418,34 +418,47 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.audio.playSfx("audio/button_hover.mp3", true)
   }
 
+  // Only the rotation angle is set here, as a CSS custom property: the
+  // vertical offset (rest vs. hover) lives entirely in CSS (see
+  // home.component.css .other-section / :hover). Since translateY is
+  // composed *before* rotateZ in the transform string, the offset ends up
+  // rotated along with the element - a plain translateY on hover (applied
+  // in screen space, ignoring each post's own tilt) would instead move
+  // every post straight up regardless of the direction it leans.
   createRotationStyles()
   {
     const TOTAL_DEGREES = 45;
-    console.log(this.externalSections.length)
     const rotationAmount = TOTAL_DEGREES / this.externalSections.length;
-    
-    const stop = this.externalSections.length / 2;
-    const verticalMov = 'translateY(20px)';
+
+    let stop = Math.floor(this.externalSections.length / 2);
 
     let start = -TOTAL_DEGREES;
 
     for(let i = 0; i < stop; i++)
     {
       this.otherSectionStyles.push({
-        "transform" : `rotateZ(${start + (rotationAmount * (i + 1))}deg) ` + verticalMov
+        "--rotate" : `${start + (rotationAmount * (i + 1))}deg`
       })
     }
 
+    if(this.externalSections.length % 2 === 1)
+    {
+      this.otherSectionStyles[stop] = {
+        "--rotate" : "0deg"
+      }
+      stop += 1;
+    }
     start = TOTAL_DEGREES;
     let counter = 1;
     for(let i = this.externalSections.length -1; i >= stop; i--)
     {
       this.otherSectionStyles.push({
-        "transform" : `rotateZ(${start - (rotationAmount * (counter))}deg) ` + verticalMov
+        "--rotate" : `${start - (rotationAmount * (counter))}deg`
       })
       counter++;
 
     }
+
   }
 
   ngAfterViewInit(): void {

@@ -1,0 +1,13 @@
+<div class="cookie-consent panel" *ngIf="visible" role="dialog" aria-live="polite" aria-label="Cookie consent">
+
+  <p class="text">
+    {{ text.message }}
+    <a routerLink="/privacy" class="policy-link">{{ text.policyLink }}</a>
+  </p>
+
+  <div class="cookie-consent-actions">
+    <button type="button" class="btn" (click)="reject()">{{ text.reject }}</button>
+    <button type="button" class="btn btn-gold" (click)="accept()">{{ text.accept }}</button>
+  </div>
+
+</div>

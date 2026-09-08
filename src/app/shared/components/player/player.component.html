@@ -43,7 +43,7 @@
                 <app-dock
                 *ngFor="let card of player.Board; index as i"
                 [card]="card"
-                [enhanced]="(unitSelected && card === null) || (card !== null && attackingUnit !== null && card.id !== attackingUnit.id)"
+                [enhanced]="(unitSelected && card === null) || (!visibleHand && card !== null && attackingUnit !== null && card.id !== attackingUnit.id)"
                 [isAttackingCard]="card !== null && card.id === attackingUnit?.id"
                 (contextmenu)="onRightClick($event, card)"
                 (click)="dockSelected(i)"

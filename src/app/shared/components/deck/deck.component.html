@@ -10,6 +10,7 @@
     [ngStyle]="{
       'background-image': 'url(' + getImagePath() + ')'
     }"
+    [title]="deck.name ? (deck.name | translate) : null"
   >
     <span class="descriptiontext"
     [class.up]="infoUp"

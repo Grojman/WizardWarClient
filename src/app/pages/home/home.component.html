@@ -377,6 +377,11 @@
         <i class="fa-solid fa-users"></i>
         {{ 'HOME_SECTION_ABOUT_TEAM' | translate }}
       </a>
+
+      <a routerLink="/privacy" class="privacy-link">
+        <i class="fa-solid fa-user-shield"></i>
+        {{ languageService.getLanguage() === 'en' ? 'Privacy policy' : 'Política de privacidad' }}
+      </a>
     </div>
     <app-alert-modal #errorModal></app-alert-modal>
   

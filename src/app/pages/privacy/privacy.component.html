@@ -1,0 +1,71 @@
+<div class="privacy-container">
+
+  <div class="privacy-header">
+
+    <h1 class="title">
+      <i class="fa-solid fa-user-shield title-icon"></i>
+      {{ content.title }}
+    </h1>
+
+    <h2 class="subtitle">{{ content.lastUpdated }}</h2>
+
+    <a routerLink="/" class="back-button btn btn-gold">
+      <i class="fa-solid fa-arrow-left"></i>
+      {{ content.backLabel }}
+    </a>
+
+  </div>
+
+  <div class="privacy-content panel">
+
+    <p class="text" *ngFor="let p of content.intro">{{ p }}</p>
+
+    <section *ngFor="let section of content.sections" class="privacy-section">
+      <h2 class="section-title">{{ section.heading }}</h2>
+      <p class="text" *ngFor="let p of section.paragraphs">{{ p }}</p>
+    </section>
+
+    <section class="privacy-section">
+      <h2 class="section-title">{{ content.storageTableHeading }}</h2>
+
+      <div class="storage-table-wrapper">
+        <table class="storage-table">
+          <thead>
+            <tr>
+              <th>{{ content.storageColumns.name }}</th>
+              <th>{{ content.storageColumns.purpose }}</th>
+              <th>{{ content.storageColumns.duration }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of content.storageRows">
+              <td>{{ row.name }}</td>
+              <td>{{ row.purpose }}</td>
+              <td>{{ row.duration }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="privacy-section manage-preferences">
+      <h2 class="section-title">{{ content.manage.heading }}</h2>
+      <p class="text">{{ content.manage.description }}</p>
+      <p class="text">
+        {{ content.manage.currentLabel }}
+        <strong>{{
+          choice === 'accepted' ? content.manage.accepted
+          : choice === 'rejected' ? content.manage.rejected
+          : content.manage.notSet
+        }}</strong>
+      </p>
+
+      <div class="manage-actions">
+        <button type="button" class="btn" (click)="reject()">{{ content.manage.rejectBtn }}</button>
+        <button type="button" class="btn btn-gold" (click)="accept()">{{ content.manage.acceptBtn }}</button>
+      </div>
+    </section>
+
+  </div>
+
+</div>

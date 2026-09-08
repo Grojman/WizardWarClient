@@ -1,11 +1,68 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="utf-8" />
-    <title>El bar de los magos</title>
+    <!-- Static Spanish fallback for non-JS clients/crawlers; SeoService (see
+    core/services/seo.service.ts) takes over once Angular boots and re-applies
+    it per route/language via the translations dictionary. The inline script
+    right below only closes the gap before that boot finishes, using the same
+    localStorage key language-config.ts reads (wizardwar_language), so a
+    returning visitor who picked English doesn't see a flash of the Spanish
+    title in the tab. -->
+    <title>El Bar de los Magos — Juego de cartas online gratis, sin registro</title>
+    <script>
+      (function () {
+        var titles = {
+          es: 'El Bar de los Magos — Juego de cartas online gratis, sin registro',
+          en: 'El Bar de los Magos — Free online card game with no sign-up',
+        };
+        try {
+          var lang = localStorage.getItem('wizardwar_language');
+          if (lang && titles[lang]) document.title = titles[lang];
+        } catch (e) {}
+      })();
+    </script>
+    <meta
+      name="description"
+      content="El Bar de los Magos: juego de cartas online gratis, sin registro. Enfréntate a otros magos en partidas por turnos."
+    />
+    <meta name="robots" content="index, follow" />
     <base href="/" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1a1210" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="canonical" href="https://game.wizardbar.es/" />
+
+    <meta property="og:site_name" content="El Bar de los Magos" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+    <meta property="og:locale:alternate" content="en_US" />
+    <meta property="og:title" content="El Bar de los Magos — Juego de cartas online gratis, sin registro" />
+    <meta
+      property="og:description"
+      content="El Bar de los Magos: juego de cartas online gratis, sin registro. Enfréntate a otros magos en partidas por turnos."
+    />
+    <meta property="og:url" content="https://game.wizardbar.es/" />
+    <meta property="og:image" content="https://game.wizardbar.es/images/home/logo.webp" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="El Bar de los Magos — Juego de cartas online gratis, sin registro" />
+    <meta
+      name="twitter:description"
+      content="El Bar de los Magos: juego de cartas online gratis, sin registro. Enfréntate a otros magos en partidas por turnos."
+    />
+    <meta name="twitter:image" content="https://game.wizardbar.es/images/home/logo.webp" />
+
+    <!--
+      Google AdSense: not wired in yet — no Publisher ID configured.
+      Once the site is approved, add the loader tag Google gives you, e.g.:
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+      Gate it (and any ad unit) behind ConsentService.hasNonEssentialConsent() /
+      choice$ (src/app/core/services/consent.service.ts) so ads only load
+      after the visitor accepts the cookie banner — see the privacy policy at
+      /privacy, section 3.
+    -->
   </head>
   <body>
     <app-root></app-root>

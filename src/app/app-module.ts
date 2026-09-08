@@ -29,6 +29,8 @@ import { AlertModalComponent } from './shared/components/alert-modal/alert-modal
 import { PrivateMatchModalComponent } from './shared/components/private-match-modal/private-match-modal.component';
 import { TeamComponent } from './pages/team/team.component';
 import { SeriesComponent } from './pages/series/series.component';
+import { PrivacyComponent } from './pages/privacy/privacy.component';
+import { CookieConsentComponent } from './shared/components/cookie-consent/cookie-consent.component';
 import { TranslatePipe } from './shared/pipes/translate.pipe';
 
 @NgModule({
@@ -54,6 +56,8 @@ import { TranslatePipe } from './shared/pipes/translate.pipe';
     PrivateMatchModalComponent,
     TeamComponent,
     SeriesComponent,
+    PrivacyComponent,
+    CookieConsentComponent,
     TranslatePipe
   ],
   imports: [BrowserModule, AppRoutingModule, FormsModule],

@@ -32,7 +32,7 @@
         [class.selected]="deck === selectedDeck"
         (click)="selectDeck(deck)"
       >
-      <img src='{{ "images/decks/" + deck.DeckId + ".webp" }}' alt="" loading="lazy">
+      <img src='{{ "images/decks/" + deck.DeckId + ".webp" }}' [attr.alt]="deck.DeckName" loading="lazy">
         <span class="deck-row-games">{{ deck.TotalGames }} {{ 'STATS_SECTION_GAMES' | translate }}</span>
       </div>
 
@@ -42,7 +42,7 @@
 
       <ng-container *ngIf="selectedDeck; else noSelection">
 
-        <img src='{{ "images/decks/" + selectedDeck.DeckId + ".webp" }}' alt="">
+        <img src='{{ "images/decks/" + selectedDeck.DeckId + ".webp" }}' [attr.alt]="selectedDeck.DeckName">
 
 
         <div class="selected-stats">
@@ -123,7 +123,7 @@
 
             <div class="matchup-row" *ngFor="let matchup of selectedDeck.Matchups">
 
-              <img class="matchup-image" src='{{ "images/decks/" + matchup.OpponentDeckId + ".webp" }}' alt="" loading="lazy">
+              <img class="matchup-image" src='{{ "images/decks/" + matchup.OpponentDeckId + ".webp" }}' [attr.alt]="matchup.OpponentDeckName" loading="lazy">
 
               <span class="matchup-name">{{ matchup.OpponentDeckName }}</span>
 

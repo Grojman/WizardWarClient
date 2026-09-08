@@ -128,7 +128,14 @@ hr
 .die,
 .add,
 .endround,
-.attack {
+.attack,
+.red,
+.green,
+.blue,
+.yellow,
+.cyan,
+.purple,
+.white {
     font-weight: 600;
     transition: .15s ease;
 }
@@ -180,6 +187,27 @@ hr
   font-weight: 600;
   font-style: italic;
 }
+
+/* 4. chromatic colors — solid badge: background is the colour itself, text stays white */
+.red,
+.green,
+.blue,
+.yellow,
+.cyan,
+.purple,
+.white {
+  color: white;
+  padding: 0 .35em;
+  border-radius: .25em;
+}
+
+.red    { background-color: red; }
+.green  { background-color: green; }
+.blue   { background-color: blue; }
+.yellow { background-color: yellow; }
+.cyan   { background-color: cyan; }
+.purple { background-color: purple; }
+.white  { background-color: black; color: white; }
 
 .card-condition-progress
 {
