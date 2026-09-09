@@ -1,5 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { WebsocketService } from '../../core/services/websocket.service';
+import { TranslationService } from '../../core/services/translation.service';
 import { Card } from '../../models/card.model';
 import { DeckInfo } from '../../models/deckinfo.model';
 
@@ -15,7 +16,10 @@ export class GalleryComponent implements OnInit {
 
   loading = true;
 
-  constructor(private ws: WebsocketService)
+  constructor(
+    private ws: WebsocketService,
+    private translation: TranslationService,
+  )
   {
     this.cards = [];
   }
@@ -35,6 +39,9 @@ export class GalleryComponent implements OnInit {
         this.cards = [...msg.Content];
         this.loading = false;
         requestAnimationFrame(() => this.updateScrollFade());
+        break;
+      case "translations":
+        this.translation.setDictionary(msg.Content?.values ?? {});
         break;
       default:
         console.log("Unknown message!!");

@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { WebsocketService } from '../../core/services/websocket.service';
+import { TranslationService } from '../../core/services/translation.service';
 
 interface TeamMember {
   name: string;
@@ -14,7 +16,33 @@ interface TeamMember {
   templateUrl: './team.component.html',
   styleUrls: ['./team.component.css'],
 })
-export class TeamComponent {
+export class TeamComponent implements OnInit {
+
+  constructor(
+    private ws: WebsocketService,
+    private translation: TranslationService,
+  ) {}
+
+  ngOnInit(): void {
+    // This page never sends its own requests, but it still has to be the
+    // WebsocketService's active subscriber (see WebsocketService.subscribe)
+    // so it can catch the "translations" push if it's the first page loaded
+    // (e.g. a direct /team URL) — otherwise it's silently swallowed by the
+    // socket's default no-op handler and every `| translate` on this page
+    // falls back to showing the raw key.
+    this.ws.subscribe(this.processMessage);
+  }
+
+  processMessage = (msg: any): boolean => {
+    switch (msg.Type) {
+      case 'translations':
+        this.translation.setDictionary(msg.Content?.values ?? {});
+        break;
+      default:
+        return true;
+    }
+    return false;
+  };
 
   collaborators: TeamMember[] = [
     {

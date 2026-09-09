@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WebsocketService } from '../../core/services/websocket.service';
+import { TranslationService } from '../../core/services/translation.service';
 import { DeckMatchup, DeckStats, GameStats } from '../../models/stats.model';
 
 @Component({
@@ -20,7 +21,10 @@ export class StatsComponent implements OnInit {
     return new Date(s * 1000).toISOString().slice(11, 19);
   }
 
-  constructor(private ws: WebsocketService) {}
+  constructor(
+    private ws: WebsocketService,
+    private translation: TranslationService,
+  ) {}
 
   ngOnInit(): void {
     this.ws.subscribe(this.processMessage);
@@ -34,6 +38,9 @@ export class StatsComponent implements OnInit {
       case "get_stats":
         this.stats = msg.Content;
         this.loading = false;
+        break;
+      case "translations":
+        this.translation.setDictionary(msg.Content?.values ?? {});
         break;
       default:
         console.log("Unknown message!!");
