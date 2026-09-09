@@ -382,6 +382,30 @@
         <i class="fa-solid fa-user-shield"></i>
         {{ languageService.getLanguage() === 'en' ? 'Privacy policy' : 'Política de privacidad' }}
       </a>
+
+      <div class="ads-optin" *ngIf="!adRequested">
+        <p class="text ads-optin-text">
+          {{ 'HOME_SECTION_ADS_OPTIN_TEXT' | translate }}
+        </p>
+        <button type="button" class="btn btn-gold" (click)="revealAd()">
+          <i class="fa-solid fa-heart"></i>
+          {{ 'HOME_SECTION_ADS_OPTIN_BUTTON' | translate }}
+        </button>
+      </div>
+
+      <div class="ad-slot" *ngIf="adRequested">
+        <p class="text ads-optin-thanks" *ngIf="!adFailed">
+          {{ 'HOME_SECTION_ADS_THANKS' | translate }}
+        </p>
+        <ins
+          class="adsbygoogle"
+          style="display:block"
+          [attr.data-ad-client]="adsenseClientId"
+          data-ad-slot="9390507457"
+          data-ad-format="auto"
+          data-full-width-responsive="true"
+        ></ins>
+      </div>
     </div>
     <app-alert-modal #errorModal></app-alert-modal>
   

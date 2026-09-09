@@ -554,3 +554,36 @@ div:has(> .banner)
   text-decoration: underline;
   font-size: 0.85rem;
 }
+
+.ads-optin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  max-width: 30rem;
+  text-align: center;
+}
+
+.ads-optin-text {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+.ad-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  width: 100%;
+}
+
+.ads-optin-thanks {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}

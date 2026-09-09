@@ -9,6 +9,8 @@ import { GameSessionStorageService } from '../../core/services/game-session-stor
 import { TranslationService } from '../../core/services/translation.service';
 import { LanguageSettingsService } from '../../core/services/language.service';
 import { LANGUAGE_OPTIONS } from '../../core/config/language-config';
+import { ConsentService } from '../../core/services/consent.service';
+import { AdsenseService } from '../../core/services/adsense.service';
 import { Game } from '../../models/game.model';
 import { Player } from '../../models/player.model';
 
@@ -363,10 +365,44 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     private seriesState: SeriesStateService,
     private gameSessionStorage: GameSessionStorageService,
     protected translation: TranslationService,
-    protected languageService: LanguageSettingsService
+    protected languageService: LanguageSettingsService,
+    private consent: ConsentService,
+    private adsense: AdsenseService
   )
   {
 
+  }
+
+  // Below "Sobre nosotros" ("ab" section): ads are opt-in only, never loaded
+  // up front. Clicking the prompt both records ad consent (see
+  // ConsentService) and lazily injects the AdSense loader script, so a
+  // visitor who never clicks it never has AdSense code run in their browser.
+  adRequested = false;
+  adFailed = false;
+
+  get adsenseClientId(): string {
+    return this.adsense.clientId;
+  }
+
+  revealAd(): void {
+    if (this.adRequested) return;
+
+    if (!this.consent.hasNonEssentialConsent()) {
+      this.consent.accept();
+    }
+
+    this.adRequested = true;
+
+    this.adsense
+      .loadScript()
+      .then(() => {
+        // Let Angular render the <ins class="adsbygoogle"> element (gated on
+        // adRequested) before asking AdSense to fill it.
+        setTimeout(() => this.adsense.requestAd());
+      })
+      .catch(() => {
+        this.adFailed = true;
+      });
   }
 
   languages = LANGUAGE_OPTIONS;

@@ -55,12 +55,11 @@
     <meta name="twitter:image" content="https://game.wizardbar.es/images/home/logo.webp" />
 
     <!--
-      Google AdSense: not wired in yet — no Publisher ID configured.
-      Once the site is approved, add the loader tag Google gives you, e.g.:
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-      Gate it (and any ad unit) behind ConsentService.hasNonEssentialConsent() /
-      choice$ (src/app/core/services/consent.service.ts) so ads only load
-      after the visitor accepts the cookie banner — see the privacy policy at
+      Google AdSense: the loader script is NOT included here. It's injected
+      at runtime by AdsenseService (src/app/core/services/adsense.service.ts),
+      gated behind explicit opt-in (see HomeComponent.revealAd, the "view an
+      ad" prompt below the About section) so it only ever reaches a visitor's
+      browser after they've asked to see an ad — see the privacy policy at
       /privacy, section 3.
     -->
   </head>
