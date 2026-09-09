@@ -2,6 +2,7 @@ import { AfterViewInit, Component, ElementRef, Input, ViewChild, ViewEncapsulati
 import { Card } from '../../../models/card.model';
 import { CardDescriptionService } from '../../../core/services/card-description-service';
 import { CardComponent } from '../card/card.component';
+import { ChromaticColorName } from '../../../core/config/chromatic-colors';
 
 @Component({
   selector: 'app-cardvisualizer',
@@ -39,8 +40,16 @@ cardelement!: CardComponent;
   @Input()
   large: boolean = true;
 
+  // The card owner's currently active chromatic color, if known (see
+  // GameComponent.onRightClick) — lets the description parser highlight the
+  // matching color word and gray out the others. Left null outside of a
+  // live game (e.g. the gallery), where every color renders at full
+  // strength instead.
+  @Input()
+  activeColor: ChromaticColorName | null = null;
+
   showScrollFade = false;
-  
+
   cardInfo!: ElementRef<HTMLElement>;
   @ViewChild('cardinfo') set c(c: ElementRef)
   {
@@ -52,7 +61,7 @@ cardelement!: CardComponent;
 
   updateParser()
   {
-    return this.parser.parseDescription(this.card.description);
+    return this.parser.parseDescription(this.card.description, this.activeColor);
   }
 
 

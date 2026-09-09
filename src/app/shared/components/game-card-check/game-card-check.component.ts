@@ -1,5 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { Card } from '../../../models/card.model';
+import { ChromaticColorName } from '../../../core/config/chromatic-colors';
 
 @Component({
   selector: 'app-game-card-check',
@@ -10,10 +11,12 @@ import { Card } from '../../../models/card.model';
 export class GameCardCheckComponent {
   isOpen: boolean = false;
   card!: Card;
+  activeColor: ChromaticColorName | null = null;
 
-  open(card: Card)
+  open(card: Card, activeColor: ChromaticColorName | null = null)
   {
     this.card = card;
+    this.activeColor = activeColor;
     this.isOpen = true;
   }
 

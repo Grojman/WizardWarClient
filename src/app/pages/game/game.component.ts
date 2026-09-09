@@ -21,6 +21,7 @@ import { AlertModalComponent } from '../../shared/components/alert-modal/alert-m
 import { SeriesStateService } from '../../core/services/series-state.service';
 import { GameSessionStorageService } from '../../core/services/game-session-storage.service';
 import { TranslationService } from '../../core/services/translation.service';
+import { ChromaticColorName } from '../../core/config/chromatic-colors';
 
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
@@ -594,14 +595,22 @@ checkForConCurrency(type: string, source: string): boolean {
 
 onRightClick(
   event: MouseEvent,
-  card: Card | null
+  card: Card | null,
+  owner: Player
 ) {
-  
+
   event.preventDefault();
-  
+
   if (!card) return;
-  
-  this.cardCheck.open(card);
+
+  this.cardCheck.open(card, this.activeColorOf(owner));
+}
+
+// The chromatic color relevant to a card's description is whichever
+// player's board it lives on (each player rotates their own color
+// independently), not necessarily mine — see ChromaticColorHelper server-side.
+private activeColorOf(player: Player): ChromaticColorName | null {
+  return (player.GlobalEffects.find((e) => e.Color !== null)?.Color as ChromaticColorName) ?? null;
 }
 
 cardSelected(card: Card | null)

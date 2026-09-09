@@ -188,7 +188,12 @@ hr
   font-style: italic;
 }
 
-/* 4. chromatic colors — solid badge: background is the colour itself, text stays white */
+/* 4. chromatic colors — the text itself is colored, not a badge, so it reads
+   the same as the color it names. When the parser knows the card owner's
+   currently active color (see CardvisualizerComponent.activeColor), the
+   matching word gets a subtle glow (.chroma-active) and every other color
+   word is grayed out (.chroma-inactive) so it's obvious at a glance which
+   one is live right now. */
 .red,
 .green,
 .blue,
@@ -196,18 +201,32 @@ hr
 .cyan,
 .purple,
 .white {
-  color: white;
-  padding: 0 .35em;
-  border-radius: .25em;
+  font-weight: 600;
 }
 
-.red    { background-color: red; }
-.green  { background-color: green; }
-.blue   { background-color: blue; }
-.yellow { background-color: yellow; }
-.cyan   { background-color: cyan; }
-.purple { background-color: purple; }
-.white  { background-color: black; color: white; }
+.red    { color: #e53935; }
+.green  { color: #43a047; }
+.blue   { color: #1e88e5; }
+.yellow { color: #f9a825; }
+.cyan   { color: #00acc1; }
+.purple { color: #8e24aa; }
+.white  { color: #f5f5f5; }
+
+.chroma-active {
+  text-shadow: 0 0 6px currentColor;
+}
+
+.red.chroma-inactive,
+.green.chroma-inactive,
+.blue.chroma-inactive,
+.yellow.chroma-inactive,
+.cyan.chroma-inactive,
+.purple.chroma-inactive,
+.white.chroma-inactive {
+  color: #8a8a8a;
+  font-weight: 400;
+  text-shadow: none;
+}
 
 .card-condition-progress
 {

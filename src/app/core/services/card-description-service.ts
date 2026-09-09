@@ -1,14 +1,32 @@
 import { Injectable } from '@angular/core';
+import { CHROMATIC_CLASSES, CHROMATIC_COLOR_CLASS, ChromaticColorName } from '../config/chromatic-colors';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CardDescriptionService
 {
-    parseDescription(description: string) : string
+    // Set for the duration of a single parseDescription call (parsing is
+    // synchronous and never re-entrant across calls) so tryParseToken can
+    // tell which chromatic color word, if any, matches the card owner's
+    // currently active color — see CardvisualizerComponent's `activeColor`
+    // input. Null when the caller doesn't have that context (e.g. the
+    // gallery, outside of a live game), in which case every color renders
+    // at full strength instead of being grayed out.
+    private activeColor: ChromaticColorName | null = null;
+
+    parseDescription(description: string, activeColor: ChromaticColorName | null = null) : string
     {
       if (!description) return description;
-      return this.parseSegment(description, 0, false).html;
+      this.activeColor = activeColor;
+      try
+      {
+        return this.parseSegment(description, 0, false).html;
+      }
+      finally
+      {
+        this.activeColor = null;
+      }
     }
 
     // Parses text starting at `start`, wrapping `{class:text}` tokens in
@@ -99,8 +117,20 @@ export class CardDescriptionService
       if (inner.nextIndex === contentStart) return null;
 
       return {
-        html: `<span class="${cls}">${inner.html}</span>`,
+        html: `<span class="${this.resolveTokenClass(cls)}">${inner.html}</span>`,
         nextIndex: inner.nextIndex + 1,
       };
+    }
+
+    // For a chromatic color token (red/green/blue/...) adds a "chroma-active"
+    // or "chroma-inactive" modifier so the CSS can highlight whichever color
+    // is actually active right now (see cardvisualizer.component.css) and
+    // gray out the rest. Every other token class is passed through as-is.
+    private resolveTokenClass(cls: string): string
+    {
+      if (!CHROMATIC_CLASSES.has(cls) || this.activeColor === null) return cls;
+
+      const activeClass = CHROMATIC_COLOR_CLASS[this.activeColor];
+      return `${cls} ${cls === activeClass ? 'chroma-active' : 'chroma-inactive'}`;
     }
 }

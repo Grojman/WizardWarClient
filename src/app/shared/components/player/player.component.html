@@ -4,9 +4,15 @@
     <div class="effects-section">
         <h3 class="effects-title subtitle">{{ 'GAME_SECTION_EFFECTS' | translate }}</h3>
         
-        <div class="effects">
-            <p class="effect panel" *ngFor="let e of this.player.GlobalEffects">
-                {{ e }}
+        <div class="effects" [style.--effect-leave-ms.ms]="effectLeaveMs">
+            <p
+                class="effect panel"
+                *ngFor="let e of displayedEffects; trackBy: trackEffect"
+                [class.leaving]="e.leaving"
+                [style.color]="effectColor(e)"
+                [attr.data-game-id]="e.Id"
+            >
+                {{ e.Text }}
             </p>
         </div>
     </div>
