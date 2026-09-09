@@ -21,6 +21,8 @@
 
     overflow: visible;
 
+    image-rendering: pixelated;
+
   }
 
   .attacking
