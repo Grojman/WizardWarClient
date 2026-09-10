@@ -13,6 +13,7 @@
     [target]="isTarget && rival"
         *ngIf="card"
         [card]="card"
+        [enterAnimation]="'slam-animation'"
         (click)="cardClicked()"
         class="contained-card"
 

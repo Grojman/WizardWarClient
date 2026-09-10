@@ -78,23 +78,6 @@
 
   }
 
-  @keyframes kickflip {
-    0% {
-      transform: translateY(0) rotateX(0deg) rotateY(0deg) scale(1);
-    }
-    20% {
-      transform: translateY(-4vh) rotateX(10deg) rotateY(120deg) scale(1.08);
-    }
-    50% {
-      transform: translateY(-6vh) rotateX(-8deg) rotateY(240deg) scale(1.12);
-    }
-    80% {
-      transform: translateY(-2vh) rotateX(4deg) rotateY(340deg) scale(1.05);
-    }
-    100% {
-      transform: translateY(0) rotateX(0deg) rotateY(360deg) scale(1);
-    }
-  }
 
   .card.can-hover:hover .card-name
   {
@@ -358,6 +341,35 @@
         translateY(0)
         rotate(0)
         scale(1);
+    }
+  }
+
+  .slam-animation {
+    animation: card-slam 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  }
+
+  @keyframes card-slam {
+    0% {
+      opacity: 0;
+      transform: translateY(-70vh) scale(1.35) rotate(-6deg);
+    }
+
+    55% {
+      opacity: 1;
+      transform: translateY(0) scale(1.18) rotate(2deg);
+    }
+
+    72% {
+      transform: translateY(1%) scale(0.9) rotate(-1deg);
+    }
+
+    86% {
+      transform: translateY(-0.5%) scale(1.05) rotate(0.5deg);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1) rotate(0deg);
     }
   }
 

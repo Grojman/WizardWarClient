@@ -7,7 +7,7 @@
     [class.selected]="selected"
     [class.can-hover]="!selected && card?.canPlay"
     [attr.data-game-id]="card?.id"
-    [animate.enter]="'enter-animation'"
+    [animate.enter]="enterAnimation"
     [animate.leave]="'leave-animation'"
     [class.card-front]="!faceDown"
     [class.card-back]="faceDown"
@@ -20,7 +20,7 @@
     
  
    <p 
-    *ngIf="!faceDown"
+    *ngIf="!faceDown && card?.canPlay"
     class="title card-name ">
     <span>
 

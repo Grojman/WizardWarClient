@@ -49,6 +49,9 @@ export class CardComponent implements OnChanges, OnInit {
   @Input()
   showEffectActive = true;
 
+  @Input()
+  enterAnimation = 'enter-animation';
+
   private boundingRect?: DOMRect;
 
   playHoverSound()
