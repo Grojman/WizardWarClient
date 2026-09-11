@@ -48,7 +48,8 @@ export class GameStateService {
           GlobalEffects: [],
         },
       ],
-      CurrentTurn: 0
+      CurrentTurn: 0,
+      IsReconnect: false
     };
   }
 

@@ -87,6 +87,25 @@ export class GameComponent implements OnInit, OnDestroy {
     console.warn(`Player not found for id "${id}", falling back to local player`);
     return this.gameState.Me;
   }
+
+  // A GameEvent's `Source` id can point at either a normal board card or a
+  // GlobalEffect (see player.model.ts) — both are rendered with the same
+  // [data-game-id] attribute, so there's no dedicated flag to tell them
+  // apart. Checking it against every player's GlobalEffects is how we know
+  // whether to call out the source as an effect (a little shake) rather
+  // than leaving it to whatever card-focused animation already runs.
+  private isGlobalEffectSource(source: string | undefined): boolean {
+    if (!source) return false;
+    return [this.gameState.Me, ...this.gameState.Rivals].some((p) =>
+      p.GlobalEffects.some((e) => e.Id === source)
+    );
+  }
+
+  private shakeIfGlobalEffectSource(source: string | undefined): void {
+    if (this.isGlobalEffectSource(source)) {
+      this.animationService.shakeElement(source!);
+    }
+  }
   
   processMessage = (msg: any): boolean => {
     switch(msg.Type)
@@ -237,7 +256,16 @@ export class GameComponent implements OnInit, OnDestroy {
   private isResumedSession = false;
 
   private initializeGameState(snapshot: Game): void {
-    this.gameState = this.gameStateService.initializeFromSnapshot(snapshot, this.isResumedSession);
+    // The server marks a game_state push as a reconnection (see
+    // GameSession.TryReconnect) whenever it resumes us into a session we
+    // never properly left, even if this component's own isResumedSession
+    // heuristic missed it (e.g. an in-app navigation back into /game that
+    // reused an already-open socket). Either signal means the hand in this
+    // snapshot is authoritative and must be kept rather than zeroed out.
+    this.gameState = this.gameStateService.initializeFromSnapshot(
+      snapshot,
+      this.isResumedSession || snapshot.IsReconnect
+    );
   }
 
   private syncPlayerTargets(): void {
@@ -401,11 +429,13 @@ changeHealthAnimationDuration: number = 500;
           }
         break;
         case "PlayerHealthChanged":
+        this.shakeIfGlobalEffectSource(event.Source);
         await this.createProyectile(event.Source, event.PlayerSource, "", event.Amount);
         var health = this.getPlayer(event.PlayerSource).Health;
         health.changeHealth(event.Amount, this.changeHealthAnimationDuration);
         break;
         case "UnitHealthChanged":
+        this.shakeIfGlobalEffectSource(event.Source);
         var arrayToFind = this.getPlayer(event.PlayerSource).Board;
         await this.createProyectile(event.Source, event.Card, "", event.Amount);
         this.audioService.playSfx('/audio/unit_health_changed.mp3', true);
@@ -419,6 +449,7 @@ changeHealthAnimationDuration: number = 500;
         }
         break;
         case "UnitDamageChanged":
+        this.shakeIfGlobalEffectSource(event.Source);
         await this.createProyectile(event.Source, event.Card, "", event.Amount);
 
         var arrayToFind = this.getPlayer(event.PlayerSource).Board;
@@ -464,10 +495,12 @@ changeHealthAnimationDuration: number = 500;
         break;
 
         case "AddedCardToDeck":
+          this.shakeIfGlobalEffectSource(event.Source);
           await this.animateAddCard(event.CardId, event.Source, this.getDeckId(event.TargetedPlayer))
           this.gameStateService.updateDeckAmount(this.getPlayer(event.TargetedPlayer), 1);
             break;
         case "DeckModifiedStats":
+          this.shakeIfGlobalEffectSource(event.Source);
           await this.animateModifyDeck(event.Source, this.getDeckId(event.TargetedPlayer))
           break;
         default:

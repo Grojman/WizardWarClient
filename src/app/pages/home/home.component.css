@@ -429,6 +429,16 @@ div:has(> .banner)
   }
 }
 
+.other-section-image
+{
+  margin: auto;
+  margin-top: 5%;
+  width: 45%;
+  height: auto;
+  object-fit: contain;
+  pointer-events: none;
+}
+
 .other-section:visited
 {
   color: var(--text-color);

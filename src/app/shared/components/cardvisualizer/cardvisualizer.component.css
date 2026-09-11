@@ -188,12 +188,17 @@ hr
   font-style: italic;
 }
 
-/* 4. chromatic colors — the text itself is colored, not a badge, so it reads
-   the same as the color it names. When the parser knows the card owner's
-   currently active color (see CardvisualizerComponent.activeColor), the
-   matching word gets a subtle glow (.chroma-active) and every other color
-   word is grayed out (.chroma-inactive) so it's obvious at a glance which
-   one is live right now. */
+/* 4. chromatic colors — highlighted as a colored chip (background), not
+   colored letters, so the word stays legible regardless of which color it
+   names. When the parser knows the card owner's currently active color (see
+   CardvisualizerComponent.activeColor), every color whose effect is
+   currently in play gets its chip lit at full opacity (.chroma-active) —
+   that's not just the exact active color but, for a mixed color, both of
+   its base components too (e.g. an active Amarillo also lights up Rojo and
+   Verde, since both of their effects apply — see
+   CardDescriptionService.resolveActiveClasses). Every color not in effect
+   right now is dimmed via opacity (.chroma-inactive) rather than grayed
+   out, so it still reads as its own color, just quieter. */
 .red,
 .green,
 .blue,
@@ -201,31 +206,30 @@ hr
 .cyan,
 .purple,
 .white {
-  font-weight: 600;
+  display: inline-block;
+  padding: 0 .4em;
+  border-radius: .35em;
+  font-weight: 700;
+  color: #fff;
+  transition: opacity .15s ease, box-shadow .15s ease;
 }
 
-.red    { color: #e53935; }
-.green  { color: #43a047; }
-.blue   { color: #1e88e5; }
-.yellow { color: #f9a825; }
-.cyan   { color: #00acc1; }
-.purple { color: #8e24aa; }
-.white  { color: #f5f5f5; }
+.red    { background-color: #e53935; }
+.green  { background-color: #43a047; }
+.blue   { background-color: #1e88e5; }
+.yellow { background-color: #f9a825; color: #3a2b00; }
+.cyan   { background-color: #00acc1; }
+.purple { background-color: #8e24aa; }
+.white  { background-color: #f5f5f5; color: #222; }
 
 .chroma-active {
-  text-shadow: 0 0 6px currentColor;
+  opacity: 1;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .55);
 }
 
-.red.chroma-inactive,
-.green.chroma-inactive,
-.blue.chroma-inactive,
-.yellow.chroma-inactive,
-.cyan.chroma-inactive,
-.purple.chroma-inactive,
-.white.chroma-inactive {
-  color: #8a8a8a;
-  font-weight: 400;
-  text-shadow: none;
+.chroma-inactive {
+  opacity: .45;
+  box-shadow: none;
 }
 
 .card-condition-progress

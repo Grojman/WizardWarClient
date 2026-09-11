@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CHROMATIC_CLASSES, CHROMATIC_COLOR_CLASS, ChromaticColorName } from '../config/chromatic-colors';
+import { CHROMATIC_CLASSES, CHROMATIC_COLOR_CLASS, CHROMATIC_COLOR_COMPONENTS, ChromaticColorName } from '../config/chromatic-colors';
 
 @Injectable({
   providedIn: 'root',
@@ -8,25 +8,38 @@ export class CardDescriptionService
 {
     // Set for the duration of a single parseDescription call (parsing is
     // synchronous and never re-entrant across calls) so tryParseToken can
-    // tell which chromatic color word, if any, matches the card owner's
-    // currently active color — see CardvisualizerComponent's `activeColor`
-    // input. Null when the caller doesn't have that context (e.g. the
-    // gallery, outside of a live game), in which case every color renders
-    // at full strength instead of being grayed out.
-    private activeColor: ChromaticColorName | null = null;
+    // tell which chromatic color classes are actually in effect right now,
+    // given the card owner's currently active color — see
+    // CardvisualizerComponent's `activeColor` input. Null when the caller
+    // doesn't have that context (e.g. the gallery, outside of a live game),
+    // in which case every color renders at full strength instead of being
+    // dimmed.
+    private activeClasses: ReadonlySet<string> | null = null;
 
     parseDescription(description: string, activeColor: ChromaticColorName | null = null) : string
     {
       if (!description) return description;
-      this.activeColor = activeColor;
+      this.activeClasses = activeColor === null ? null : this.resolveActiveClasses(activeColor);
       try
       {
         return this.parseSegment(description, 0, false).html;
       }
       finally
       {
-        this.activeColor = null;
+        this.activeClasses = null;
       }
+    }
+
+    // A mixed color's effect applies as both of its base components at once
+    // (e.g. Amarillo triggers whatever Rojo and Verde each do), and Blanco
+    // triggers all three — see ChromaticColorHelper.Components server-side.
+    // So every one of those classes should read as "currently in effect",
+    // not just the exact active color's own word.
+    private resolveActiveClasses(activeColor: ChromaticColorName): ReadonlySet<string>
+    {
+      const classes = CHROMATIC_COLOR_COMPONENTS[activeColor].map(c => CHROMATIC_COLOR_CLASS[c]);
+      classes.push(CHROMATIC_COLOR_CLASS[activeColor]);
+      return new Set(classes);
     }
 
     // Parses text starting at `start`, wrapping `{class:text}` tokens in
@@ -123,14 +136,14 @@ export class CardDescriptionService
     }
 
     // For a chromatic color token (red/green/blue/...) adds a "chroma-active"
-    // or "chroma-inactive" modifier so the CSS can highlight whichever color
-    // is actually active right now (see cardvisualizer.component.css) and
-    // gray out the rest. Every other token class is passed through as-is.
+    // or "chroma-inactive" modifier so the CSS can fully light up every color
+    // whose effect is currently in play (see resolveActiveClasses above) and
+    // dim the rest (see cardvisualizer.component.css). Every other token
+    // class is passed through as-is.
     private resolveTokenClass(cls: string): string
     {
-      if (!CHROMATIC_CLASSES.has(cls) || this.activeColor === null) return cls;
+      if (!CHROMATIC_CLASSES.has(cls) || this.activeClasses === null) return cls;
 
-      const activeClass = CHROMATIC_COLOR_CLASS[this.activeColor];
-      return `${cls} ${cls === activeClass ? 'chroma-active' : 'chroma-inactive'}`;
+      return `${cls} ${this.activeClasses.has(cls) ? 'chroma-active' : 'chroma-inactive'}`;
     }
 }

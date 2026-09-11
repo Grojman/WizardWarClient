@@ -37,6 +37,11 @@ interface GameOption {
 interface ExternalSection {
   name: string,
   url: string,
+  // What's actually rendered on the post: either a translation key (shown as
+  // text, same as `name` normally) or a path to an image under
+  // public/images — see isImagePath(), used e.g. to swap the Ko-fi post's
+  // text for its logo.
+  content: string,
 }
 
 @Component({
@@ -80,17 +85,28 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   externalSections: ExternalSection[] = [
     {
       name: 'HOME_SECTION_GALLERY',
-      url: '/gallery'
+      url: '/gallery',
+      content: 'HOME_SECTION_GALLERY'
     },
     {
       name: 'HOME_SECTION_STATS',
-      url: '/stats'
+      url: '/stats',
+      content: 'HOME_SECTION_STATS'
     },
     {
       name: 'HOME_SECTION_KOFI',
-      url: 'https://ko-fi.com/summerproductions'
+      url: 'https://ko-fi.com/summerproductions',
+      content: '/images/home/ko_fi_logo_icon.webp'
     }
   ]
+
+  // A post's `content` is an image path (rendered as <img>) rather than a
+  // translation key (rendered as text) when it looks like one - i.e. it
+  // points somewhere under the app's own image assets.
+  isImagePath(content: string): boolean
+  {
+    return /\.(webp|png|jpe?g|gif|svg)$/i.test(content);
+  }
 
   otherSectionStyles: {
     [klass: string]: any;

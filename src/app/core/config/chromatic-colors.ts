@@ -27,3 +27,18 @@ export const CHROMATIC_COLOR_HEX: Record<ChromaticColorName, string> = {
 };
 
 export const CHROMATIC_CLASSES: ReadonlySet<string> = new Set(Object.values(CHROMATIC_COLOR_CLASS));
+
+// Mirrors WizardWarServer's ChromaticColorHelper.Components: a mixed color's
+// effect is the union of its two base colors' effects (e.g. Amarillo =
+// Rojo+Verde), and Blanco is all three at once. Base colors just map to
+// themselves. Used to highlight every color word whose effect is actually
+// live right now, not only the exact active color.
+export const CHROMATIC_COLOR_COMPONENTS: Record<ChromaticColorName, ChromaticColorName[]> = {
+  Rojo: ['Rojo'],
+  Verde: ['Verde'],
+  Azul: ['Azul'],
+  Amarillo: ['Rojo', 'Verde'],
+  Celeste: ['Verde', 'Azul'],
+  Morado: ['Azul', 'Rojo'],
+  Blanco: ['Rojo', 'Verde', 'Azul'],
+};

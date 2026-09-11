@@ -39,10 +39,7 @@
       class="other-section" [ngStyle]="otherSectionStyles[i]"
       (mouseenter)="playCrack($event)"
       >
-        <span>
-          {{o.name | translate}}
-
-        </span>
+        <ng-container *ngTemplateOutlet="sectionContent"></ng-container>
       </a>
       <ng-template #internalSection>
         <a
@@ -50,11 +47,21 @@
         class="other-section" [ngStyle]="otherSectionStyles[i]"
         (mouseenter)="playCrack($event)"
         >
+          <ng-container *ngTemplateOutlet="sectionContent"></ng-container>
+        </a>
+      </ng-template>
+      <ng-template #sectionContent>
+        <img *ngIf="isImagePath(o.content); else sectionText"
+          class="other-section-image"
+          [src]="o.content"
+          [alt]="o.name | translate"
+        >
+        <ng-template #sectionText>
           <span>
-            {{o.name | translate}}
+            {{o.content | translate}}
 
           </span>
-        </a>
+        </ng-template>
       </ng-template>
     </ng-container>
 

@@ -763,6 +763,38 @@ async animateAddedCard(
     icon.style.display = 'none';
   }
 
+// A little shake, used to call out that an event's source (see
+// GameComponent.playEvent) was a global effect rather than a board card —
+// e.g. a damage-over-time effect ticking on its own. Same
+// resolve-by-data-game-id + Web Animations API idiom as the rest of this
+// service, so it works on any [data-game-id] element, not just effects.
+async shakeElement(id: string): Promise<void>
+{
+  const element = document.querySelector(`[data-game-id="${id}"]`) as HTMLElement | null;
+  if (element == null)
+  {
+    return;
+  }
+
+  const animation = element.animate(
+    [
+      { transform: 'translateX(0)' },
+      { transform: 'translateX(-4px)' },
+      { transform: 'translateX(4px)' },
+      { transform: 'translateX(-3px)' },
+      { transform: 'translateX(3px)' },
+      { transform: 'translateX(0)' },
+    ],
+    {
+      duration: this.animationSettingsService.getAdjustedDuration(350),
+      easing: 'ease-in-out',
+    }
+  );
+
+  await animation.finished;
+  element.style.transform = '';
+}
+
 async animateSkillEfect(card: string): Promise<void>
 {
   const origin = document.querySelector(`[data-game-id="${card}"]`) as HTMLElement | null;
