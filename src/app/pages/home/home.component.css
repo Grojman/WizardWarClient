@@ -109,6 +109,8 @@ div:has(> .banner)
 
   margin: auto;
   margin-top: 1rem;
+
+  -webkit-text-stroke: 1px rgb(131, 131, 131);
 }
 
 .text-area
