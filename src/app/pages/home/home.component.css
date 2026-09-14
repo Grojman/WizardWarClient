@@ -107,7 +107,8 @@ div:has(> .banner)
   font-size: 3rem;
   letter-spacing: 4px;
 
-  margin: 0;
+  margin: auto;
+  margin-top: 1rem;
 }
 
 .text-area
@@ -148,6 +149,8 @@ div:has(> .banner)
   font-size: 8rem;
   letter-spacing: 0;
   color: red;
+  -webkit-text-stroke: 1px rgb(173, 64, 0);
+  
 }
 
 .menu-section
