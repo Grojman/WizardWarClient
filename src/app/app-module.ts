@@ -2,6 +2,7 @@ import {
   NgModule,
   provideBrowserGlobalErrorListeners,
   provideZoneChangeDetection,
+  isDevMode,
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
@@ -32,6 +33,7 @@ import { SeriesComponent } from './pages/series/series.component';
 import { PrivacyComponent } from './pages/privacy/privacy.component';
 import { CookieConsentComponent } from './shared/components/cookie-consent/cookie-consent.component';
 import { TranslatePipe } from './shared/pipes/translate.pipe';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [
@@ -58,9 +60,19 @@ import { TranslatePipe } from './shared/pipes/translate.pipe';
     SeriesComponent,
     PrivacyComponent,
     CookieConsentComponent,
-    TranslatePipe
+    TranslatePipe,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    FormsModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
+  ],
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
