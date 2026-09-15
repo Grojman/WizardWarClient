@@ -11,12 +11,12 @@ import { ChromaticColorName } from '../../../core/config/chromatic-colors';
 export class GameCardCheckComponent {
   isOpen: boolean = false;
   card!: Card;
-  activeColor: ChromaticColorName | null = null;
+  activeColors: ChromaticColorName[] | null = null;
 
-  open(card: Card, activeColor: ChromaticColorName | null = null)
+  open(card: Card, activeColors: ChromaticColorName[] | null = null)
   {
     this.card = card;
-    this.activeColor = activeColor;
+    this.activeColors = activeColors;
     this.isOpen = true;
   }
 

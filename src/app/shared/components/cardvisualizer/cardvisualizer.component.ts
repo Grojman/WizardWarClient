@@ -40,13 +40,13 @@ cardelement!: CardComponent;
   @Input()
   large: boolean = true;
 
-  // The card owner's currently active chromatic color, if known (see
+  // The card owner's currently active chromatic colors, if known (see
   // GameComponent.onRightClick) — lets the description parser highlight the
-  // matching color word and gray out the others. Left null outside of a
+  // matching color words and gray out the others. Left null outside of a
   // live game (e.g. the gallery), where every color renders at full
   // strength instead.
   @Input()
-  activeColor: ChromaticColorName | null = null;
+  activeColors: ChromaticColorName[] | null = null;
 
   showScrollFade = false;
 
@@ -61,7 +61,7 @@ cardelement!: CardComponent;
 
   updateParser()
   {
-    return this.parser.parseDescription(this.card.description, this.activeColor);
+    return this.parser.parseDescription(this.card.description, this.activeColors);
   }
 
 

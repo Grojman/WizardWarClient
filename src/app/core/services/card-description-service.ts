@@ -9,17 +9,17 @@ export class CardDescriptionService
     // Set for the duration of a single parseDescription call (parsing is
     // synchronous and never re-entrant across calls) so tryParseToken can
     // tell which chromatic color classes are actually in effect right now,
-    // given the card owner's currently active color — see
-    // CardvisualizerComponent's `activeColor` input. Null when the caller
+    // given the card owner's currently active colors — see
+    // CardvisualizerComponent's `activeColors` input. Null when the caller
     // doesn't have that context (e.g. the gallery, outside of a live game),
     // in which case every color renders at full strength instead of being
     // dimmed.
     private activeClasses: ReadonlySet<string> | null = null;
 
-    parseDescription(description: string, activeColor: ChromaticColorName | null = null) : string
+    parseDescription(description: string, activeColors: ChromaticColorName[] | null = null) : string
     {
       if (!description) return description;
-      this.activeClasses = activeColor === null ? null : this.resolveActiveClasses(activeColor);
+      this.activeClasses = activeColors === null || activeColors.length === 0 ? null : this.resolveActiveClasses(activeColors);
       try
       {
         return this.parseSegment(description, 0, false).html;
@@ -34,12 +34,21 @@ export class CardDescriptionService
     // (e.g. Amarillo triggers whatever Rojo and Verde each do), and Blanco
     // triggers all three — see ChromaticColorHelper.Components server-side.
     // So every one of those classes should read as "currently in effect",
-    // not just the exact active color's own word.
-    private resolveActiveClasses(activeColor: ChromaticColorName): ReadonlySet<string>
+    // not just the exact active color's own word. A player can have more
+    // than one color active at once, so the union across all of them is
+    // what counts as "in effect".
+    private resolveActiveClasses(activeColors: ChromaticColorName[]): ReadonlySet<string>
     {
-      const classes = CHROMATIC_COLOR_COMPONENTS[activeColor].map(c => CHROMATIC_COLOR_CLASS[c]);
-      classes.push(CHROMATIC_COLOR_CLASS[activeColor]);
-      return new Set(classes);
+      const classes = new Set<string>();
+      for (const activeColor of activeColors)
+      {
+        for (const c of CHROMATIC_COLOR_COMPONENTS[activeColor])
+        {
+          classes.add(CHROMATIC_COLOR_CLASS[c]);
+        }
+        classes.add(CHROMATIC_COLOR_CLASS[activeColor]);
+      }
+      return classes;
     }
 
     // Parses text starting at `start`, wrapping `{class:text}` tokens in

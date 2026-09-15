@@ -636,14 +636,17 @@ onRightClick(
 
   if (!card) return;
 
-  this.cardCheck.open(card, this.activeColorOf(owner));
+  this.cardCheck.open(card, this.activeColorsOf(owner));
 }
 
-// The chromatic color relevant to a card's description is whichever
-// player's board it lives on (each player rotates their own color
+// The chromatic colors relevant to a card's description are whichever
+// player's board it lives on (each player rotates their own colors
 // independently), not necessarily mine — see ChromaticColorHelper server-side.
-private activeColorOf(player: Player): ChromaticColorName | null {
-  return (player.GlobalEffects.find((e) => e.Color !== null)?.Color as ChromaticColorName) ?? null;
+// A player can have more than one color active at once.
+private activeColorsOf(player: Player): ChromaticColorName[] {
+  return player.GlobalEffects
+    .filter((e) => e.Color !== null)
+    .map((e) => e.Color as ChromaticColorName);
 }
 
 cardSelected(card: Card | null)

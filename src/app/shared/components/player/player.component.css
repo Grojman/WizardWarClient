@@ -22,6 +22,15 @@
   background-image: url('/images/board/effects_background.webp');
   background-size: cover;
   background-size: 100% 100%;
+  flex-grow: 1;
+  min-height: 0;
+  max-height: 50vh;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 15rem;
+  max-width: 15rem;
 }
 
 .effects-title
@@ -29,17 +38,6 @@
   margin-top: 3rem;
   color: rgb(44, 44, 44);
   font-size: xx-large;
-}
-
-.effects-section
-{
-  flex-grow: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 15rem;
-  max-width: 15rem;
 }
 
 .effects{
