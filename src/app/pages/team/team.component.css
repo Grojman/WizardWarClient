@@ -1,8 +1,7 @@
 .participants
 {
-  align-self: stretch;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
 }
 
 .collaborator-card
@@ -13,11 +12,13 @@
 
   padding: 1rem;
   padding-right: 10vw;
-  padding-left: 5rem;
+  padding-left: 3rem;
+
+  text-align: left;
 
   display: flex;
-  flex-direction: column;
   align-items: center;
+  gap: 3rem;
 }
 
 .collaborator-name
@@ -37,8 +38,6 @@
   min-height: 100vh;
 
   display: flex;
-  flex-direction: column;
-  align-items: center;
 
   padding-bottom: 3rem;
 
@@ -47,15 +46,19 @@
 
 }
 
-.team-header {
-  background-image: url('/images/wood.webp');
-  background-size: cover;
-  text-align: center;
-  padding-top: 8rem;
-  animation: fadeInUp 1s ease;
+.collaborators > h2
+{
+    text-align: center;
 }
 
-.team-header * {
+.team-header {
+  background-image: url('/images/wood.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+  text-align: center;
+  padding: 4rem;  
+  padding-top: 8rem;
+  animation: fadeInUp 1s ease;
 }
 
 .title-icon {

@@ -1,6 +1,40 @@
 <div class="team-container">
+  <div class="member-list">
 
-  <div class="team-header">
+    <div class="member-card" 
+    *ngFor="let member of members"
+      [ngStyle]="{
+        'background-image': 'url(/images/devs/' + member.instagram + '_banner.webp)'
+      }"
+    >
+
+      <a
+        [href]="'https://www.instagram.com/' + member.instagram + '/'"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="member-header hover-grow"
+      >
+        <img class="member-photo" [src]="member.photo" [alt]="member.name" loading="lazy">
+
+        <span class="member-name">
+          <i class="fa-brands fa-instagram"></i>
+          @{{ member.name }}
+        </span>
+
+        <span class="member-lead">{{ member.roleLead | translate }}</span>
+
+      </a>
+
+      <ul class="member-titles">
+        <li *ngFor="let title of member.titles">{{ title | translate }}</li>
+      </ul>
+
+    </div>
+
+  </div>
+
+  <div class="participants">
+    <div class="team-header">
 
     <h1 class="title">
       <i class="fa-solid fa-users title-icon"></i>
@@ -15,45 +49,9 @@
       <i class="fa-solid fa-arrow-left"></i>
       {{ 'TEAM_SECTION_BACK' | translate }}
     </a>
-
   </div>
-
-  <div class="participants">
-
-    <div class="member-list">
-  
-      <div class="member-card" 
-      *ngFor="let member of members"
-        [ngStyle]="{
-          'background-image': 'url(/images/devs/' + member.instagram + '_banner.webp)'
-        }"
-      >
-  
-        <a
-          [href]="'https://www.instagram.com/' + member.instagram + '/'"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="member-header hover-grow"
-        >
-          <img class="member-photo" [src]="member.photo" [alt]="member.name" loading="lazy">
-  
-          <span class="member-name">
-            <i class="fa-brands fa-instagram"></i>
-            @{{ member.name }}
-          </span>
-  
-          <span class="member-lead">{{ member.roleLead | translate }}</span>
-
-        </a>
-
-        <ul class="member-titles">
-          <li *ngFor="let title of member.titles">{{ title | translate }}</li>
-        </ul>
-  
-      </div>
-  
-    </div>
-    <div>
+    
+    <div class="collaborators">
       <h2 class="title">{{ 'TEAM_SECTION_COLLABORATORS' | translate }}</h2>
   
       <div class="members-list">
@@ -71,6 +69,7 @@
   
       </div>
     </div>
+
   </div>
 
 

@@ -20,7 +20,7 @@
 
   gap: 2rem;
 
-  background-image: url('/images/stones_opac.webp');
+  background-image: url('/images/stones_blur.webp');
 
   & > *:first-child
   {
@@ -148,7 +148,7 @@
     margin: auto;
   }
   & > *:not(p) {
-    margin-bottom: 10%;
+    margin-top: 50%;
   }
 
   

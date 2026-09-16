@@ -1,6 +1,5 @@
 <div
   class="health-wrapper"
-  [class.enhanced]="enhanced"
   [class.health-shake]="health.shaking"
   [style.--shake-x]="health.shakeX"
   [style.--shake-y]="health.shakeY"
@@ -25,5 +24,7 @@
   </span>
 
 </div>
+
+<div *ngIf="enhanced" class="enhanced"></div>
 
 </div>
