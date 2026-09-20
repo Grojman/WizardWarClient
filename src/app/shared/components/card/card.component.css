@@ -12,7 +12,7 @@
     box-shadow: 3px 1px 5px 5px rgba(0, 0, 0, 0.3);
 
     aspect-ratio: 5 / 7;
-    height: 10rem;
+    height: 13rem;
 
     transition: transform 0.2s ease-out;
 
@@ -213,7 +213,7 @@
       position: absolute;
       inset: 0;
 
-      background: var(--color-gold);
+      background: #dc143c;
       clip-path: polygon(0 0, 65% 0, 100% 100%, 34% 100%);
 
       z-index: -1;
@@ -253,8 +253,7 @@
       position: absolute;
       inset: 0;
       clip-path: polygon(100% 0, 35% 0, 0 100%, 66% 100%);
-    /* clip-path: polygon(100% 0, 0% 100%, 100% 100%); */
-      background: #dc143c;
+      background: #19c21b; 
 
       z-index: -1;
   }
@@ -273,7 +272,7 @@
     
     & > p {
       clip-path: polygon(50% 95%, 0 15%, 100% 15%);
-      background-color: green;
+      background-color: var(--color-gold);
       padding: 0.5rem 1rem;
   }
 }
@@ -371,6 +370,11 @@
       opacity: 1;
       transform: translateY(0) scale(1) rotate(0deg);
     }
+  }
+
+  .card-front:has(> .cannot-play) 
+  {
+    filter: grayscale(1) blur(2px);
   }
 
   .cannot-play

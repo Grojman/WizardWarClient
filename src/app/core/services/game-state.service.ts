@@ -49,7 +49,8 @@ export class GameStateService {
         },
       ],
       CurrentTurn: 0,
-      IsReconnect: false
+      IsReconnect: false,
+      Id: ''
     };
   }
 

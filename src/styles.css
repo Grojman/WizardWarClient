@@ -422,8 +422,8 @@ body {
 
 .proyectile {
   background-image: url("/images/board/proyectile.svg");
-  height: 22rem;
-  width: 22rem;
+  height: 11rem;
+  width: 11rem;
   filter: drop-shadow(0 0 14px rgba(255, 150, 60, 0.85));
 }
 
@@ -454,6 +454,8 @@ body {
 }
 
 .impact-burst {
+  height: 3rem;
+  width: 3rem;
   position: fixed;
   background-image: url("/images/board/impact_burst.svg");
   background-size: contain;
@@ -479,8 +481,8 @@ body {
 
 .spark-particle {
   position: fixed;
-  width: 12rem;
-  height: 12rem;
+  width: 3rem;
+  height: 3rem;
   background-image: url("/images/board/spark.svg");
   background-size: contain;
   background-position: center;

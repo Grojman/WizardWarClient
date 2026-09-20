@@ -615,7 +615,7 @@ async animateAddedCard(
   const cardRect = cardImageElement.getBoundingClientRect();
 
   const endX =
-    destRect.left - originRect.left + originRect.width / 2;
+    destRect.left - originRect.left + originRect.width;
 
   const endY =
     destRect.top - originRect.top;
@@ -678,7 +678,7 @@ async animateAddedCard(
         offset: 0.9
       },
       {
-        transform: `translate(${endX * 0.95}px, ${endY * 0.95}px)
+        transform: `translate(${endX * 0.95}px, ${endY * 0.80}px)
                     scale(0.6) rotate(-10deg)`,
         opacity: 0.3,
         offset: 0.95

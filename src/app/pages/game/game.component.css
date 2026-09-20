@@ -162,6 +162,7 @@
   transform: rotateX(var(--table-tilt));
   -webkit-box-shadow: inset 0px 15px 50px 0px #000000; 
 box-shadow: inset 0px 15px 50px 0px #000000;
+gap: 1rem;
 
 }
 

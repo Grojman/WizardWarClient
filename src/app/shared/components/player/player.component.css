@@ -6,7 +6,7 @@
 .info-section
 {
   /* transform-style: preserve-3d; */
-  gap: 2rem;
+  gap: 4rem;
 }
 
 .dead
@@ -162,7 +162,7 @@
 
   justify-content: center;
 
-  gap: 1rem;
+  gap: 2rem;
 }
 .separator
 {

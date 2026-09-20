@@ -56,6 +56,12 @@ export class GameComponent implements OnInit, OnDestroy {
     audioService.startMusic("game");
   }
 
+  private resetGameState()
+  {
+    this.gameState = this.createInitialGameState();
+    this.storedGameState = this.gameState;
+  }
+
   private createInitialGameState(): Game {
     return this.gameStateService.createInitialGameState();
   }
@@ -169,6 +175,7 @@ export class GameComponent implements OnInit, OnDestroy {
   }
 
   private handleGameStateMessage(content: Game | null): void {
+    if (content?.Id !== this.gameSessionStorage.getGameId()) return;
     this.clearResumeWatchdog();
 
     this.singleActionEvent = true;
@@ -250,6 +257,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   onErrorClosed(): void {
     this.gameSessionStorage.markInactive();
+    this.gameSessionStorage.removeGameId();
     this.router.navigateByUrl('/');
   }
 
@@ -535,6 +543,7 @@ findElement(id: string): HTMLElement{
 }
 
 ngOnInit(): void {
+  console.log('Created');
   this.animationLayer = document.querySelector(".animation-layer") as HTMLElement;
   // Must be read before connect(): a fresh page load never has a socket
   // open yet, while an in-app navigation into a just-found match reuses the
@@ -549,6 +558,7 @@ ngOnInit(): void {
 }
 
 ngOnDestroy(): void {
+  this.resetGameState();
   this.ws.clearSubscription();
   this.clearResumeWatchdog();
   clearInterval(this.disconnectCountdownTimer);
@@ -797,6 +807,7 @@ winnerboard!: ElementRef<HTMLElement>;
 leaveGame()
 {
   this.gameSessionStorage.markInactive();
+  this.gameSessionStorage.removeGameId();
   this.router.navigateByUrl(this.isSeriesRound ? "/series" : "/");
 }
 

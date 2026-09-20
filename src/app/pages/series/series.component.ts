@@ -64,6 +64,7 @@ export class SeriesComponent implements OnInit, OnDestroy {
         this.seriesState.applySeriesEnd(msg.Content);
         break;
       case 'start_game':
+        this.gameSessionStorage.setGameId(msg.Content?.Id);
         this.startRound();
         break;
       case 'error':

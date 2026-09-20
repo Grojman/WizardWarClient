@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { createRandomDeckOption, Deck, RANDOM_DECK_ID } from '../../models/deck.model';
 import { WebsocketService } from '../../core/services/websocket.service';
 import { Router } from '@angular/router';
@@ -573,7 +573,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         break;
       case "start_game":
         this.enteringMatch = true;
-        this.startGame();
+        this.startGame(msg.Content?.Id);
         break;
       case "series_state":
         this.enteringMatch = true;
@@ -661,6 +661,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     if (!content) return;
 
     this.clearActiveMatchWatchdog();
+    this.gameSessionStorage.setGameId(content.Id);
     this.gameSessionStorage.markActive();
     this.hasActiveMatch = true;
     this.activeMatchChecking = false;
@@ -674,6 +675,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     this.activeMatch = null;
     this.cancellingMatch = false;
     this.gameSessionStorage.markInactive();
+    this.gameSessionStorage.removeGameId();
 
     // Skipped at ngOnInit while we still thought there was a match to
     // resume into — safe to fetch now that there isn't one.
@@ -701,10 +703,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     });
   }
 
-  async startGame()
+  async startGame(id: any)
   {
     this.gameSessionStorage.markActive();
-
+    this.gameSessionStorage.setGameId(id);
     await document.querySelector('.home-container')?.animate([
       { opacity: 1},
       { opacity: 0}

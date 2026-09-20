@@ -1,11 +1,26 @@
 import { Injectable } from '@angular/core';
 
 const ACTIVE_GAME_STORAGE_KEY = 'ww_active_game';
+const ACTIVE_GAME_ID = 'ww_active_game_id';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameSessionStorageService {
+  setGameId(id: any): void
+  {
+    localStorage.setItem(ACTIVE_GAME_ID, id);
+  }
+
+  removeGameId(): void
+  {
+    localStorage.removeItem(ACTIVE_GAME_ID);
+  }
+
+  getGameId(): string | null {
+    return localStorage.getItem(ACTIVE_GAME_ID);
+  }
+
   markActive(): void {
     localStorage.setItem(ACTIVE_GAME_STORAGE_KEY, '1');
   }
