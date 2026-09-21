@@ -116,6 +116,10 @@
         {{ (selectedSection.id === 'pr' ? 'HOME_SECTION_DES_PR' : 'HOME_SECTION_DES_BO3') | translate }}
       </p>
     </div>
+
+    <div class="banner-content how-to-play" [class.show]="selectedSection.id === 'htp'">
+      <app-help [isModel]="false"></app-help>
+    </div>
   
     <!-- Shown instead of the root stage above whenever the server still has us
     inside an unfinished GameSession from before a reload/navigation back to

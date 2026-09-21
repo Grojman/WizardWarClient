@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from "@angular/core";
+import { Component, HostListener, Input, OnInit } from "@angular/core";
 import { HelpVideo } from "../../../models/help.video.model"
 import { Card } from "../../../models/card.model";
 @Component({
@@ -9,6 +9,9 @@ import { Card } from "../../../models/card.model";
 })
 export class HelpComponent
  {
+  @Input()
+  isModel: boolean = true;
+
   cardWithAbilityExample: Card = {
     id: "",
     serverId: "",

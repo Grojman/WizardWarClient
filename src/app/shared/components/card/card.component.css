@@ -253,7 +253,7 @@
       position: absolute;
       inset: 0;
       clip-path: polygon(100% 0, 35% 0, 0 100%, 66% 100%);
-      background: #19c21b; 
+      background: #14DCB4; 
 
       z-index: -1;
   }

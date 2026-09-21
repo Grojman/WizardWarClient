@@ -83,17 +83,13 @@
 }
 
 .cards-container {
-
-
   display: flex;
   flex-wrap: wrap;
-
-
-  padding: 1rem;
+  padding: 3rem;
 
   flex: 1;
   overflow-y: scroll;
-  gap: 1rem;
+  gap: 3rem;
 
   & > div {
     display: flex;

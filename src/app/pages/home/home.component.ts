@@ -14,6 +14,7 @@ import { AdsenseService } from '../../core/services/adsense.service';
 import { Game } from '../../models/game.model';
 import { Player } from '../../models/player.model';
 
+
 interface ActiveMatchInfo {
   me: Player;
   rivals: Player[];
@@ -80,6 +81,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       selected: false,
       stage: 'root'
     },
+    {
+      name: 'HOME_SECTION_HOW_TO_PLAY',
+      id: 'htp',
+      selected: false,
+      stage: 'root'
+    }
   ]
 
   externalSections: ExternalSection[] = [
