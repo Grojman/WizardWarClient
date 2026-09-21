@@ -108,6 +108,21 @@
   font-weight: bold;
 }
 
+.font-option {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.font-sample {
+  color: #e0e0e0;
+  margin: 0;
+}
+
+.font-sample.title { font-size: 1.5rem; }
+.font-sample.subtitle { font-size: 1.2rem; }
+.font-sample.text { font-size: 1rem; }
+
 label, span
 {
   color: white;

@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { WebsocketService } from './core/services/websocket.service';
 import { LanguageSettingsService } from './core/services/language.service';
 import { SeoService } from './core/services/seo.service';
+import { FontSettingsService } from './core/services/font-settings.service';
 
 
 @Component({
@@ -17,6 +18,8 @@ export class App {
     private ws: WebsocketService,
     private languageService: LanguageSettingsService,
     private seo: SeoService,
+    // Injected only so the saved font scales are applied from the first page.
+    private fontSettings: FontSettingsService,
   )
   {
     this.ws.connect();

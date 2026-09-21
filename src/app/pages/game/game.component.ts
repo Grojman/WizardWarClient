@@ -241,6 +241,19 @@ export class GameComponent implements OnInit, OnDestroy {
   private pendingEndGame: any = null;
   isSeriesRound: boolean = false;
 
+  // Which .player-slot (Me first, then each rival, as rendered) the turn waves
+  // should circle. It only follows the turn once animations settle, matching when
+  // the turn actually becomes playable, and holds its last value while they run.
+  private lastTurnSlot: number | null = null;
+
+  get turnSlotIndex(): number | null {
+    if (!this.isAnimating) {
+      const index = [this.gameState.Me, ...this.gameState.Rivals].findIndex((p) => p.IsMyTurn);
+      this.lastTurnSlot = index === -1 ? null : index;
+    }
+    return this.lastTurnSlot;
+  }
+
   private handleEndGameMessage(content: any): void {
     this.isSeriesRound = !!content?.isSeriesRound;
 
@@ -795,6 +808,15 @@ cardCheck!: GameCardCheckComponent;
 @ViewChild('errorModal')
 errorModal!: AlertModalComponent;
 
+
+// Deliberately not routed through safeSend: conceding must work at any moment,
+// even mid-animation or on the rival's turn. The server answers with end_game.
+surrender()
+{
+  this.ws.send({
+    "$type": "Surrender"
+  });
+}
 
 openHelp()
 {

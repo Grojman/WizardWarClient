@@ -44,8 +44,11 @@
 
       <div class="series-end-panel panel slideUpFade">
 
-        <h2 class="subtitle" *ngIf="end.forfeited">
+        <h2 class="subtitle" *ngIf="end.forfeited && isYouWinner()">
           {{ 'SERIES_SECTION_FORFEITED' | translate }}
+        </h2>
+        <h2 class="subtitle" *ngIf="end.forfeited && !isYouWinner()">
+          {{ 'SERIES_SECTION_FORFEITED_YOU' | translate }}
         </h2>
         <h2 class="subtitle" *ngIf="!end.forfeited">
           {{ 'SERIES_SECTION_WINNER' | translate }}
@@ -76,6 +79,11 @@
       <h2 class="subtitle round-indicator">
         {{ 'SERIES_SECTION_ROUND' | translate }} {{ seriesState.snapshot!.round }} {{ 'SERIES_SECTION_ROUND_OF' | translate }}
       </h2>
+
+      <button class="btn btn-gold surrender-btn" type="button" (click)="surrender()">
+        <i class="fa-solid fa-flag"></i>
+        {{ 'SERIES_SECTION_SURRENDER' | translate }}
+      </button>
 
 
     </ng-template>

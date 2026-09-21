@@ -3,6 +3,7 @@
   (mousedown)="onMouseDown($event)"
   [class.reverse]="gameState.Rivals.length === 1"
   >
+  <app-turn-waves [activeIndex]="turnSlotIndex"></app-turn-waves>
   <div class="player-slot me"
   #playerboard
   >
@@ -93,6 +94,14 @@ class="btn btn-gold btn-action"
 </button>
 <button class="btn btn-gold btn-action" (click)="openHelp()">
   <i class="fa-solid fa-question"></i>
+</button>
+<button
+class="btn btn-gold btn-action"
+(click)="surrender()"
+[title]="'GAME_SECTION_SURRENDER' | translate"
+[attr.aria-label]="'GAME_SECTION_SURRENDER' | translate"
+>
+  <i class="fa-solid fa-flag"></i>
 </button>
 </div>
 <div class="disconnect-banner" *ngIf="opponentDisconnected">

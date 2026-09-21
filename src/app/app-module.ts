@@ -22,6 +22,7 @@ import { StatsComponent } from './pages/stats/stats.component';
 import { CardvisualizerComponent } from './shared/components/cardvisualizer/cardvisualizer.component';
 import { MessageDialogComponent } from './ui/message-dialog/message-dialog.component';
 import { PlayerComponent } from './shared/components/player/player.component';
+import { TurnWavesComponent } from './shared/components/turn-waves/turn-waves.component';
 import { ChatComponent } from './shared/components/chat/chat.component';
 import { GameCardCheckComponent } from './shared/components/game-card-check/game-card-check.component';
 import { SettingsComponent } from './shared/components/settings/settings.component';
@@ -51,6 +52,7 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     CardvisualizerComponent,
     MessageDialogComponent,
     PlayerComponent,
+    TurnWavesComponent,
     ChatComponent,
     GameCardCheckComponent,
     HelpComponent,

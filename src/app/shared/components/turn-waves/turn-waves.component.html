@@ -1,0 +1,19 @@
+<div class="wave" *ngFor="let p of particles"
+  [style.--fx]="p.fx"
+  [style.--fy]="p.fy"
+  [style.--move-delay.ms]="p.moveDelayMs"
+>
+  <div class="wave-orbit"
+    [class.reverse]="p.orbitReverse"
+    [style.--radius.px]="p.orbitRadius"
+    [style.--orbit-time.s]="p.orbitSeconds"
+    [style.--orbit-phase.s]="p.orbitPhaseSeconds"
+  >
+    <div class="wave-shape"
+      [style.--size.px]="p.size"
+      [style.--ratio]="p.ratio"
+      [style.--tilt.deg]="p.tiltDeg"
+      [style.--rgb]="p.rgb"
+    ></div>
+  </div>
+</div>

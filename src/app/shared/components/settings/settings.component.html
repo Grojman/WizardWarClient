@@ -46,6 +46,30 @@
         </div>
       </div>
 
+      <!-- Font size -->
+      <div class="setting-group">
+        <label class="setting-label">{{ 'SETTINGS_FONT_SIZE' | translate }}</label>
+
+        <div class="font-option" *ngFor="let option of fontOptions">
+          <div class="font-sample" [ngClass]="option.sampleClass">{{ option.label | translate }}</div>
+
+          <input
+            type="range"
+            [min]="fontScaleMin"
+            [max]="fontScaleMax"
+            [step]="fontScaleStep"
+            [value]="fontScales[option.key]"
+            (input)="setFontScale(option.key, +$any($event.target).value)"
+          />
+
+          <span>{{ (fontScales[option.key] * 100) | number:'1.0-0' }}%</span>
+        </div>
+
+        <button class="speed-btn" type="button" (click)="resetFontScales()">
+          {{ 'SETTINGS_FONT_RESET' | translate }}
+        </button>
+      </div>
+
       <!-- Music -->
       <div class="setting-group">
         <label class="setting-label">{{ 'SETTINGS_MUSIC' | translate }}</label>

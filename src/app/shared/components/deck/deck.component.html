@@ -11,8 +11,10 @@
       'background-image': 'url(' + getImagePath() + ')'
     }"
     [title]="deck.name ? (deck.name | translate) : null"
+    (mouseenter)="onImageHover()"
   >
     <span class="descriptiontext"
+    #tooltip
     [class.up]="infoUp"
     >
       <p

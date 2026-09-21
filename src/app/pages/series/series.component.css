@@ -110,6 +110,10 @@
 
 }
 
+.surrender-btn {
+  margin-top: 1rem;
+}
+
 .disabled
 {
   filter: brightness(0.6);

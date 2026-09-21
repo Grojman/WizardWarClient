@@ -180,6 +180,13 @@ gap: 1rem;
 
 .player-slot {
   will-change: transform;
+  /* Above the turn waves layer, which sits directly on the table. */
+  position: relative;
+  z-index: 1;
+}
+
+.table-container {
+  position: relative;
 }
 
 #visualtarget

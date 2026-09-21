@@ -10,6 +10,11 @@
   --overlay-blur-bg: rgba(0, 0, 0, 0.6);
   --text-color: white;
 
+  /* User font-size scales, driven by FontSettingsService. */
+  --font-scale-title: 1;
+  --font-scale-subtitle: 1;
+  --font-scale-text: 1;
+
   --hl-red:    #b3352c;
   --hl-green:  #2c7a51;
   --hl-blue:   #2563a0;
@@ -80,6 +85,29 @@ h2, .subtitle
 p, .text
 {
     font-family: "Text Font 2";
+}
+
+/* User-adjustable font sizes. `zoom` is used because components size their text
+   with a mix of rem/px/keywords, so a single font-size override can't reach them. */
+h1, .title
+{
+    zoom: var(--font-scale-title);
+}
+
+h2, h3, .subtitle
+{
+    zoom: var(--font-scale-subtitle);
+}
+
+p, .text, label, li, .text-input, .text-area
+{
+    zoom: var(--font-scale-text);
+}
+
+/* Anything nested already inherits its ancestor's zoom; don't compound it. */
+:is(h1, h2, h3, .title, .subtitle, p, .text, label, li) :is(h1, h2, h3, .title, .subtitle, p, .text, label, li, .text-input, .text-area)
+{
+    zoom: 1;
 }
 
 body {

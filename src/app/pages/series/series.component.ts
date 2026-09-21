@@ -92,6 +92,12 @@ export class SeriesComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('/game');
   }
 
+  // Ends the whole series on the spot: the server counts it as a forfeit and
+  // answers with series_end, which swaps the page over to the end panel.
+  surrender(): void {
+    this.ws.send({ '$type': 'LeaveGame' });
+  }
+
   async returnHome(): Promise<void> {
     this.seriesState.clear();
     this.gameSessionStorage.markInactive();

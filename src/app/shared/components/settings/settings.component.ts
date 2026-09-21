@@ -4,6 +4,15 @@ import { ANIMATION_SPEED_OPTIONS } from '../../../core/config/animation-config';
 import { AudioSettingsService } from '../../../core/services/audio-settings-service';
 import { LanguageSettingsService } from '../../../core/services/language.service';
 import { LANGUAGE_OPTIONS } from '../../../core/config/language-config';
+import { FontSettingsService } from '../../../core/services/font-settings.service';
+import {
+  DEFAULT_FONT_SCALES,
+  FONT_SCALE_MAX,
+  FONT_SCALE_MIN,
+  FONT_SCALE_STEP,
+  FontScaleKey,
+  FontScales,
+} from '../../../core/config/font-config';
 
 @Component({
   selector: 'app-settings',
@@ -19,8 +28,30 @@ export class SettingsComponent implements OnInit {
   constructor(
   private animationSettingsService: AnimationSettingsService,
   private audioSettings: AudioSettingsService,
-  protected languageService: LanguageSettingsService
+  protected languageService: LanguageSettingsService,
+  private fontSettings: FontSettingsService
 ) {}
+
+  fontScaleMin = FONT_SCALE_MIN;
+  fontScaleMax = FONT_SCALE_MAX;
+  fontScaleStep = FONT_SCALE_STEP;
+
+  // Filled from FontSettingsService in ngOnInit (BehaviorSubject emits right away).
+  fontScales: FontScales = { ...DEFAULT_FONT_SCALES };
+
+  fontOptions: { key: FontScaleKey; label: string; sampleClass: string }[] = [
+    { key: 'title', label: 'SETTINGS_FONT_TITLE', sampleClass: 'title' },
+    { key: 'subtitle', label: 'SETTINGS_FONT_SUBTITLE', sampleClass: 'subtitle' },
+    { key: 'text', label: 'SETTINGS_FONT_TEXT', sampleClass: 'text' },
+  ];
+
+  setFontScale(key: FontScaleKey, value: number): void {
+    this.fontSettings.setScale(key, value);
+  }
+
+  resetFontScales(): void {
+    this.fontSettings.reset();
+  }
 
   languages = LANGUAGE_OPTIONS;
 
@@ -82,6 +113,10 @@ export class SettingsComponent implements OnInit {
     this.sfxEnabled = this.audioSettings.isSfxEnabled();
 
     this.currentSpeedMultiplier = this.animationSettingsService.getSpeedMultiplier();
+
+    this.fontSettings.scales$.subscribe(scales => {
+      this.fontScales = scales;
+    });
 
     this.audioSettings.musicVolume$.subscribe(volume => {
       this.musicVolume = volume;

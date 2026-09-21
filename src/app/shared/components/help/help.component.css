@@ -51,6 +51,17 @@
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
 
 }
+.close-btn {
+  color: #a0a0a0;
+  font-size: 24px;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+}
+
+.close-btn:hover {
+  color: #ffffff;
+}
 
 .actions-container
 {

@@ -1,0 +1,105 @@
+/* Sits between the table background and the player slots (which stack above it). */
+:host {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+
+  --wave-x: 50%;
+  --wave-y: 50%;
+  --wave-w: 0px;
+  --wave-h: 0px;
+  /* How flat the orbits are: the table is seen at an angle, so circles read as ellipses. */
+  --orbit-flatten: 0.55;
+
+  transition: opacity 0.4s ease;
+}
+
+:host(.idle) {
+  opacity: 0;
+}
+
+/* First placement / resize: jump straight to the target instead of flying in. */
+:host(.placing) .wave {
+  transition: none;
+}
+
+.wave {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  transform: translate(
+    calc(var(--wave-x) + var(--fx) * var(--wave-w)),
+    calc(var(--wave-y) + var(--fy) * var(--wave-h))
+  );
+
+  /* Turn change: a quick, staggered dash over to the other player. */
+  transition: transform 0.5s cubic-bezier(0.8, 0, 0.15, 1) var(--move-delay, 0ms);
+  will-change: transform;
+}
+
+.wave-orbit {
+  animation: wave-orbit var(--orbit-time, 8s) linear infinite;
+  animation-delay: calc(var(--orbit-phase, 0s) * -1);
+}
+
+.wave-orbit.reverse {
+  animation-direction: reverse;
+}
+
+/* Orbit on an ellipse while keeping the shape itself upright and undistorted. */
+@keyframes wave-orbit {
+  from {
+    transform: scaleY(var(--orbit-flatten)) rotate(0deg) translateX(var(--radius))
+      rotate(0deg) scaleY(calc(1 / var(--orbit-flatten)));
+  }
+  to {
+    transform: scaleY(var(--orbit-flatten)) rotate(360deg) translateX(var(--radius))
+      rotate(-360deg) scaleY(calc(1 / var(--orbit-flatten)));
+  }
+}
+
+.wave-shape {
+  --rgb: 255 244 214;
+
+  width: var(--size);
+  height: calc(var(--size) * var(--ratio));
+  box-sizing: border-box;
+
+  border: 2px solid rgb(var(--rgb) / 0.85);
+  border-radius: 3px;
+  background: linear-gradient(135deg, rgb(var(--rgb) / 0.4), rgb(var(--rgb) / 0.1));
+  box-shadow: 0 0 14px rgb(var(--rgb) / 0.6);
+
+  transform: translate(-50%, -50%) rotate(var(--tilt));
+  animation: wave-pulse 2.6s ease-in-out infinite alternate;
+  transition: filter 0.3s ease;
+}
+
+:host(.travelling) .wave-shape {
+  filter: brightness(1.9) saturate(1.3);
+}
+
+@keyframes wave-pulse {
+  from {
+    opacity: 0.55;
+    transform: translate(-50%, -50%) rotate(var(--tilt)) scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(calc(var(--tilt) + 12deg)) scale(1.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wave-orbit,
+  .wave-shape {
+    animation: none;
+  }
+
+  .wave {
+    transition-duration: 0.01s;
+  }
+}
