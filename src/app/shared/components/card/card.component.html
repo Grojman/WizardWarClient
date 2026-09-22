@@ -1,4 +1,3 @@
-
   <div
     *ngIf="card || faceDown"
     class="card"
@@ -17,13 +16,10 @@
     [title]="!faceDown && card?.name ? (card?.name | translate) : null"
     (mouseenter)="playHoverSound()"
   >
-    
- 
-   <p 
+   <p
     *ngIf="!faceDown && card?.canPlay"
     class="title card-name ">
     <span>
-
       {{ card?.name | translate }}
     </span>
     </p>
@@ -34,42 +30,24 @@
       <p *ngIf="card?.hasEffect && card?.effectTimes !== -1">
         {{ card?.effectTimes }}
       </p>
-
     </div>
-
     <footer class="card-footer" *ngIf="card?.type == unit && !faceDown">
-
       <span class="attack-value">
-        <!-- <i class="fa-solid fa-hand-fist"></i>  -->
          <p>
-
            {{ card?.attack }}
          </p>
-
       </span>
-
       <span class="health">
-
         <p>
           {{ card?.health }}
-
         </p>
-        <!-- <i class="fa-solid fa-heart"></i> -->
-
       </span>
-
     </footer>
-
-
     <div class="card-back-design"
     *ngIf="faceDown"
     >
-
     </div>
-
-
-    <div 
+    <div
     *ngIf="!card?.canPlay && !faceDown"
     class="cannot-play"></div>
-
   </div>

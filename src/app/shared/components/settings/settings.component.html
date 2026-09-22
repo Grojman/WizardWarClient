@@ -1,21 +1,14 @@
-<!-- settings.component.html -->
-
 <div class="settings-container overlay-backdrop" (click)="close()" *ngIf="isOpen">
   <div class="settings-panel" (click)="$event.stopPropagation()">
     <div class="settings-header">
       <span class="title">{{ 'SETTINGS_TITLE' | translate }}</span>
-
       <button class="close-btn btn-icon" type="button" (click)="close()">
         ✕
       </button>
     </div>
-    
     <div class="settings-content">
-
-      <!-- Language -->
       <div class="setting-group">
         <label class="setting-label">{{ 'SETTINGS_LANGUAGE' | translate }}</label>
-
         <div class="speed-options">
           <button
             *ngFor="let l of languages"
@@ -27,12 +20,9 @@
           </button>
         </div>
       </div>
-
-      <!-- Animation Speed -->
       <div class="setting-group">
         <label class="setting-label">{{ 'SETTINGS_ANIMATION_SPEED' | translate }}</label>
         <p class="current-speed">{{ 'SETTINGS_CURRENT_LABEL' | translate }} {{ getCurrentSpeedLabel() }}</p>
-
         <div class="speed-options">
           <button
             *ngFor="let option of speedOptions"
@@ -45,14 +35,10 @@
           </button>
         </div>
       </div>
-
-      <!-- Font size -->
       <div class="setting-group">
         <label class="setting-label">{{ 'SETTINGS_FONT_SIZE' | translate }}</label>
-
         <div class="font-option" *ngFor="let option of fontOptions">
           <div class="font-sample" [ngClass]="option.sampleClass">{{ option.label | translate }}</div>
-
           <input
             type="range"
             [min]="fontScaleMin"
@@ -61,19 +47,14 @@
             [value]="fontScales[option.key]"
             (input)="setFontScale(option.key, +$any($event.target).value)"
           />
-
           <span>{{ (fontScales[option.key] * 100) | number:'1.0-0' }}%</span>
         </div>
-
         <button class="speed-btn" type="button" (click)="resetFontScales()">
           {{ 'SETTINGS_FONT_RESET' | translate }}
         </button>
       </div>
-
-      <!-- Music -->
       <div class="setting-group">
         <label class="setting-label">{{ 'SETTINGS_MUSIC' | translate }}</label>
-
         <label class="checkbox-label">
           <input
             type="checkbox"
@@ -82,7 +63,6 @@
           />
           {{ 'SETTINGS_ENABLED' | translate }}
         </label>
-
         <input
           type="range"
           min="0"
@@ -91,14 +71,10 @@
           [value]="musicVolume"
           (input)="setMusicVolume(+$any($event.target).value)"
         />
-
         <span>{{ (musicVolume * 100) | number:'1.0-0' }}%</span>
       </div>
-
-      <!-- Sound Effects -->
       <div class="setting-group">
         <label class="setting-label">{{ 'SETTINGS_SOUND_EFFECTS' | translate }}</label>
-
         <label class="checkbox-label">
           <input
             type="checkbox"
@@ -107,7 +83,6 @@
           />
           {{ 'SETTINGS_ENABLED' | translate }}
         </label>
-
         <input
           type="range"
           min="0"
@@ -116,10 +91,8 @@
           [value]="sfxVolume"
           (input)="setSfxVolume(+$any($event.target).value)"
         />
-
         <span>{{ (sfxVolume * 100) | number:'1.0-0' }}%</span>
       </div>
-
     </div>
   </div>
 </div>

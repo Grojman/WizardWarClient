@@ -36,6 +36,24 @@
   display: flex;
   align-items: center;
 }
+
+.online-player-count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  color: lightgray;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+.online-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background-color: #4caf50;
+  box-shadow: 0 0 4px #4caf50;
+}
 .home-container {
 
   min-height: 100vh;

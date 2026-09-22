@@ -8,31 +8,25 @@
         [showEffectActive]="false"
     >
     </app-card>
-
-    <div class="card-info" #cardinfo (scroll)="updateScrollFade()"  
+    <div class="card-info" #cardinfo (scroll)="updateScrollFade()"
     >
         <p>
             {{ card.name }}
         </p>
-
         <hr class="divider">
-
         <p
         class="card-families"
         *ngIf="card.families?.length !== 0"
         >
             {{ card.families?.join(" / ") }}
         </p>
-
         <hr class="divider" *ngIf="card.families?.length !== 0">
-
         <p
         *ngIf="card.description"
         class="card-description"
         [innerHTML]="updateParser()"
         >
         </p>
-
         <p
         *ngIf="card.conditionTarget"
         class="card-condition-progress"
@@ -40,9 +34,8 @@
             {{ 'CARD_CONDITION_PROGRESS' | translate }} {{ card.conditionProgress }} / {{ card.conditionTarget }}
         </p>
     </div>
-
     <div class="has-scroll-fade" *ngIf="showScrollFade"
     >
-        <i class="fa-solid fa-caret-down" style="color: rgb(255, 212, 59);"></i>    
+        <i class="fa-solid fa-caret-down" style="color: rgb(255, 212, 59);"></i>
     </div>
 </div>

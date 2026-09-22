@@ -355,6 +355,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   readonly playerCountOptions: number[] = [2, 3, 4];
 
+  // Live count of connected players, pushed unprompted by the server on
+  // every connect/disconnect (see GameManager.BroadcastPlayerCount).
+  onlinePlayerCount: number | null = null;
+
   matchMode: 'Single' | 'BestOfThree' = 'Single';
 
 
@@ -635,6 +639,9 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         break;
       case "translations":
         this.translation.setDictionary(msg.Content?.values ?? {});
+        break;
+      case "player_count":
+        this.onlinePlayerCount = msg.Content?.count ?? null;
         break;
       default:
         console.log("Unknown message!!");

@@ -3,7 +3,6 @@
   (mousedown)="onMouseDown($event)"
   [class.reverse]="gameState.Rivals.length === 1"
   >
-  <app-turn-waves [activeIndex]="turnSlotIndex"></app-turn-waves>
   <div class="player-slot me"
   #playerboard
   >
@@ -23,7 +22,6 @@
   [attackingUnit]="attackingUnit"
   [showTarget]="gameState.Rivals.length !== 1"
   [long]="gameState.Rivals.length !== 1"
-  
   >
 </app-player>
 </div>
@@ -47,39 +45,29 @@ class="player-slot rival"
 </app-player>
 </div>
 </div>
-
-
 <div class="animation-layer">
   <div class="proyectile" style="display: none;"></div>
   <div class="icon-hand" style="display: none;"></div>
   <div class="icon-hand-card" style="display: none;"></div>
   <div class="icon-hand-wrench" style="display: none;"></div>
-
   <img class="card-icon" src="/images/cards/reverse_card.svg" alt="" style="display: none;"/>
-
   <img class="wand-icon" src="/images/board/wand.svg" alt="" style="display: none;"/>
 </div>
 </div>
-
 <div class="action-buttons">
   <p class="turn-text">
     <span>
       {{ 'GAME_SECTION_TURN' | translate }} {{ gameState.CurrentTurn }}
     </span>
-    
-    <span *ngIf="gameState.CurrentTurn % 2 !== 0" 
+    <span *ngIf="gameState.CurrentTurn % 2 !== 0"
       [title]="'GAME_SECTION_TURN_PLAYER' | translate"
     >
     <i class="fa-solid fa-copy"></i>
     <i class="fa-solid fa-plus"></i>
   </span>
-  
 </p>
-
-
 <button class="notification-button btn btn-gold btn-action" (click)="openChat()">
   <i class="fa-solid fa-comments"></i>
-
   <p class="notification-counter"
   *ngIf="unreadNotificationCounter !== 0"
   >
@@ -97,7 +85,7 @@ class="btn btn-gold btn-action"
 </button>
 <button
 class="btn btn-gold btn-action"
-(click)="surrender()"
+(click)="surrenderModal.open()"
 [title]="'GAME_SECTION_SURRENDER' | translate"
 [attr.aria-label]="'GAME_SECTION_SURRENDER' | translate"
 >
@@ -108,48 +96,44 @@ class="btn btn-gold btn-action"
   <i class="fa-solid fa-triangle-exclamation"></i>
   <span>{{ getPlayer(opponentDisconnected.playerId).Name }} {{ 'GAME_SECTION_DISCONNECTED' | translate }} {{ secondsRemaining }}s {{ 'GAME_SECTION_DISCONNECTED_SUBTEXT' | translate }}</span>
 </div>
-
 <div class="winner-overlay">
   <div #winnerboard class="winner-board">
     <p>
       <span class="winner-name">{{ 'GAME_SECTION_WINNER_PLACEHOLDER' | translate }}</span>
       {{ 'GAME_SECTION_WINNER' | translate }}
     </p>
-    
     <button class="btn btn-gold btn-action" (click)="leaveGame()">
       {{ 'GAME_SECTION_RETURN_HOME' | translate }}
     </button>
   </div>
 </div>
-
 <app-game-card-check
 #gamecheck
 >
-
 </app-game-card-check>
-
 <app-chat
 #chat
 (onMessageSent)="onMessageSent($event)"
 >
-
 </app-chat>
-
 <app-settings
 #settings
 >
-
 </app-settings>
-
 <app-help
 #helpwindow
 >
-
 </app-help>
-
+<app-confirm-modal
+#surrenderModal
+titleKey="GAME_SECTION_SURRENDER_CONFIRM_TITLE"
+messageKey="GAME_SECTION_SURRENDER_CONFIRM_MESSAGE"
+confirmKey="GAME_SECTION_SURRENDER"
+(confirmed)="surrender()"
+>
+</app-confirm-modal>
 <app-alert-modal
 #errorModal
 (closed)="onErrorClosed()"
 >
-
 </app-alert-modal>

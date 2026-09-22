@@ -1,64 +1,35 @@
 .health-animate-enter {
   animation: popEnter 500ms ease-out;
 }
-
 .health-animate-exit {
   animation: popExit 500ms ease-in;
 }
-
-/* Entrada desde arriba */
-
 @keyframes popEnter {
-
   0% {
     transform: translateY(-3vw);
     opacity: 0;
   }
-
   100% {
     transform: translateY(0);
     opacity: 1;
   }
-
 }
-
-/* Salida hacia abajo */
-
 @keyframes popExit {
-
   0% {
     transform: translateY(0);
     opacity: 1;
   }
-
   100% {
     transform: translateY(3vw);
     opacity: 0;
   }
-
 }
-
-/* Color si pierde vida */
-
-/* The glow lives on this wrapper instead of the rotated background div (or
-   its span): that div's rotate3d() transform makes it establish its own
-   stacking context, which would trap a z-index:-1 pseudo-element of its own
-   subtree in FRONT of its background image rather than behind it — negative
-   z-index only escapes behind a stacking-context-creating ancestor's own
-   background when it isn't nested inside that ancestor in the first place.
-   Keeping this wrapper untransformed lets the glow stack as a plain sibling
-   layer behind the (as a whole, still one opaque unit) rotated container. */
 .health-wrapper {
   position: relative;
 }
-
 .health-wrapper.health-shake {
   animation: healthShake 500ms ease-in-out;
 }
-
-/* Decaying shake along the impact direction (--shake-x/--shake-y, a unit
-   vector set from the attacker->target line so the hit reads as a knockback
-   rather than a generic wobble). */
 @keyframes healthShake {
   0%, 100% { transform: translate(0, 0); }
   15% { transform: translate(calc(var(--shake-x, 0) * 12px), calc(var(--shake-y, 0) * 12px)); }
@@ -66,7 +37,6 @@
   55% { transform: translate(calc(var(--shake-x, 0) * 5px), calc(var(--shake-y, 0) * 5px)); }
   75% { transform: translate(calc(var(--shake-x, 0) * -2px), calc(var(--shake-y, 0) * -2px)); }
 }
-
 .enhanced
 {
   bottom: 50%;
@@ -78,16 +48,13 @@
   box-shadow: 0px 40px 60px 60px rgb(239, 255, 14);
   z-index: -1;
 }
-
 .life-text.negative {
   color: red;
 }
-
 .life-text.positive
 {
   color: green;
 }
-
 .rival-health-background,
 .player-health-background
 {
@@ -103,7 +70,6 @@
 {
   background-image: url('/images/board/player_life.webp')
 }
-
 .life-text
 {
   margin: auto;

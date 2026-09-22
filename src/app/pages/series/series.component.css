@@ -3,31 +3,14 @@
   justify-content: center;
   gap: 1rem;
 }
-
 .loading-indicator {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
   margin: 1rem auto;
 }
-
 .spinner {
-  display: inline-block;
   width: 3rem;
   height: 3rem;
-  border: 6px solid rgba(255, 255, 255, 0.25);
-  border-top-color: var(--color-gold);
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
+  border-width: 6px;
 }
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 .deck-slot {
   flex: 0 0 auto;
   transition:
@@ -37,7 +20,6 @@
     margin .5s cubic-bezier(.22, 1, .36, 1);
   will-change: transform, opacity;
 }
-
 .deck-list.picked .deck-slot:not(.is-picked) {
   opacity: 0;
   transform: scale(.85) translateY(10px);
@@ -46,13 +28,11 @@
   overflow: hidden;
   pointer-events: none;
 }
-
 .deck-list.picked .deck-slot.is-picked {
   transform: scale(1.9);
   z-index: 5;
   transform-origin: top;
 }
-
 .hidden-selection
 {
   font-size: 30rem;
@@ -61,89 +41,64 @@
   z-index: 9;
   font-family: "Text Font 3";
 }
-
 .rival, .you
 {
   background-size: contain;
 }
-
-
 .rival
 {
   background-image: url('/images/red_b_opac.webp');
 }
-
 .you
 {
   background-image: url('/images/blue_b_opac.webp');
 }
-
 .series-container {
   min-height: 100vh;
   background-image: url('/images/stones_opac.webp');
   display: flex;
   justify-content: space-around;
 }
-
 .series-banner {
   color: white;
   display: flex;
   flex-direction: column;
   align-items: center;
-
   background-image: url('/images/wood.webp');
   background-size: contain;
   background-repeat: no-repeat;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-
   padding: 4rem 8rem;
-
   z-index: 1;
 }
-
 .round-indicator {
   animation: fadeInUp 0.6s ease;
   font-size: 2rem;
   margin: 0;
-
 }
-
 .surrender-btn {
   margin-top: 1rem;
 }
-
 .disabled
 {
   filter: brightness(0.6);
 }
-
 .title
 {
   font-size: 3rem;
   margin: 0;
 }
-
 .series-row {
   padding-top: 2rem;
   align-items: center;
-
   animation: slideUpFade 0.6s ease;
-
-
   display: flex;
   flex-direction: column;
   gap: 7rem;
-
   width: 40%;
 }
-
-.series-decks-container
-{
-  display: flex;
-}
-
 .series-player-info {
   display: flex;
   flex-direction: column;
@@ -151,30 +106,24 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.75rem;
-
   margin-bottom: 1rem;
 }
-
 .series-player-name {
   margin: 0;
   font-size: 2rem;
 }
-
 .series-score-badge {
   font-family: "Text Font 3";
   font-size: 3rem;
 }
-
 .series-status {
   font-family: "Text Font 2";
   font-style: italic;
   font-size: 1rem;
 }
-
 .hidden-status {
   opacity: 0.6;
 }
-
 .series-deck-list {
   display: flex;
   flex-wrap: wrap;
@@ -182,39 +131,32 @@
   z-index: 9;
   margin: 0 2rem;
 }
-
 .series-end-panel {
   align-items: center;
   gap: 1rem;
   padding: 2rem;
   text-align: center;
 }
-
 .winner-text {
   font-size: 1.25rem;
 }
-
 .winner-text.win {
   color: var(--color-gold);
 }
-
 .final-scores {
   display: flex;
   gap: 2rem;
 }
-
 .final-score-entry {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.25rem;
 }
-
 .final-score-value {
   font-family: "Text Font 3";
   font-size: 2rem;
 }
-
 @media (max-width: 900px) {
   .series-banner {
     width: 95vw;

@@ -6,36 +6,27 @@
     background-repeat: no-repeat;
     background-position: center;
     border-radius: 4px;
-    
 }
-
 .enhanced
 {
     box-shadow: inset   rgb(38, 57, 77) 0px 0px 40px -0px ;
 }
-
-
-
 .rival-background
 {
     background-image: url('/images/board/rival_dock.webp')
 }
-
 .player-background
 {
     background-image: url('/images/board/player_dock.webp')
 }
-
 .spell-background
 {
     transform: scale(0.8);
     filter: grayscale(80%);
 }
-
 .contained-card
 {
     width: fit-content;
     display: flex;
     margin: auto;
 }
-

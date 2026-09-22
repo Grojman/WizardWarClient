@@ -17,6 +17,10 @@ export class Health {
 
   shakeY: number = 0;
 
+  // Damage taken by the hit currently shaking, so dependents (the turn-waves
+  // swarm) can scale their knockback to how hard the hit was.
+  shakeDamage: number = 0;
+
   // originX/originY: attacker->target direction; defaults to a straight-down shake when unknown.
   changeHealth(amount: number, duration: number, originX: number = 0, originY: number = 1) {
 
@@ -27,6 +31,7 @@ export class Health {
       const length = Math.hypot(originX, originY) || 1;
       this.shakeX = originX / length;
       this.shakeY = originY / length;
+      this.shakeDamage = -amount;
 
       this.shaking = true;
       setTimeout(() => {

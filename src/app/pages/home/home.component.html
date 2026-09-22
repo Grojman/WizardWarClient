@@ -20,6 +20,11 @@
     </h1>
   </div>
 
+  <p class="online-player-count" *ngIf="onlinePlayerCount !== null">
+    <span class="online-dot"></span>
+    {{ onlinePlayerCount }} {{ 'HOME_SECTION_ONLINE_PLAYERS' | translate }}
+  </p>
+
   <div class="home-sections">
     <p class="home-section" [class.selected]="s.selected" [class.disabled]="sectionsBlocked()" *ngFor="let s of sections" (click)="sectionSelected(s)"
     (mouseenter)="playCrack($event)"
@@ -418,6 +423,10 @@
         ></ins>
       </div>
     </div>
+    <app-dodge-minigame
+      *ngIf="searching"
+      (cancel)="cancelJoining()"
+    ></app-dodge-minigame>
     <app-alert-modal #errorModal></app-alert-modal>
   
   </div>

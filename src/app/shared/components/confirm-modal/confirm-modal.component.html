@@ -1,0 +1,10 @@
+<div class="confirm-window overlay-backdrop" (click)="close()" *ngIf="isOpen">
+    <div class="confirm-container panel" (click)="$event.stopPropagation()">
+    <h2 class="title">{{ titleKey | translate }}</h2>
+    <p class="text">{{ messageKey | translate }}</p>
+    <div class="confirm-actions">
+        <button (click)="close()">{{ cancelKey | translate }}</button>
+        <button (click)="confirm()">{{ confirmKey | translate }}</button>
+    </div>
+    </div>
+</div>

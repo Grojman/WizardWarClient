@@ -1,0 +1,50 @@
+.minigame-container
+{
+    max-width: min(90vw, 26rem);
+    max-height: 95vh;
+    overflow-y: auto;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: center;
+}
+
+.minigame-status
+{
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.minigame-score
+{
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.minigame-board
+{
+    width: min(256px, 70vw);
+    aspect-ratio: 1;
+    border: 2px solid var(--color-gold);
+    border-radius: 6px;
+}
+
+.minigame-pad
+{
+    display: grid;
+    grid-template-columns: repeat(3, 2.75rem);
+    grid-template-areas:
+        ". up ."
+        "left down right";
+    gap: 0.35rem;
+}
+
+.minigame-pad .btn
+{
+    padding: 0.4rem 0;
+}
+
+.pad-up { grid-area: up; }
+.pad-left { grid-area: left; }
+.pad-down { grid-area: down; }
+.pad-right { grid-area: right; }

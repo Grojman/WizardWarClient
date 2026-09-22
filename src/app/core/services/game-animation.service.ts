@@ -402,8 +402,8 @@ const targetDash = targetElement.animate(
     wandRect.height;
 
   // Distance to travel from origin to deck
-  const deltaX = endX - startX;
-  const deltaY = endY - startY;
+  const deltaX = endX - startX + (deckRect.width);
+  const deltaY = endY - startY + (deckRect.height / 8);
 
   // Put wand at origin
   wand.style.left = `${startX}px`;
@@ -457,10 +457,7 @@ const targetDash = targetElement.animate(
 
   await animation.finished;
 
-  // Single spark once the whole strike sequence is done, instead of a burst
-  // spawned mid-animation for every wand tap.
-  const tipRect = wand.getBoundingClientRect();
-  this.spawnSparks(tipRect.right, tipRect.top, 15);
+  this.spawnSparks(deltaX, deltaY, 15);
 
   wand.style.display = 'none';
   wand.style.left = '';
@@ -860,7 +857,7 @@ async animateSpellCast(cardId: string): Promise<void> {
   element.style.filter = '';
 }
 
-  async createProjectile(source: string, target: string, optionalTarget: string = "", amount: number = 0): Promise<void> {
+  async createProjectile(source: string, target: string, optionalTarget: string = "", amount: number = 0, sourcePlayerId: string = ""): Promise<void> {
   if (source === target) {
     return;
   }
@@ -881,6 +878,12 @@ async animateSpellCast(cardId: string): Promise<void> {
 
   if (optionalTarget && !sourceElement) {
     sourceElement = document.querySelector(`[data-game-id="${optionalTarget}"]`) as HTMLElement | null;
+  }
+
+  // Last resort: fly from the player's health component (app-health carries the player's id
+  // as its data-game-id), e.g. when the source card already left the board.
+  if (sourcePlayerId && !sourceElement) {
+    sourceElement = document.querySelector(`app-health[data-game-id="${sourcePlayerId}"]`) as HTMLElement | null;
   }
 
   if (!projectile || !sourceElement || !targetElement) {

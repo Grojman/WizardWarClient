@@ -1,0 +1,14 @@
+.confirm-container
+{
+    max-width: 50vw;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.confirm-actions
+{
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}

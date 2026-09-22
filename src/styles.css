@@ -9,12 +9,9 @@
   --overlay-dark: rgba(0, 0, 0, 0.5);
   --overlay-blur-bg: rgba(0, 0, 0, 0.6);
   --text-color: white;
-
-  /* User font-size scales, driven by FontSettingsService. */
   --font-scale-title: 1;
   --font-scale-subtitle: 1;
   --font-scale-text: 1;
-
   --hl-red:    #b3352c;
   --hl-green:  #2c7a51;
   --hl-blue:   #2563a0;
@@ -22,111 +19,88 @@
   --hl-amber:  #a86412;
   --hl-slate:  #5c6470;
 }
-
 @font-face {
   font-family: Title;
   src: url("/fonts/Chokokutai-Regular.ttf");
   font-weight: normal;
   font-style: normal;
 }
-
 @font-face {
   font-family: "Subtitle Font";
   src: url("/fonts/GeostarFill-Regular.ttf");
   font-weight: bold;
   font-style: normal;
 }
-
 @font-face {
   font-family: "Text Font";
   src: url("/fonts/Geo-Regular.ttf");
   font-weight: bold;
   font-style: normal;
 }
-
 @font-face {
   font-family: "Text Font 2";
   src: url("/fonts/Averia_Serif_Libre/AveriaSerifLibre-Regular.ttf");
   font-weight: bold;
   font-style: normal;
 }
-
 @font-face {
   font-family: "Text Font 3";
   src: url("/fonts/Eagle_Lake/EagleLake-Regular.ttf");
   font-weight: bold;
   font-style: normal;
 }
-
 @font-face {
   font-family: "Text Font 4";
   src: url("/fonts/Kings/Kings-Regular.ttf");
   font-weight: bold;
   font-style: normal;
 }
-
 @font-face {
   font-family: "Text Font 5";
   src: url("/fonts/Uncial_Antiqua/UncialAntiqua-Regular.ttf");
   font-weight: bold;
   font-style: normal;
 }
-
 h1, .title
 {
     font-family: "Text Font 3";
 }
-
 h2, .subtitle
 {
     font-family: "Text Font 5";
 }
-
 p, .text
 {
     font-family: "Text Font 2";
 }
-
-/* User-adjustable font sizes. `zoom` is used because components size their text
-   with a mix of rem/px/keywords, so a single font-size override can't reach them. */
 h1, .title
 {
     zoom: var(--font-scale-title);
 }
-
 h2, h3, .subtitle
 {
     zoom: var(--font-scale-subtitle);
 }
-
 p, .text, label, li, .text-input, .text-area
 {
     zoom: var(--font-scale-text);
 }
-
-/* Anything nested already inherits its ancestor's zoom; don't compound it. */
 :is(h1, h2, h3, .title, .subtitle, p, .text, label, li) :is(h1, h2, h3, .title, .subtitle, p, .text, label, li, .text-input, .text-area)
 {
     zoom: 1;
 }
-
 body {
-    /* background:
-    radial-gradient(circle at top, #2b1055, #000); */
     margin: 0;
     background-color: black;
     color: var(--text-color);
 }
-
 *::-webkit-scrollbar {
     display: none;
 }
-
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes floatIcon { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 @keyframes slideUpFade { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
-
 .text-input {
   background: transparent;
   border: 2px solid var(--color-gold);
@@ -136,7 +110,6 @@ body {
   font-family: "Text Font 2";
   font-size: 1rem;
 }
-
 .text-area
 {
   background: transparent;
@@ -147,8 +120,6 @@ body {
   font-family: "Text Font 5";
   font-size: 1rem;
 }
-
-
 .btn {
   display: inline-flex;
   align-items: center;
@@ -165,22 +136,49 @@ body {
 }
 .btn:hover { transform: scale(1.05); }
 .btn:disabled { opacity: 0.2; cursor: not-allowed; transform: none; }
-
-/* A button disabled because it represents the user's current selection
-   (not because the action is genuinely unavailable) gets its own "pressed"
-   look instead of the disabled fade, so the two states read differently. */
 .btn.active:disabled {
   opacity: 1;
   cursor: default;
   transform: scale(1.2);
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 10px var(--color-gold);
 }
-
-.btn-gold { 
-  background: var(--color-gold); 
+.btn-gold {
+  background: var(--color-gold);
 }
 .btn.btn-gold:hover { box-shadow: 0 0 12px var(--color-gold); }
-
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--color-gold-dark);
+}
+.back-button {
+  margin-top: 1rem;
+}
+.title-icon {
+  margin-right: 15px;
+  color: var(--color-gold);
+  animation: floatIcon 3s ease-in-out infinite;
+}
+.loading-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 3rem auto;
+}
+.spinner {
+  display: inline-block;
+  width: 4rem;
+  height: 4rem;
+  border: 7px solid rgba(255, 255, 255, 0.25);
+  border-top-color: var(--color-gold);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 .btn-icon {
   background: transparent;
   border: none;
@@ -192,11 +190,6 @@ body {
   transition: color 0.2s;
 }
 .btn-icon:hover { color: var(--color-gold); transform: none; }
-
-/* ========================= */
-/* OVERLAYS & PANELS */
-/* ========================= */
-
 .overlay-backdrop {
   position: fixed;
   inset: 0;
@@ -207,7 +200,6 @@ body {
   background-color: var(--overlay-dark);
   animation: fadeIn 0.3s ease-in-out;
 }
-
 .overlay-blur {
   position: fixed;
   inset: 0;
@@ -221,7 +213,6 @@ body {
   animation: fadeIn 0.25s ease;
 }
 .overlay-blur--bottom { align-items: flex-end; }
-
 .panel {
   background-color: var(--color-panel-bg);
   border-radius: 12px;
@@ -230,14 +221,8 @@ body {
   display: flex;
   flex-direction: column;
 }
-
-/* ========================= */
-/* UTILITIES */
-/* ========================= */
-
 .hover-grow { transition: transform 0.3s; }
 .hover-grow:hover { transform: scale(1.05); }
-
 .divider {
   flex-shrink: 0;
   min-height: 3px;
@@ -246,10 +231,6 @@ body {
   margin: 0;
   border: 0;
 }
-
-/* Shown globally (see app.html) whenever the device is in portrait mode -
-   the game requires landscape, so every page is blocked behind this notice
-   until the phone is rotated. */
 .rotate-phone {
   display: none;
   flex-direction: column;
@@ -261,33 +242,24 @@ body {
   z-index: 100000;
   background-color: var(--color-wood-dark);
 }
-
 .rotate-phone i {
   font-size: 4rem;
 }
-
 .rotate-phone i.fa-rotate {
   animation: spin 1.6s ease-in-out infinite;
 }
-
 .rotate-phone p {
   font-size: 1.5rem;
   max-width: 24rem;
   margin: 0;
 }
-
 @media screen and (orientation: portrait) {
     .rotate-phone
     {
       display: flex;
     }
 }
-
 @media (max-width: 900px) {
-  .deck-small
-  {
-    height: 4rem !important;
-  }
   .deck-image{
     height: 4rem !important;
   }
@@ -303,47 +275,37 @@ body {
   {
     width: 6rem !important;
   }
-
   .player-name
   {
     font-size: 1rem !important;
   }
-
   .hand
   {
     min-height: none !important;
   }
-
   .health-wrapper > div
   {
     height: 4rem !important;
   }
-
   .main-content
   {
     flex-direction: column-reverse;
-
     max-width: 100vw;
-
     max-height: none !important;
-
     & > .deck-content
     {
       min-height: 50vh;
     }
   }
-
    .unit-attack, .unit-health
    {
     width: 1.5rem !important;
     height: 1rem !important;
-
     & > span
     {
       padding: 0 0.25rem !important;
     }
    }
-
   .attack-value, .health
   {
     font-size: 0.75rem !important;
@@ -351,40 +313,27 @@ body {
     height: 1rem !important;
     padding: 0.25rem;
   }
-
   .card-can-be-selected .card-name
   {
     font-size: small !important;
   }
-
-
   .card-footer, .card-name
   {
     user-select: none !important;
   -webkit-user-select: none !important;
   }
-
   .displayer
   {
     padding-top: 6rem;
   }
-
-  .skeleton-image
-  {
-    width: 50vw;
-  }
-
   .card-info
   {
     max-width: 70vw !important;
   }
-
   .deck-list
   {
     padding: 1rem;
   }
-
-
   .board-section, .hand, .info-section, .board-row
   {
     gap: 0.25rem !important;
@@ -398,40 +347,28 @@ body {
     margin: 0;
     min-height: none !important;
   }
-
   .card-counter
   {
     font-size: 1rem !important;
   }
-
   .player-slot
   {
     left: 0 !important;
   }
-
 .rival-health-background,
 .player-health-background{
   width: 4rem !important;
-}    
+}
   .life-text
   {
     font-size: 1rem !important;
     margin-top: 0.5rem !important;
   }
-
 .enhanced::after
 {
   box-shadow: -15px 50px 60px 40px rgb(239, 255, 14) !important;
 }
 }
-
-/* These classes style elements that game-animation.service.ts creates with
-   document.createElement and appends straight into .animation-layer, outside
-   Angular's template. Angular's emulated view encapsulation only rewrites
-   selectors defined in a component stylesheet to also require that
-   component's own generated attribute, which these elements never get since
-   Angular never rendered them — so component-scoped copies of these rules
-   silently never match. They have to live in this global stylesheet instead. */
 .proyectile,
 .icon-hand,
 .icon-hand-card,
@@ -442,45 +379,36 @@ body {
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
-
   position: fixed;
   pointer-events: none;
   z-index: 9999;
 }
-
 .proyectile {
   background-image: url("/images/board/proyectile.svg");
   height: 11rem;
   width: 11rem;
   filter: drop-shadow(0 0 14px rgba(255, 150, 60, 0.85));
 }
-
 .proyectile.heal {
   filter: hue-rotate(130deg) saturate(1.35) drop-shadow(0 0 14px rgba(110, 255, 150, 0.85));
 }
-
 .proyectile.damage {
   filter: hue-rotate(-18deg) saturate(1.15) drop-shadow(0 0 14px rgba(255, 80, 80, 0.85));
 }
-
 .icon-hand,
 .icon-hand-card,
 .icon-hand-wrench {
   filter: drop-shadow(0 3px 4px rgba(58, 42, 8, 0.55));
 }
-
 .icon-hand {
   background-image: url("/images/board/hand.svg");
 }
-
 .icon-hand-card {
   background-image: url("/images/board/hand_card.svg");
 }
-
 .icon-hand-wrench {
   background-image: url("/images/board/hand_wrench.svg");
 }
-
 .impact-burst {
   height: 3rem;
   width: 3rem;
@@ -494,19 +422,15 @@ body {
   mix-blend-mode: screen;
   transform: translate(-50%, -50%);
 }
-
 .impact-burst.attack-burst {
   filter: hue-rotate(-10deg) saturate(1.2);
 }
-
 .impact-burst.effect-glow {
   filter: hue-rotate(150deg) saturate(1.4) brightness(1.1);
 }
-
 .impact-burst.spell-burst {
   filter: hue-rotate(190deg) saturate(1.5) brightness(1.2);
 }
-
 .spark-particle {
   position: fixed;
   width: 3rem;
@@ -520,7 +444,6 @@ body {
   mix-blend-mode: screen;
   transform: translate(-50%, -50%);
 }
-
 .debris-particle {
   position: fixed;
   width: 0.5rem;
@@ -534,7 +457,6 @@ body {
   filter: grayscale(0.35) sepia(0.35) hue-rotate(-25deg) brightness(0.85);
   transform: translate(-50%, -50%);
 }
-
 .floating-number {
   position: fixed;
   left: 0;
@@ -546,7 +468,6 @@ body {
   line-height: 1;
   white-space: nowrap;
 }
-
 .floating-number.positive {
   color: #7dffb0;
   text-shadow:
@@ -554,22 +475,10 @@ body {
     0 0 18px rgba(0, 197, 82, 0.55),
     0 2px 0 rgba(0, 40, 15, 0.8);
 }
-
 .floating-number.negative {
   color: #ff8a7a;
   text-shadow:
     0 0 6px rgba(171, 17, 0, 0.9),
     0 0 18px rgba(171, 17, 0, 0.55),
     0 2px 0 rgba(40, 0, 0, 0.8);
-}
-
-.card-text {
-  line-height: 1.6;
-}
-
-@media (prefers-color-scheme: dark) {
-  .card-text {
-    --hl-red: #f09595;  --hl-green: #7fd5b0; --hl-blue: #85b7eb;
-    --hl-violet: #b3ade8; --hl-amber: #e8b45c; --hl-slate: #a8afba;
-  }
 }

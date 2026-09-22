@@ -11,40 +11,32 @@
         margin: 0;
     }
 }
-
 .unit-attack
 {
     background: var(--color-gold);
     clip-path: polygon(0 0, 65% 0, 100% 100%, 34% 100%);
-    
     & > span
     {
         transform: skew(20deg);
     }
 }
-
 .unit-health
 {
     background: #dc143c;
     clip-path: polygon(100% 0, 35% 0, 0 100%, 66% 100%);
-
     & > span
     {
         transform: skew(-10deg);
     }
 }
-
-
 .container
 {
     display: flex;
     position: relative;
     flex-direction: column;
     gap: 0.5rem;
-
     align-items: center;
 }
-
 .card-info
 {
     font-size: 3rem;
@@ -55,68 +47,51 @@
     max-width: 20vw;
     max-height: 40vh;
     overflow-y: scroll;
-
     display: flex;
     flex-direction: column;
     align-items: center;
-
     & > * {
         margin: 0.25rem;
         text-align: center;
     }
 }
-
 .has-scroll-fade {
-
-    
     pointer-events: none;
-
     position: absolute;
     bottom: 0;
-
     width: 100%;
     background: linear-gradient(
     to bottom,
     rgba(255,255,255,0),
     rgb(0, 0, 0)
     );
-
     display: flex;
     justify-content: center;
     font-size: xx-large;
 }
-
 .card-description,
 .card-families
 {
     text-align: center;
-
     font-size: smaller;
 }
-
 .card-families
 {
     font-weight: bolder;
 }
-
 .card-description
 {
     font-style: italic;
 }
-
 hr
 {
     background-color: black;
 }
-
 .large
 {
     transform: scale(1.5);
     transform-origin: bottom;
 }
-
-
-/* SPECIAL WORDS CLASS */
 .rival,
 .player,
 .deck,
@@ -139,19 +114,13 @@ hr
     font-weight: 600;
     transition: .15s ease;
 }
-
-
-/* 1. entities — colour + weight, nothing else */
 .rival, .player, .board, .deck, .skill { font-weight: 600; }
-
 .rival  { color: var(--hl-red); }
 .player { color: var(--hl-green); }
 .board  { color: var(--hl-violet); }
 .skill  { color: var(--hl-amber); }
 .deck   { color: var(--hl-slate); }
 .family { color: var(--hl-violet); font-style: italic; font-weight: 500; }
-
-/* 2. actions — same, plus a soft underline */
 .draw, .play, .attack, .add {
   font-weight: 600;
   text-decoration: underline;
@@ -160,13 +129,10 @@ hr
   text-underline-offset: .19em;
   text-decoration-skip-ink: auto;
 }
-
 .draw   { color: var(--hl-blue); }
 .play   { color: var(--hl-amber); }
 .attack { color: var(--hl-red); }
 .add    { color: var(--hl-green); }
-
-/* 3. states — quiet, no colour of their own */
 .die {
   color: var(--hl-slate);
   font-weight: 600;
@@ -174,31 +140,17 @@ hr
   text-decoration-thickness: from-font;
   text-decoration-color: color-mix(in oklab, currentColor 55%, transparent);
 }
-
 .endround {
   color: var(--hl-blue);
   font-weight: 600;
   font-variant-caps: all-small-caps;
   letter-spacing: .05em;
 }
-
 .condition {
   color: var(--hl-slate);
   font-weight: 600;
   font-style: italic;
 }
-
-/* 4. chromatic colors — highlighted as a colored chip (background), not
-   colored letters, so the word stays legible regardless of which color it
-   names. When the parser knows the card owner's currently active color (see
-   CardvisualizerComponent.activeColor), every color whose effect is
-   currently in play gets its chip lit at full opacity (.chroma-active) —
-   that's not just the exact active color but, for a mixed color, both of
-   its base components too (e.g. an active Amarillo also lights up Rojo and
-   Verde, since both of their effects apply — see
-   CardDescriptionService.resolveActiveClasses). Every color not in effect
-   right now is dimmed via opacity (.chroma-inactive) rather than grayed
-   out, so it still reads as its own color, just quieter. */
 .red,
 .green,
 .blue,
@@ -213,7 +165,6 @@ hr
   color: #fff;
   transition: opacity .15s ease, box-shadow .15s ease;
 }
-
 .red    { background-color: #e53935; }
 .green  { background-color: #43a047; }
 .blue   { background-color: #1e88e5; }
@@ -221,17 +172,14 @@ hr
 .cyan   { background-color: #00acc1; }
 .purple { background-color: #8e24aa; }
 .white  { background-color: #f5f5f5; color: #222; }
-
 .chroma-active {
   opacity: 1;
   box-shadow: 0 0 0 2px rgba(255, 255, 255, .55);
 }
-
 .chroma-inactive {
   opacity: .45;
   box-shadow: none;
 }
-
 .card-condition-progress
 {
     text-align: center;
@@ -239,8 +187,6 @@ hr
     font-weight: 700;
     color: #f9a825;
 }
-
-
 @media( max-width: 900px)
 {
     .card-description,

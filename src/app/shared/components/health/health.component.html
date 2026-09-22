@@ -4,13 +4,11 @@
   [style.--shake-x]="health.shakeX"
   [style.--shake-y]="health.shakeY"
 >
-
 <div
   [ngClass]="[
     rival ? 'rival-health-background' : 'player-health-background'
   ]"
 >
-
 <span
     class="life-text title"
     [ngClass]="{
@@ -22,9 +20,6 @@
   >
     {{ health.displayHealth }}
   </span>
-
 </div>
-
 <div *ngIf="enhanced" class="enhanced"></div>
-
 </div>

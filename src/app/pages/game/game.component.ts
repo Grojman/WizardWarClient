@@ -241,19 +241,6 @@ export class GameComponent implements OnInit, OnDestroy {
   private pendingEndGame: any = null;
   isSeriesRound: boolean = false;
 
-  // Which .player-slot (Me first, then each rival, as rendered) the turn waves
-  // should circle. It only follows the turn once animations settle, matching when
-  // the turn actually becomes playable, and holds its last value while they run.
-  private lastTurnSlot: number | null = null;
-
-  get turnSlotIndex(): number | null {
-    if (!this.isAnimating) {
-      const index = [this.gameState.Me, ...this.gameState.Rivals].findIndex((p) => p.IsMyTurn);
-      this.lastTurnSlot = index === -1 ? null : index;
-    }
-    return this.lastTurnSlot;
-  }
-
   private handleEndGameMessage(content: any): void {
     this.isSeriesRound = !!content?.isSeriesRound;
 
@@ -384,9 +371,9 @@ async createAnimationDeckCardsAmount(deckEnd: string, duration: number, up: bool
 }
 
 
-async createProyectile(source: string, target: string, optionalTarget:string = "", amount: number = 0)
+async createProyectile(source: string, target: string, optionalTarget:string = "", amount: number = 0, sourcePlayerId: string = "")
 {
-  await this.animationService.createProjectile(source, target, optionalTarget, amount);
+  await this.animationService.createProjectile(source, target, optionalTarget, amount, sourcePlayerId);
 }
 
 getDeckId(id: string): string {

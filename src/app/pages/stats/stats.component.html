@@ -1,31 +1,22 @@
 <div class="stats-container">
-
   <div class="stats-header">
-
     <h1 class="title">
       <i class="fa-solid fa-chart-simple title-icon"></i>
       {{ 'STATS_SECTION_TITLE' | translate }}
     </h1>
-
     <h2 class="subtitle">
       {{ 'STATS_SECTION_SUBTITLE' | translate }} {{ stats.TotalGames }}
     </h2>
-
     <a routerLink="/" class="back-button btn btn-gold">
       <i class="fa-solid fa-arrow-left"></i>
       {{ 'STATS_SECTION_BACK' | translate }}
     </a>
-
   </div>
-
   <div class="main-content" *ngIf="!loading; else statsLoading">
-
     <div class="deck-list-panel">
-
       <p *ngIf="stats.Decks.length === 0" class="empty-text">
         {{ 'STATS_SECTION_NO_DECKS' | translate }}
       </p>
-
       <div
         *ngFor="let deck of stats.Decks"
         class="deck-row"
@@ -35,20 +26,12 @@
       <img src='{{ "images/decks/" + deck.DeckId + ".webp" }}' [attr.alt]="deck.DeckName" loading="lazy">
         <span class="deck-row-games">{{ deck.TotalGames }} {{ 'STATS_SECTION_GAMES' | translate }}</span>
       </div>
-
     </div>
-
     <div class="stats-display">
-
       <ng-container *ngIf="selectedDeck; else noSelection">
-
         <img src='{{ "images/decks/" + selectedDeck.DeckId + ".webp" }}' [attr.alt]="selectedDeck.DeckName">
-
-
         <div class="selected-stats">
-
           <div class="chart">
-  
             <div class="bar-group">
               <span class="bar-value">{{ selectedDeck.Wins }}</span>
               <div class="bar-track">
@@ -56,7 +39,6 @@
               </div>
               <span class="bar-label">{{ 'STATS_SECTION_WINS' | translate }}</span>
             </div>
-  
             <div class="bar-group">
               <span class="bar-value">{{ selectedDeck.Losses }}</span>
               <div class="bar-track">
@@ -64,41 +46,30 @@
               </div>
               <span class="bar-label">{{ 'STATS_SECTION_LOSSES' | translate }}</span>
             </div>
-  
           </div>
-  
           <div class="extra-stats">
             <p><i class="fa-solid fa-dice"></i>{{ 'STATS_SECTION_GAMES_PLAYED' | translate }}: {{ selectedDeck.TotalGames }}</p>
             <p><i class="fa-solid fa-hourglass-half"></i> {{ 'STATS_SECTION_AVERAGE_TURN' | translate }} {{ selectedDeck.AverageTurn | number: '1.0-1' }}</p>
             <p>{{ 'STATS_SECTION_AVERAGE_SECONDS' | translate }} {{ this.getSeconds(selectedDeck.AverageSeconds ) }}</p>
           </div>
         </div>
-
-
         <div class="matchups" *ngIf="selectedDeck.Matchups.length">
-
           <h3 class="matchups-title">{{ 'STATS_SECTION_MATCHUPS' | translate }}</h3>
-
           <div class="radar-wrapper">
-
             <svg class="radar-chart" viewBox="0 0 300 300">
-
               <polygon
                 *ngFor="let fraction of radarGridFractions"
                 [attr.points]="radarGridPoints(fraction)"
                 class="radar-grid"
               ></polygon>
-
               <line
                 *ngFor="let matchup of selectedDeck.Matchups; let i = index"
                 [attr.x1]="radarCenter" [attr.y1]="radarCenter"
                 [attr.x2]="radarAxisPoint(i).x" [attr.y2]="radarAxisPoint(i).y"
                 class="radar-axis"
               ></line>
-
               <polygon [attr.points]="radarLossPoints" class="radar-area radar-losses"></polygon>
               <polygon [attr.points]="radarWinPoints" class="radar-area radar-wins"></polygon>
-
               <image
                 *ngFor="let matchup of selectedDeck.Matchups; let i = index"
                 [attr.href]="'images/decks/' + matchup.OpponentDeckId + '.webp'"
@@ -109,51 +80,33 @@
               >
                 <title>{{ matchup.OpponentDeckName }}</title>
               </image>
-
             </svg>
-
             <div class="radar-legend">
               <span class="legend-item"><span class="legend-swatch win-swatch"></span> {{ 'STATS_SECTION_WINS' | translate }}</span>
               <span class="legend-item"><span class="legend-swatch lose-swatch"></span> {{ 'STATS_SECTION_LOSSES' | translate }}</span>
             </div>
-
           </div>
-
           <div class="matchup-list">
-
             <div class="matchup-row" *ngFor="let matchup of selectedDeck.Matchups">
-
               <img class="matchup-image" src='{{ "images/decks/" + matchup.OpponentDeckId + ".webp" }}' [attr.alt]="matchup.OpponentDeckName" loading="lazy">
-
               <span class="matchup-name">{{ matchup.OpponentDeckName }}</span>
-
               <span class="matchup-record">
                 <span class="wins-text">{{ matchup.Wins }}V</span> - <span class="losses-text">{{ matchup.Losses }}D</span>
               </span>
-
               <span class="matchup-games">{{ matchup.TotalGames }} {{ 'STATS_SECTION_GAMES' | translate }}</span>
-
             </div>
-
           </div>
-
         </div>
-
       </ng-container>
-
       <ng-template #noSelection>
         <p class="empty-text">{{ 'STATS_SECTION_NO_DECKS' | translate }}</p>
       </ng-template>
-
     </div>
-
   </div>
-
   <ng-template #statsLoading>
     <div class="loading-indicator">
       <span class="spinner"></span>
       <span>{{ 'STATS_SECTION_LOADING' | translate }}</span>
     </div>
   </ng-template>
-
 </div>

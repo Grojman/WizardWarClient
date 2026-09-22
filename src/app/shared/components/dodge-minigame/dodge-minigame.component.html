@@ -1,0 +1,40 @@
+<div class="minigame-window overlay-backdrop">
+  <div class="minigame-container panel">
+    <div class="minigame-status">
+      <span class="spinner"></span>
+      <span>{{ 'HOME_SECTION_SEARCHING' | translate }}</span>
+    </div>
+
+    <h2 class="title">{{ 'MINIGAME_SECTION_TITLE' | translate }}</h2>
+    <p class="text">{{ 'MINIGAME_SECTION_INSTRUCTIONS' | translate }}</p>
+
+    <p class="minigame-score">
+      {{ 'MINIGAME_SECTION_SCORE' | translate }}: <strong>{{ score }}</strong>
+    </p>
+
+    <canvas #board class="minigame-board"></canvas>
+
+    <div class="minigame-pad">
+      <button type="button" class="btn btn-gold pad-up" (click)="move('up')"
+        [attr.aria-label]="'MINIGAME_SECTION_UP' | translate">
+        <i class="fa-solid fa-arrow-up"></i>
+      </button>
+      <button type="button" class="btn btn-gold pad-left" (click)="move('left')"
+        [attr.aria-label]="'MINIGAME_SECTION_LEFT' | translate">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <button type="button" class="btn btn-gold pad-down" (click)="move('down')"
+        [attr.aria-label]="'MINIGAME_SECTION_DOWN' | translate">
+        <i class="fa-solid fa-arrow-down"></i>
+      </button>
+      <button type="button" class="btn btn-gold pad-right" (click)="move('right')"
+        [attr.aria-label]="'MINIGAME_SECTION_RIGHT' | translate">
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <button type="button" class="btn btn-gold" (click)="cancel.emit()">
+      {{ 'HOME_SECTION_CANCEL' | translate }}
+    </button>
+  </div>
+</div>

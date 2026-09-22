@@ -28,7 +28,8 @@ import { GameCardCheckComponent } from './shared/components/game-card-check/game
 import { SettingsComponent } from './shared/components/settings/settings.component';
 import { HelpComponent } from './shared/components/help/help.component';
 import { AlertModalComponent } from './shared/components/alert-modal/alert-modal.component';
-import { PrivateMatchModalComponent } from './shared/components/private-match-modal/private-match-modal.component';
+import { ConfirmModalComponent } from './shared/components/confirm-modal/confirm-modal.component';
+import { DodgeMinigameComponent } from './shared/components/dodge-minigame/dodge-minigame.component';
 import { TeamComponent } from './pages/team/team.component';
 import { SeriesComponent } from './pages/series/series.component';
 import { PrivacyComponent } from './pages/privacy/privacy.component';
@@ -57,7 +58,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     GameCardCheckComponent,
     HelpComponent,
     AlertModalComponent,
-    PrivateMatchModalComponent,
+    ConfirmModalComponent,
+    DodgeMinigameComponent,
     TeamComponent,
     SeriesComponent,
     PrivacyComponent,

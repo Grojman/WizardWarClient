@@ -3,7 +3,6 @@
 >
     <div class="effects-section">
         <h3 class="effects-title subtitle">{{ 'GAME_SECTION_EFFECTS' | translate }}</h3>
-        
         <div class="effects" [style.--effect-leave-ms.ms]="effectLeaveMs">
             <p
                 class="effect panel"
@@ -16,15 +15,17 @@
             </p>
         </div>
     </div>
-    
     <div class="info-section"
     [class.reverse]="reverseOrder"
     [class.long]="long"
     >
-        
         <div class="board-section">
-            
             <div class="player-info">
+                <app-turn-waves
+                [active]="player.IsMyTurn"
+                [isMe]="visibleHand"
+                [health]="player.Health"
+                ></app-turn-waves>
                 <app-health
                 [health]="player.Health"
                 [rival]="!visibleHand"
@@ -33,16 +34,11 @@
                 (click)="playerTargetSelected()"
                 [enhanced]="showHealthAsTarget"
                 ></app-health>
-                
                 <p class="player-name">
                     {{ player.Name }}
                 </p>
             </div>
-            
-            
-            
             <div class="board-row">
-                
                 <app-dock
                 *ngFor="let card of player.Board; index as i"
                 [card]="card"
@@ -54,7 +50,6 @@
                 [rival]="!visibleHand"
                 [isTarget]="card !== null && attackingUnit !== null"
                 />
-                
                 <app-dock
                 [card]="player.LastSpellPlayed"
                 (contextmenu)="onRightClick($event, player.LastSpellPlayed)"
@@ -64,24 +59,20 @@
                 class="last-spell"
                 >
             </app-dock>
-            
         </div>
-
-        <app-deck 
+        <app-deck
         class="player-deck"
         [small]="true"
         [deck]="player.Deck"
         [attr.data-game-id]="player.Id + '-deck'"
         (click)="deckSelected()"
         ></app-deck>
-
         <p class="target-player" *ngIf="showTarget">
             {{ 'GAME_SECTION_TARGET_PLAYER' | translate }}
             <br>
             <span>{{ player.TargetPlayer }}</span>
         </p>
         </div>
-
         <div class="hand"
         *ngIf="!visibleHand"
         >
@@ -90,7 +81,6 @@
             [style.transform]="getTransform(i, player.HandSize)"
             />
         </div>
-    
         <div class="hand own-hand"
         *ngIf="visibleHand"
         >
@@ -104,12 +94,9 @@
             [canBeSelected]="true"
             [showEffectActive]="false"
         />
-
         <p class="card-counter subtitle">
             {{ player.HandSize }} / 10
         </p>
         </div>
-
     </div>
-
 </div>

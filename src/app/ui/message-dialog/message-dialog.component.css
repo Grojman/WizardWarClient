@@ -1,209 +1,86 @@
-
-
-/* ========================= */
-/* PANEL */
-/* ========================= */
-
 .dialog-panel {
-
   gap: 10px;
-
   border-radius:
     18px 18px 0 0;
-
   box-shadow:
     0 -6px 30px rgba(127,92,255,0.35);
-
   animation:
     slideUp 0.3s ease;
-
     margin-bottom: 2rem;
-
 }
-
-
-
-/* ========================= */
-/* HEADER */
-/* ========================= */
-
 .dialog-header {
-
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
   padding-bottom: 6px;
-
   border-bottom:
     1px solid rgba(255,255,255,0.1);
-
   font-weight: bold;
-
   color: #da9516;
-
 }
-
 .dialog-header i {
-
   margin-right: 8px;
-
 }
-
-
-
-
-
-/* ========================= */
-/* INPUT ROW */
-/* ========================= */
-
 .dialog-input-row {
-
   display: flex;
-
   align-items: center;
-
   gap: 10px;
-
   position: relative;
-
 }
-
-
-
-/* Icono input */
-
 .input-icon {
-
   position: absolute;
-
   left: 12px;
-
     color: #da9516;
-
-
 }
-
-
-
-/* INPUT */
-
 .dialog-input-row input {
-
   flex: 1;
-
   padding: 12px 12px 12px 36px;
-
   border-radius: 12px;
-
   border: none;
-
   outline: none;
-
   font-size: 16px;
-
   background:
     rgba(255,255,255,0.08);
-
   color: white;
-
 }
-
-
-
-/* ========================= */
-/* SUGERENCIAS DE REACCIONES */
-/* ========================= */
-
 .reaction-suggestions {
-
   position: absolute;
-
   bottom: calc(100% + 8px);
-
   left: 0;
-
   right: 0;
-
   flex-direction: row;
-
   flex-wrap: wrap;
-
   gap: 8px;
-
   max-height: 168px;
-
   overflow-y: auto;
-
   box-shadow:
     0 -6px 30px rgba(127,92,255,0.35);
-
   animation: slideUp 0.2s ease;
-
 }
-
 .reaction-suggestion {
-
   border: none;
-
   padding: 4px;
-
   border-radius: 8px;
-
   background: rgba(255,255,255,0.08);
-
   cursor: pointer;
-
   transition: background 0.15s ease, transform 0.15s ease;
-
 }
-
 .reaction-suggestion:hover {
-
   background: rgba(218,149,22,0.4);
-
   transform: scale(1.08);
-
 }
-
 .reaction-suggestion img {
-
   display: block;
-
   width: 44px;
-
   height: 44px;
-
   object-fit: cover;
-
   border-radius: 6px;
-
 }
-
-/* ========================= */
-/* BOTÓN ENVIAR */
-/* ========================= */
-
-/* ========================= */
-/* ANIMACIONES */
-/* ========================= */
-
 @keyframes slideUp {
-
   from {
-
     transform: translateY(100%);
-
   }
-
   to {
-
     transform: translateY(0);
-
   }
-
 }
-

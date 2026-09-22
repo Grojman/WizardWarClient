@@ -2,13 +2,6 @@
 <html lang="es">
   <head>
     <meta charset="utf-8" />
-    <!-- Static Spanish fallback for non-JS clients/crawlers; SeoService (see
-    core/services/seo.service.ts) takes over once Angular boots and re-applies
-    it per route/language via the translations dictionary. The inline script
-    right below only closes the gap before that boot finishes, using the same
-    localStorage key language-config.ts reads (wizardwar_language), so a
-    returning visitor who picked English doesn't see a flash of the Spanish
-    title in the tab. -->
     <title>El Bar de los Magos — Juego de cartas online gratis, sin registro</title>
     <script>
       (function () {
@@ -35,7 +28,6 @@
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="canonical" href="https://game.wizardbar.es/" />
-
     <meta property="og:site_name" content="El Bar de los Magos" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="es_ES" />
@@ -50,7 +42,6 @@
     />
     <meta property="og:url" content="https://game.wizardbar.es/" />
     <meta property="og:image" content="https://game.wizardbar.es/images/home/logo.webp" />
-
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
@@ -61,15 +52,6 @@
       content="El Bar de los Magos: juego de cartas online gratis, sin registro. Enfréntate a otros magos en partidas por turnos."
     />
     <meta name="twitter:image" content="https://game.wizardbar.es/images/home/logo.webp" />
-
-    <!--
-      Google AdSense: the loader script is NOT included here. It's injected
-      at runtime by AdsenseService (src/app/core/services/adsense.service.ts),
-      gated behind explicit opt-in (see HomeComponent.revealAd, the "view an
-      ad" prompt below the About section) so it only ever reaches a visitor's
-      browser after they've asked to see an ad — see the privacy policy at
-      /privacy, section 3.
-    -->
   </head>
   <body>
     <app-root></app-root>

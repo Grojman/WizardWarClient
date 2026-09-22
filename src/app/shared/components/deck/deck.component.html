@@ -2,7 +2,6 @@
   class="deck"
   [class.unavailable]="unavailable"
 >
-
 <div
 [class.small]="small"
 [class.selected]="selected"
@@ -22,20 +21,16 @@
       >
         {{ deck.description }}
       </p>
-
       <p
       *ngIf="deck.cardAmount"
       >
         {{ 'DECK_SECTION_CARDS' | translate }} {{ deck.cardAmount }}
-        
       </p>
     </span>
   </div>
-
-  <p class="deck-name" 
+  <p class="deck-name"
   *ngIf="deck.name"
   >
     {{ deck.name | translate }}
   </p>
-
 </div>

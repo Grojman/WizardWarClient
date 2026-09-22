@@ -2,65 +2,76 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  HostBinding,
   HostListener,
   Input,
-  OnChanges,
   OnDestroy,
-  SimpleChanges,
 } from '@angular/core';
+import { Health } from '../../../models/health.model';
 
 interface WaveParticle {
-  // Position inside the active player's section, as a fraction of its size (-0.5..0.5).
-  fx: number;
-  fy: number;
-  // Delay before this particle leaves when the turn changes (staggers the jump).
-  moveDelayMs: number;
   orbitRadius: number;
   orbitSeconds: number;
   orbitPhaseSeconds: number;
   orbitReverse: boolean;
+  // Circle diameter.
   size: number;
-  // height / width: ~1 gives squares, a small value gives long thin rectangles.
-  ratio: number;
-  tiltDeg: number;
-  rgb: string;
+  // How far (px) and how late (ms) this particle is flung on a hit, so the
+  // swarm scatters unevenly instead of moving as one rigid block.
+  knockbackDistance: number;
+  knockbackDelayMs: number;
+  // Picks a shade within whichever palette is currently active (base/mine/rival),
+  // so each particle keeps a consistent variant as the state (and palette) changes.
+  colorIndex: number;
 }
 
-// Light tones so they still read against the dark and wooden parts of the table.
-const WAVE_COLORS = ['255 244 214', '150 255 230', '170 130 255', '255 200 90'];
-const PARTICLE_COUNT = 42;
-const TRAVEL_HIGHLIGHT_MS = 800;
+// Inactive palette: very light blue.
+const WAVE_COLORS_BASE = ['189 224 255', '170 210 255', '205 232 255', '150 200 250'];
+// Active, when this is the rival's swarm.
+const WAVE_COLORS_RIVAL = ['255 90 90', '235 45 60', '255 60 60', '220 30 45'];
+// Active, when this is your swarm: a more intense, saturated blue than the base palette.
+const WAVE_COLORS_MINE = ['30 100 255', '10 80 240', '55 130 255', '0 65 220'];
+
+const PARTICLE_COUNT = 16;
+// How much faster (orbit) and further (scale) the swarm dances while active.
+const ACTIVE_SPEED_MULTIPLIER = 2.4;
+// Knockback distance multiplier by damage taken, as [damage, scale] points
+// (ascending). Damage between points is linearly interpolated; below the first
+// / above the last point it's clamped to that point's scale.
+const KNOCKBACK_SCALE_POINTS: [number, number][] = [
+  [1, 1.0],
+  [3, 1.5],
+  [6, 1.75],
+  [9, 2.25],
+];
 
 const rand = (min: number, max: number) => min + Math.random() * (max - min);
 
 function createParticles(): WaveParticle[] {
-  return Array.from({ length: PARTICLE_COUNT }, (_, i) => {
-    const isRectangle = i % 3 === 0;
-
-    return {
-      fx: rand(-0.45, 0.45),
-      fy: rand(-0.4, 0.4),
-      moveDelayMs: Math.round(rand(0, 240)),
-      orbitRadius: rand(30, 120),
-      orbitSeconds: rand(5, 12),
-      orbitPhaseSeconds: rand(0, 12),
-      orbitReverse: Math.random() < 0.5,
-      size: isRectangle ? rand(60, 150) : rand(14, 42),
-      ratio: isRectangle ? rand(0.16, 0.3) : 1,
-      tiltDeg: isRectangle ? rand(-25, 25) : rand(0, 45),
-      rgb: WAVE_COLORS[Math.floor(Math.random() * WAVE_COLORS.length)],
-    };
-  });
+  return Array.from({ length: PARTICLE_COUNT }, () => ({
+    orbitRadius: rand(28, 55),
+    orbitSeconds: rand(6, 11),
+    orbitPhaseSeconds: rand(0, 11),
+    orbitReverse: Math.random() < 0.5,
+    size: rand(10, 20),
+    knockbackDistance: rand(18, 42),
+    knockbackDelayMs: rand(0, 80),
+    colorIndex: Math.floor(Math.random() * WAVE_COLORS_BASE.length),
+  }));
 }
 
 /**
- * Decorative layer laid over the table (and under everything else on it):
- * squares and rectangles that circle around the section of the player whose turn
- * it is, and dash over to the next player's section whenever the turn changes.
+ * Decorative particle swarm that permanently dances around a player's health
+ * container. It must be a sibling of that player's `<app-health>`, both
+ * direct children of a `position: relative` container (see
+ * player.component.html/css) — it locates that sibling itself and tracks its
+ * position/size via ResizeObserver, the same way the old table-wide version
+ * tracked `.player-slot`s, so it re-centers itself if the layout shifts.
  *
- * It must be a direct child of the table container; `activeIndex` is the position
- * of the active player's `.player-slot` among that container's slots.
+ * It has two states: inactive (small, slow, light blue) and active (wider
+ * orbit, faster spin, colored red for the rival / a deeper blue for you).
+ * When `health` takes damage, every particle is knocked back away from the
+ * hit, along the same attacker->target vector HealthComponent shakes along,
+ * then drifts back into its orbit. The harder the hit, the further they fly.
  */
 @Component({
   selector: 'app-turn-waves',
@@ -68,93 +79,89 @@ function createParticles(): WaveParticle[] {
   templateUrl: './turn-waves.component.html',
   styleUrl: './turn-waves.component.css',
 })
-export class TurnWavesComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class TurnWavesComponent implements AfterViewInit, OnDestroy {
   @Input()
-  activeIndex: number | null = null;
+  active = false;
+
+  // Whether this swarm belongs to the local player (drives the "active, mine"
+  // color) or a rival (drives the "active, theirs" color).
+  @Input()
+  isMe = false;
+
+  // Same Health instance HealthComponent gets; its shake state/vector drives
+  // the particles' knockback, in sync with the health hit.
+  @Input()
+  health: Health | null = null;
 
   particles = createParticles();
 
-  @HostBinding('class.idle')
-  get idle(): boolean {
-    return this.activeIndex === null;
-  }
-
-  private viewReady = false;
-  private placed = false;
   private resizeObserver?: ResizeObserver;
-  private travelTimer?: ReturnType<typeof setTimeout>;
 
   constructor(private host: ElementRef<HTMLElement>) {}
 
   ngAfterViewInit(): void {
-    this.viewReady = true;
-
     const container = this.host.nativeElement.parentElement;
-    if (container && typeof ResizeObserver !== 'undefined') {
-      this.resizeObserver = new ResizeObserver(() => this.updateTarget(false));
-      this.resizeObserver.observe(container);
+    const target = this.healthElement();
+
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => this.updatePosition());
+      if (target) this.resizeObserver.observe(target);
+      if (container) this.resizeObserver.observe(container);
     }
 
-    this.updateTarget(false);
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.viewReady && changes['activeIndex']) {
-      this.updateTarget(true);
-    }
+    this.updatePosition();
   }
 
   ngOnDestroy(): void {
     this.resizeObserver?.disconnect();
-    clearTimeout(this.travelTimer);
   }
 
   @HostListener('window:resize')
   onWindowResize(): void {
-    this.updateTarget(false);
+    this.updatePosition();
   }
 
-  private get slots(): HTMLElement[] {
-    const container = this.host.nativeElement.parentElement;
-    if (!container) return [];
-    return Array.from(container.querySelectorAll<HTMLElement>(':scope > .player-slot'));
+  private healthElement(): HTMLElement | null {
+    return this.host.nativeElement.parentElement?.querySelector<HTMLElement>(':scope > app-health') ?? null;
   }
 
-  // Points the swarm at the active player's slot. Layout-only updates (resize,
-  // first placement) snap there; a real turn change is what animates.
-  private updateTarget(animate: boolean): void {
-    if (this.activeIndex === null) return;
-
-    const slot = this.slots[this.activeIndex];
-    if (!slot) return;
+  // Centers the swarm on its sibling health element, in the same positioned
+  // container both live in.
+  private updatePosition(): void {
+    const target = this.healthElement();
+    if (!target) return;
 
     const host = this.host.nativeElement;
-    const shouldAnimate = animate && this.placed;
-
-    if (!shouldAnimate) {
-      host.classList.add('placing');
-    }
-
-    host.style.setProperty('--wave-x', `${slot.offsetLeft + slot.offsetWidth / 2}px`);
-    host.style.setProperty('--wave-y', `${slot.offsetTop + slot.offsetHeight / 2}px`);
-    host.style.setProperty('--wave-w', `${slot.offsetWidth}px`);
-    host.style.setProperty('--wave-h', `${slot.offsetHeight}px`);
-
-    if (!shouldAnimate) {
-      // Commit the snap before transitions are turned back on.
-      void host.offsetWidth;
-      host.classList.remove('placing');
-    } else {
-      this.flashTravel();
-    }
-
-    this.placed = true;
+    host.style.setProperty('--wave-x', `${target.offsetLeft + target.offsetWidth / 2}px`);
+    host.style.setProperty('--wave-y', `${target.offsetTop + target.offsetHeight / 2}px`);
   }
 
-  private flashTravel(): void {
-    const host = this.host.nativeElement;
-    host.classList.add('travelling');
-    clearTimeout(this.travelTimer);
-    this.travelTimer = setTimeout(() => host.classList.remove('travelling'), TRAVEL_HIGHLIGHT_MS);
+  knockbackScale(): number {
+    const damage = this.health?.shakeDamage ?? 0;
+    const points = KNOCKBACK_SCALE_POINTS;
+    if (damage <= points[0][0]) return points[0][1];
+
+    for (let i = 1; i < points.length; i++) {
+      const [d1, s1] = points[i];
+      if (damage <= d1) {
+        const [d0, s0] = points[i - 1];
+        return s0 + ((damage - d0) / (d1 - d0)) * (s1 - s0);
+      }
+    }
+
+    return points[points.length - 1][1];
+  }
+
+  orbitTimeFor(p: WaveParticle): number {
+    return this.active ? p.orbitSeconds / ACTIVE_SPEED_MULTIPLIER : p.orbitSeconds;
+  }
+
+  rgbFor(p: WaveParticle): string {
+    const palette = !this.active
+      ? WAVE_COLORS_BASE
+      : this.isMe
+        ? WAVE_COLORS_MINE
+        : WAVE_COLORS_RIVAL;
+    return palette[p.colorIndex % palette.length];
   }
 }

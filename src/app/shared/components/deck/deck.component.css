@@ -1,15 +1,10 @@
-
 .deck {
-
   display: flex;
   flex-direction: column;
   align-items: center;
-
   cursor: pointer;
-
   width: 8rem;
   transition: all 0.2s ease-in-out;
-
   border: 2px solid transparent;
   border-radius: 12px;
 }
@@ -22,16 +17,11 @@
   transition: transform 0.2s ease;
 }
 .deck-name {
-
   margin-top: 8px;
-
   font-weight: bold;
   font-size: 1rem;
-
   text-align: center;
-
   color: #ffffff;
-
   text-shadow:
     1px 1px 2px black,
     0 0 5px black;
@@ -46,116 +36,70 @@
   cursor: not-allowed;
   pointer-events: none;
 }
-
 .unavailable .deck-image {
   filter: grayscale(1);
   opacity: 0.35;
 }
-
 .unavailable:hover {
   transform: none;
 }
-
 .unavailable:hover .deck-image {
   transform: none;
 }
-
 .selected {
   transform: translateY(-2rem) scale(0.8  ) !important;
 }
-
 .descriptiontext {
-
   visibility: hidden;
-
   min-width: 5rem;
-
   background: rgba(0, 0, 0, 0.85);
-
   color: #ffffff;
-
   text-align: center;
-
   padding: 8px;
-
   border-radius: 8px;
-
   font-size: x-large;
-
   position: absolute;
-
   bottom: 25%;
   left: 100%;
-
   transform: translateX(-50%);
-
-  /* Set from DeckComponent.keepTooltipInViewport() to pull the tooltip back on screen. */
   translate: var(--tooltip-dx, 0px) var(--tooltip-dy, 0px);
-
   max-width: calc(100vw - 24px);
   box-sizing: border-box;
-
   opacity: 0;
-
   transition: opacity 0.2s ease;
-
   pointer-events: none;
-
-  z-index: 99;  
-
+  z-index: 99;
 }
 .descriptiontext::after {
-
   content: "";
-
   position: absolute;
-
   top: 50%;
   left: 0%;
-
   transform: translateX(-50%);
-
-  /* Undo the tooltip's shift so the arrow keeps pointing at the deck. */
   translate: calc(var(--tooltip-dx, 0px) * -1) calc(var(--tooltip-dy, 0px) * -1);
-
   border-width: 6px;
-
   border-style: solid;
-
   border-color:
     rgba(0, 0, 0, 0.85)
     transparent
     transparent
     transparent;
-
 }
-
 .up
 {
   bottom: 105%;
   left: 50%;
-
   width: 20rem;
   font-size: 1rem;
-
 }
-
 .up::after{
   top: 100%;
   left: 50%;
 }
-
-
-/* Mostrar tooltip */
-
 .deck-image:hover .descriptiontext {
-
   visibility: visible;
-
   opacity: 1;
-
 }
-
 .small
 {
   height: 10rem;

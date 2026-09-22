@@ -1,11 +1,7 @@
-<!-- chat.component.html -->
-
 <div class="chat-container overlay-blur overlay-blur--bottom" (click)="close()" *ngIf="isOpen">
 <div class="chat" (click)="$event.stopPropagation()">
-
     <div class="chat-header panel">
       <span class="title">{{ 'CHAT_SECTION_TITLE' | translate }}</span>
-
       <button
         class="close-btn btn-icon"
         type="button"
@@ -13,32 +9,23 @@
         ✕
       </button>
     </div>
-
     <div class="chat-messages"  #chatref>
-
       <div
         class="message panel"
         [class.mine]="message.isMine"
         *ngFor="let message of messages">
-  
         <div class="player-name">
           {{ message.playerName }}
         </div>
-  
         <div class="message-text" *ngIf="!isReaction(message.text)">
           {{ message.text }}
         </div>
-
         <img class="reaction-image" *ngIf="isReaction(message.text)" src="{{getReactionPath(message.text)}}" [attr.alt]="'Reaction ' + getReactionName(message.text)" loading="lazy" />
-  
       </div>
-  
     </div>
     <app-message-dialog
       #dialog
       (messageSent)="messageSent($event)"
     ></app-message-dialog>
 </div>
-
-
 </div>

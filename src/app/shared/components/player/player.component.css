@@ -2,18 +2,14 @@
 {
   transform: rotate(90deg);
 }
-
 .info-section
 {
-  /* transform-style: preserve-3d; */
   gap: 4rem;
 }
-
 .dead
 {
   filter: grayscale(100%)
 }
-
 .effects-section
 {
   padding: 0 2rem 1rem 3rem;
@@ -32,14 +28,12 @@
   width: 15rem;
   max-width: 15rem;
 }
-
 .effects-title
 {
   margin-top: 3rem;
   color: rgb(44, 44, 44);
   font-size: 2.5rem;
 }
-
 .effects{
   display: flex;
   flex-direction: column;
@@ -48,10 +42,8 @@
   max-width: 100%;
     color: white;
   overflow-y: auto;
-
   gap: 1rem;
 }
-
 .effect
 {
   max-width: 100%;
@@ -65,23 +57,19 @@
   color: black;
   animation: effect-enter 0.4s ease-out;
 }
-
 .effect.leaving
 {
   animation: effect-leave var(--effect-leave-ms, 400ms) ease-in forwards;
   pointer-events: none;
 }
-
 @keyframes effect-enter {
   from { opacity: 0; transform: translateY(-0.5rem) scale(0.9); }
   to   { opacity: 1; transform: translateY(0) scale(1); }
 }
-
 @keyframes effect-leave {
   from { opacity: 1; transform: translateY(0) scale(1); }
   to   { opacity: 0; transform: translateY(0.5rem) scale(0.85); }
 }
-
 .player-content
 {
   display: flex;
@@ -97,12 +85,10 @@
     flex-direction: column;
     flex-grow: 1;
 }
-
 .reverse
 {
   flex-direction: column-reverse;
 }
-
 .hand
 {
   display: flex;
@@ -117,33 +103,26 @@
   z-index: 3;
   width: 100%;
 }
-
-/* Cancels the table's rotateX tilt so the local player's hand renders flat/readable. */
 .hand.own-hand
 {
   transform: rotateX(calc(-1 * var(--table-tilt, 10deg)));
 }
-
-
 .board-section
 {
     gap: 3rem;
   align-items: center;
   justify-content: space-evenly;
   display: flex;
-
   padding: 0.25rem;
 }
-
-
 .player-info
 {
+  position: relative;
   display: flex;
   justify-content: space-around;
   align-items: center;
   gap: 1rem;
 }
-
 .player-name
 {
   text-align: center;
@@ -152,16 +131,12 @@
   width: 5vw;
   max-width: 5vw;
 }
-
 .board-row {
   will-change: transform;
   transform-style: preserve-3d;
   align-items: center;
   display: flex;
-
-
   justify-content: center;
-
   gap: 2rem;
 }
 .separator
@@ -172,7 +147,6 @@
   background-color: #ccc;
   margin: 0 10px;
 }
-
 .target-player
 {
   font-size: xx-large;
@@ -181,13 +155,12 @@
   width: 10rem;
   max-width: 10rem;
 }
-
 .card-counter
 {
   position: absolute;
   right: 2rem;
   margin: 0;
-  bottom: 0;  
+  bottom: 0;
   color: white;
   font-size: xx-large;
 }

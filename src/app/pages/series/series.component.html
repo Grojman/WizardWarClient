@@ -1,7 +1,6 @@
 <div class="series-container">
   <div class="series-row card-panel rival"
   [class.disabled]="seriesState.snapshot!.rival.status !== 'waiting_you'"
-  
   >
     <div class="series-player-info">
       <h3 class="subtitle series-player-name">{{ seriesState.snapshot!.rival.name || 'Rival' }}</h3>
@@ -15,7 +14,6 @@
         {{ 'SERIES_HIDDEN_STATUS' | translate }}
       </span>
     </div>
-
     <div class="deck-list series-deck-list" [class.picked]="this.seriesState.snapshot!.rival.deckId !== null">
       <div class="deck-slot"
           *ngFor="let deck of decks; trackBy: trackById"
@@ -28,22 +26,14 @@
           [infoUp]="true" />
       </div>
     </div>
-
     <p class="hidden-selection" *ngIf="seriesState.snapshot!.round === 3">?</p>
-
-
   </div>
-
   <div class="series-banner">
-
     <h1 class="title">
       {{ 'SERIES_SECTION_TITLE' | translate }}
     </h1>
-
     <ng-container *ngIf="seriesState.endResult as end; else selecting">
-
       <div class="series-end-panel panel slideUpFade">
-
         <h2 class="subtitle" *ngIf="end.forfeited && isYouWinner()">
           {{ 'SERIES_SECTION_FORFEITED' | translate }}
         </h2>
@@ -53,47 +43,33 @@
         <h2 class="subtitle" *ngIf="!end.forfeited">
           {{ 'SERIES_SECTION_WINNER' | translate }}
         </h2>
-
         <p class="text winner-text" [class.win]="isYouWinner()">
           {{ isYouWinner() ? ('SERIES_SECTION_WINNER_YOU' | translate) : winnerName() + ('SERIES_SECTION_WINNER_RIVAL' | translate) }}
         </p>
-
         <div class="final-scores">
           <div class="final-score-entry" *ngFor="let s of end.scores">
             <span class="final-score-name">{{ s.name }}</span>
             <span class="final-score-value">{{ s.score }}</span>
           </div>
         </div>
-
         <button class="btn btn-gold" (click)="returnHome()">
           {{ 'SERIES_SECTION_RETURN_HOME' | translate }}
         </button>
-
       </div>
-
     </ng-container>
-
     <ng-template #selecting>
-
-      
       <h2 class="subtitle round-indicator">
         {{ 'SERIES_SECTION_ROUND' | translate }} {{ seriesState.snapshot!.round }} {{ 'SERIES_SECTION_ROUND_OF' | translate }}
       </h2>
-
       <button class="btn btn-gold surrender-btn" type="button" (click)="surrender()">
         <i class="fa-solid fa-flag"></i>
         {{ 'SERIES_SECTION_SURRENDER' | translate }}
       </button>
-
-
     </ng-template>
-
   </div>
-
   <div class="series-row card-panel you"
   [class.disabled]="seriesState.snapshot!.you.status !== 'waiting' && seriesState.snapshot!.round !== 3"
   >
-
     <div class="series-player-info">
       <h3 class="subtitle series-player-name">{{ seriesState.snapshot!.you.name || ('SERIES_SECTION_YOU' | translate) }}</h3>
       <span class="series-score-badge">
@@ -106,14 +82,12 @@
         {{ 'SERIES_SECTION_WAITING_YOU' | translate }}
       </span>
     </div>
-
     <div class="loading-indicator" *ngIf="decksLoading">
       <span class="spinner"></span>
       <span>
         {{ 'SERIES_SECTION_LOADING_DECKS' | translate }}
       </span>
     </div>
-
     <div class="deck-list series-deck-list" *ngIf="!decksLoading" [class.picked]="this.seriesState.snapshot!.you.deckId !== null">
       <div class="deck-slot"
           *ngFor="let deck of decksForSelection; trackBy: trackById"
@@ -127,9 +101,6 @@
           [infoUp]="true" />
       </div>
     </div>
-
   </div>
-
   <app-alert-modal #errorModal *ngIf="errorModal?.isOpen ?? false"></app-alert-modal>
-
 </div>
