@@ -96,12 +96,18 @@
   min-height: 8rem;
   justify-content: center;
   align-items: center;
-  gap: 2rem;
+  gap: 0rem;
   padding: 0.25rem;
   overflow: visible;
   position: relative;
   z-index: 3;
   width: 100%;
+  min-width: calc((var(--card-width) * 10) -18rem);
+}
+.hand app-card
+{
+  transition: transform 0.2s ease-out;
+  margin-left: -2rem;
 }
 .hand.own-hand
 {

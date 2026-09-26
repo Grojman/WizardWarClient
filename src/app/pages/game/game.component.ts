@@ -183,6 +183,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
     if (this.gameState.Me.Id === "") {
       this.initializeGameState(this.storedGameState);
+      this.scrollToCenter();
     }
 
     this.syncPlayerTargets();
@@ -274,6 +275,19 @@ export class GameComponent implements OnInit, OnDestroy {
       snapshot,
       this.isResumedSession || snapshot.IsReconnect
     );
+  }
+
+  // Waits for the board from the first snapshot to render, then centers the
+  // window scroll on it (the table is wider/taller than the viewport).
+  private scrollToCenter(): void {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const doc = document.documentElement;
+      window.scrollTo({
+        left: (doc.scrollWidth - window.innerWidth) / 2,
+        top: (doc.scrollHeight - window.innerHeight) / 2,
+        behavior: 'auto'
+      });
+    }));
   }
 
   private syncPlayerTargets(): void {

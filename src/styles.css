@@ -18,6 +18,9 @@
   --hl-violet: #6a4aa8;
   --hl-amber:  #a86412;
   --hl-slate:  #5c6470;
+  --card-height: 13rem;
+  --card-aspect-ratio: calc(5 / 7);
+  --card-width: calc(var(--card-height) * var(--card-aspect-ratio));
 }
 @font-face {
   font-family: Title;
@@ -260,6 +263,9 @@ body {
     }
 }
 @media (max-width: 900px) {
+  :root {
+    --card-height: 5rem;
+  }
   .deck-image{
     height: 4rem !important;
   }
@@ -313,6 +319,7 @@ body {
     height: 1rem !important;
     padding: 0.25rem;
   }
+  
   .card-can-be-selected .card-name
   {
     font-size: small !important;

@@ -103,4 +103,8 @@
 .small
 {
   height: 10rem;
+  /* Deck images are 277x443: keep the box the same shape as the image so it
+     has no empty sides (animations use this box as the deck's position). */
+  width: auto;
+  aspect-ratio: 277 / 443;
 }

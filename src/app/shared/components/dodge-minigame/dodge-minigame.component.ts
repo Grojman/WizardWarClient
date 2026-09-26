@@ -36,7 +36,6 @@ const CELL_PX = 64;
 const BOARD_PX = GRID_SIZE * CELL_PX;
 
 const POINTS_PER_SECOND = 50;
-const HIT_PENALTY = 500;
 
 // Difficulty ramps linearly with elapsed time, up to a cap.
 const START_SPEED = 1.6;
@@ -61,7 +60,7 @@ const MAX_FRAME_SECONDS = 0.05;
  * Small dodge game shown while waiting for an online match: a block on a 4x4
  * grid, moved with the arrow keys (or the on-screen arrows), avoiding
  * projectiles that cross the grid along its rows/columns. +50 per second
- * survived, -500 per hit; projectiles get faster and more frequent over time.
+ * survived, a hit resets the score to 0; projectiles get faster and more frequent over time.
  * The score is purely in-memory and discarded when the component is destroyed.
  */
 @Component({
@@ -218,6 +217,26 @@ export class DodgeMinigameComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  private drawArrow(ctx: CanvasRenderingContext2D, p: Projectile): void {
+    const size = CELL_PX * 0.18;
+    const edge = p.dir === 1 ? size : BOARD_PX - size;
+    const center = (p.lane + 0.5) * CELL_PX;
+    const [x, y] = p.axis === 'row' ? [edge, center] : [center, edge];
+    const angle = p.axis === 'row' ? (p.dir === 1 ? 0 : Math.PI) : (p.dir === 1 ? Math.PI / 2 : -Math.PI / 2);
+
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.beginPath();
+    ctx.moveTo(size, 0);
+    ctx.lineTo(-size, -size);
+    ctx.lineTo(-size * 0.4, 0);
+    ctx.lineTo(-size, size);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+
   private collides(p: Projectile): boolean {
     return p.axis === 'row'
       ? p.lane === this.row && Math.abs(p.pos - this.col) < HIT_DISTANCE
@@ -226,11 +245,12 @@ export class DodgeMinigameComponent implements AfterViewInit, OnDestroy {
 
   private hit(): void {
     this.invulnerableFor = INVULNERABLE_SECONDS;
-    this.addScore(-HIT_PENALTY);
+    const lost = this.score;
+    this.addScore(-lost);
     this.floatingTexts.push({
       x: (this.col + 0.5) * CELL_PX,
       y: (this.row + 0.5) * CELL_PX,
-      text: `-${HIT_PENALTY}`,
+      text: `-${lost}`,
       age: 0,
     });
   }
@@ -271,6 +291,14 @@ export class DodgeMinigameComponent implements AfterViewInit, OnDestroy {
       if (p.pos >= -0.5 && p.pos <= GRID_SIZE - 0.5) continue;
       if (p.axis === 'row') ctx.fillRect(0, p.lane * CELL_PX, BOARD_PX, CELL_PX);
       else ctx.fillRect(p.lane * CELL_PX, 0, CELL_PX, BOARD_PX);
+    }
+
+    // Direction arrows: on the edge a still-outside projectile will enter
+    // from, pointing the way it travels.
+    ctx.fillStyle = 'rgb(255, 90, 90)';
+    for (const p of this.projectiles) {
+      if (p.pos >= -0.5 && p.pos <= GRID_SIZE - 0.5) continue;
+      this.drawArrow(ctx, p);
     }
 
     // Player block (blinks while invulnerable after a hit).

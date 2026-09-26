@@ -24,6 +24,11 @@ export class DeckComponent implements OnDestroy {
   @Input()
   unavailable = false;
 
+  // Put on the image itself (not the host) so animations measuring
+  // [data-game-id] get the drawn deck, without the name or border around it.
+  @Input()
+  gameId: string | null = null;
+
   @ViewChild('tooltip')
   tooltip?: ElementRef<HTMLElement>;
 

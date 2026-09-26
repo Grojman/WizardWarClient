@@ -1,12 +1,14 @@
 .dock
 {
-    width: 8vw;
-    height: 20vh;
+    aspect-ratio: 5 / 7;
+    height: 12rem;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     border-radius: 4px;
+
 }
+
 .enhanced
 {
     box-shadow: inset   rgb(38, 57, 77) 0px 0px 40px -0px ;

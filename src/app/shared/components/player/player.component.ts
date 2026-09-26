@@ -16,6 +16,12 @@ interface DisplayedEffect extends GlobalEffect {
 // drift apart.
 const EFFECT_LEAVE_MS = 400;
 
+// Hand hover wave: how many cards on each side of the hovered one rise, and
+// how far the closest neighbour rises (the hovered card itself uses the
+// -5vh --y-translate from card.component.css).
+const WAVE_RANGE = 4;
+const WAVE_MAX_LIFT_VH = 3;
+
 @Component({
   selector: 'app-player',
   standalone: false,
@@ -177,18 +183,41 @@ export class PlayerComponent implements DoCheck, OnDestroy {
 
   cardSelected(card: (Card | null))
   {
+    // A selected card stops lifting on hover, so drop the wave with it.
+    this.hoveredHandIndex = null;
     this.onCardSelected.emit(card);
   }
 
-  getTransform(index: number, total: number): string {
-    const middle = (total - 1) / 2;
+  // Index of the hand card under the cursor, or null. Drives the wave so the
+  // cards next to it lift a little less the further away they are.
+  hoveredHandIndex: number | null = null;
 
-    const rotationStep = 6; // grados
+  // Index of the last hand card the cursor entered. Unlike hoveredHandIndex it
+  // is never cleared, so the stacking order stays put after the mouse leaves.
+  stackedHandIndex: number | null = null;
 
-    const rotation = (index - middle) * rotationStep;
+  onHandCardHover(index: number, card: Card)
+  {
+    this.stackedHandIndex = index;
+    // Only playable, unselected cards lift on hover (.card.can-hover), so
+    // the wave follows the same rule to avoid neighbours rising alone.
+    this.hoveredHandIndex = card.canPlay && card.id !== this.selectedCard?.id ? index : null;
+  }
 
-    const offsetY = Math.abs(index - middle) * -5;
+  getWaveTransform(index: number): string | null {
+    if (this.hoveredHandIndex === null || index === this.hoveredHandIndex) return null;
 
-    return `rotate(${rotation}deg) translateY(${offsetY}px)`;
+    const distance = Math.abs(index - this.hoveredHandIndex);
+    if (distance > WAVE_RANGE) return null;
+
+    const lift = WAVE_MAX_LIFT_VH * (1 - distance / (WAVE_RANGE));
+    return `translateY(-${lift}vh)`;
+  }
+
+  getZIndex (index:number): string {
+    if (this.stackedHandIndex === null) return '0';
+    const distance = Math.abs(index - this.stackedHandIndex);
+
+    return `${10 - distance}`;
   }
 }

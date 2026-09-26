@@ -64,7 +64,7 @@
         class="player-deck"
         [small]="true"
         [deck]="player.Deck"
-        [attr.data-game-id]="player.Id + '-deck'"
+        [gameId]="player.Id + '-deck'"
         (click)="deckSelected()"
         ></app-deck>
         <p class="target-player" *ngIf="showTarget">
@@ -78,14 +78,16 @@
         >
             <app-card
             *ngFor="let card of [].constructor(player.HandSize); let i = index"
-            [style.transform]="getTransform(i, player.HandSize)"
             />
         </div>
         <div class="hand own-hand"
         *ngIf="visibleHand"
+        (mouseleave)="hoveredHandIndex = null"
         >
         <app-card
-            [style.transform]="getTransform(i, player.HandData.length)"
+            [style.transform]="getWaveTransform(i)"
+            [style.zIndex]="getZIndex(i)"
+            (mouseenter)="onHandCardHover(i, card)"
             *ngFor="let card of player.HandData; let i = index"
             [card]="card"
             (click)="cardSelected(card)"

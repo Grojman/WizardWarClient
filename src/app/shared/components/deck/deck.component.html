@@ -6,6 +6,7 @@
 [class.small]="small"
 [class.selected]="selected"
     class="deck-image"
+    [attr.data-game-id]="gameId"
     [ngStyle]="{
       'background-image': 'url(' + getImagePath() + ')'
     }"

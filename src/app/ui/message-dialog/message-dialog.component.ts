@@ -31,6 +31,16 @@ export class MessageDialogComponent {
     this.reactionSuggestions = [];
   }
 
+  onEnter()
+  {
+    if (this.reactionSuggestions.length) {
+      this.selectReaction(this.reactionSuggestions[0]);
+      return;
+    }
+
+    this.send();
+  }
+
   focus()
   {
     if (this.input.nativeElement == document.activeElement) return;

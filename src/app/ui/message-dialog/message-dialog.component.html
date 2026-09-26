@@ -12,7 +12,8 @@
       <button
         type="button"
         class="reaction-suggestion"
-        *ngFor="let r of reactionSuggestions"
+        *ngFor="let r of reactionSuggestions; let first = first"
+        [class.first]="first"
         (click)="selectReaction(r)"
         [title]="':' + r.id + ':'"
       >
@@ -26,7 +27,7 @@
       (ngModelChange)="onMessageChange()"
       (blur)="hideSuggestionsDelayed()"
       [placeholder]="'CHAT_SECTION_PLACEHOLDER' | translate"
-      (keyup.enter)="send()"
+      (keyup.enter)="onEnter()"
       autofocus
     />
     <button
