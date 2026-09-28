@@ -39,6 +39,20 @@ export class GameComponent implements OnInit, OnDestroy {
 
   cardsWithEffect = ["34", "96", "98", "99", "100", "101", "102"];
 
+  // Cards (same serverIds as cardsWithEffect) with a custom animation when
+  // played, implemented in GameAnimationService.playCardAnimation. `async`
+  // lets the remaining events play alongside it; otherwise they wait for it.
+  cardAnimations: { id: string, async: boolean }[] = [
+    { id: "34", async: false },
+    { id: "62", async: true },
+    { id: "96", async: false },
+    { id: "98", async: false },
+    { id: "99", async: false },
+    { id: "100", async: false },
+    { id: "101", async: false },
+    { id: "102", async: false },
+  ];
+
   constructor(
     private ws : WebsocketService,
     private router : Router,
@@ -361,20 +375,20 @@ async animateAttack(
   );
 }
 
-async animateCardDrawn(deckEnd: string, up: boolean, duration: number = 750)
+async animateCardDrawn(deckEnd: string, up: boolean, duration: number = 1000)
 {
   await this.createAnimationDeckCardsAmount(deckEnd, duration, up)
 }
 
-async animateAddCard(cardId: string, cardOrigin: string, deckEnd: string, duration: number = 750)
+async animateAddCard(cardId: string, cardOrigin: string, deckEnd: string, duration: number = 1300)
 {
   await this.animationService.animateAddedCard(cardId,deckEnd, cardOrigin, duration)
   // await this.createAnimationDeckCardsAmount(".icon-hand-card", cardOrigin, deckEnd, duration)
 }
 
-async animateModifyDeck(cardOrigin: string, deckEnd: string, duration: number = 750)
+async animateModifyDeck(deckEnd: string, duration: number = 1100)
 {
-  await this.animationService.animateModifyDeck(deckEnd, cardOrigin, duration);
+  await this.animationService.animateModifyDeck(deckEnd, duration);
   // await this.createAnimationDeckCardsAmount(".icon-hand-wrench", cardOrigin, deckEnd, duration)
 }
 
@@ -441,10 +455,21 @@ changeHealthAnimationDuration: number = 500;
         break;
         case "CardDrawnEvent":  
           var player = this.getPlayer(event.PlayerSource);
+          const drawn = Card.fromJSON(event.Card);
           this.audioService.playSfx('/audio/card_drawn.mp3', true);
-          await this.animateCardDrawn(this.getDeckId(player.Id), player.Id !== this.gameState.Me.Id,750)
-
-          this.gameStateService.addCardToHand(player, Card.fromJSON(event.Card));
+          if (this.isUser(player.Id)) {
+            await this.animationService.animateCardDrawnToHand(
+              this.getDeckId(player.Id),
+              player.Id,
+              drawn.id,
+              drawn.imageUrl,
+              1100,
+              () => this.gameStateService.addCardToHand(player, drawn),
+            );
+          } else {
+            await this.animateCardDrawn(this.getDeckId(player.Id), true);
+            this.gameStateService.addCardToHand(player, drawn);
+          }
           if(event.FromDeck)
           {
             this.gameStateService.updateDeckAmount(player, -1);
@@ -497,23 +522,38 @@ changeHealthAnimationDuration: number = 500;
         break;
         
         case "UnitPlayed":
-        
         var player = this.getPlayer(event.PlayerSource);
-        this.gameStateService.removeCardFromHand(player, event.Unit.id);
-        if (event.Unit) {
-          this.audioService.playSfx('/audio/unit_played.mp3', true);
-          this.gameStateService.placeCardOnBoard(player, Card.fromJSON(event.Unit), event.BoardPosition);
-        }
-        this.checkCard(event.Unit.serverId);
+        const unit = Card.fromJSON(event.Unit);
+        await this.animationService.animateCardPlayed(
+          player.Id,
+          unit.id,
+          unit.imageUrl,
+          `${player.Id}-dock-${event.BoardPosition}`,
+          false,
+          () => this.gameStateService.removeCardFromHand(player, unit.id),
+        );
+        this.audioService.playSfx('/audio/unit_played.mp3', true);
+        this.gameStateService.placeCardOnBoard(player, unit, event.BoardPosition);
+        this.checkCard(unit.serverId);
+        await this.playCardAnimation(unit.serverId);
         break;
 
         case "SpellPlayed":
         var player = this.getPlayer(event.PlayerSource);
-        this.gameStateService.removeCardFromHand(player, event.Spell.id);
+        const spell = Card.fromJSON(event.Spell);
+        await this.animationService.animateCardPlayed(
+          player.Id,
+          spell.id,
+          spell.imageUrl,
+          `${player.Id}-spell`,
+          true,
+          () => this.gameStateService.removeCardFromHand(player, spell.id),
+        );
         this.audioService.playSfx('/audio/unit_played.mp3', true);
-        this.gameStateService.setLastSpellPlayed(player, Card.fromJSON(event.Spell));
+        this.gameStateService.setLastSpellPlayed(player, spell);
         await this.animationService.animateSpellCast(event.Spell.id);
         this.checkCard(event.Spell.serverId);
+        await this.playCardAnimation(event.Spell.serverId);
         break;
 
         case "AddedCardToDeck":
@@ -523,7 +563,7 @@ changeHealthAnimationDuration: number = 500;
             break;
         case "DeckModifiedStats":
           this.shakeIfGlobalEffectSource(event.Source);
-          await this.animateModifyDeck(event.Source, this.getDeckId(event.TargetedPlayer))
+          await this.animateModifyDeck(this.getDeckId(event.TargetedPlayer))
           break;
         default:
         resolve();
@@ -540,6 +580,18 @@ checkCard(serverId: string)
   if (this.cardsWithEffect.includes(serverId))
   {
     this.audio.playCardSound(serverId);
+  }
+}
+
+async playCardAnimation(serverId: string)
+{
+  const cardAnimation = this.cardAnimations.find(n => n.id === serverId);
+  if (!cardAnimation) return;
+
+  const animation = this.animationService.playCardAnimation(serverId);
+  if (!cardAnimation.async)
+  {
+    await animation;
   }
 }
   

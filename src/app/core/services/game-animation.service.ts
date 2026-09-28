@@ -354,222 +354,481 @@ const targetDash = targetElement.animate(
   targetElement.style.filter = '';
 }
 
-  async animateModifyDeck(
-  deck: string,
-  origin: string,
-  duration: number
-): Promise<void> {
+  // Twinkling stars scattered over an element (e.g. a deck that was just
+  // enchanted). Appended to <body> rather than the tilted animation layer so
+  // they line up exactly with the element's on-screen box.
+  spawnSparkles(element: HTMLElement, count: number): Promise<void> {
+    const rect = element.getBoundingClientRect();
+    const animations: Promise<unknown>[] = [];
 
-  await this.nextFrame();
+    for (let i = 0; i < count; i++) {
+      const sparkle = document.createElement('div');
+      sparkle.classList.add('deck-sparkle');
+      const size = 0.9 + Math.random() * 1.1;
+      sparkle.style.width = `${size}rem`;
+      sparkle.style.height = `${size}rem`;
+      sparkle.style.left = `${rect.left + Math.random() * rect.width}px`;
+      sparkle.style.top = `${rect.top + Math.random() * rect.height}px`;
+      document.body.appendChild(sparkle);
 
-  const deckElement = document.querySelector(
-    `[data-game-id="${deck}"]`
-  ) as HTMLElement | null;
+      const spin = 90 + Math.random() * 120;
+      const animation = sparkle.animate(
+        [
+          { transform: 'translate(-50%, -50%) scale(0) rotate(0deg)', opacity: 0 },
+          { transform: `translate(-50%, -50%) scale(1) rotate(${spin * 0.5}deg)`, opacity: 1, offset: 0.4 },
+          { transform: `translate(-50%, -60%) scale(0) rotate(${spin}deg)`, opacity: 0 },
+        ],
+        {
+          duration: this.animationSettingsService.getAdjustedDuration(550 + Math.random() * 350),
+          delay: this.animationSettingsService.getAdjustedDuration(Math.random() * 450),
+          easing: 'ease-in-out',
+          fill: 'backwards',
+        },
+      );
 
-  const originElement = document.querySelector(
-    `[data-game-id="${origin}"]`
-  ) as HTMLElement | null;
+      const cleanup = () => sparkle.remove();
+      animations.push(animation.finished.then(cleanup, cleanup));
+    }
 
-  const wand = document.querySelector('.wand-icon') as HTMLElement | null;
-
-  if (!deckElement || !originElement || !wand) {
-    return;
+    return Promise.all(animations).then(() => undefined);
   }
 
-  wand.style.display = 'block';
-  wand.style.position = 'fixed';
+  // A wand held by its handle comes in from the left of the deck, taps it
+  // twice with its tip (pivoting on the handle, like a wrist flick) and
+  // leaves, then the deck sparkles to show it was enchanted.
+  async animateModifyDeck(deck: string, duration: number): Promise<void> {
+    await this.nextFrame();
 
-  const deckRect = deckElement.getBoundingClientRect();
-  const originRect = originElement.getBoundingClientRect();
-  const wandRect = wand.getBoundingClientRect();
-
-  const startX =
-    originRect.left +
-    originRect.width / 2 -
-    wandRect.width / 2;
-
-  const startY =
-    originRect.top +
-    originRect.height / 2 -
-    wandRect.height / 2;
-
-  const endX =
-    deckRect.left -
-    wandRect.width / 2;
-
-  const endY =
-    deckRect.top -
-    wandRect.height;
-
-  // Distance to travel from origin to deck
-  const deltaX = endX - startX + (deckRect.width);
-  const deltaY = endY - startY + (deckRect.height / 8);
-
-  // Put wand at origin
-  wand.style.left = `${startX}px`;
-  wand.style.top = `${startY}px`;
-
-  const adjustedDuration = this.animationSettingsService.getAdjustedDuration(duration);
-
-  const animation = wand.animate(
-    [
-      {
-        transform: 'translate(0px, 0px) scale(0.2) rotate(0deg)',
-        opacity: 0,
-        offset: 0
-      },
-      {
-        transform: `translate(${deltaX}px, ${deltaY}px) scale(1) rotate(0deg)`,
-        opacity: 1,
-        offset: 0.3
-      },
-      {
-        transform: `translate(${deltaX}px, ${deltaY}px) scale(1) rotate(90deg)`,
-        opacity: 1,
-        offset: 0.5
-      },
-      {
-        transform: `translate(${deltaX}px, ${deltaY}px) scale(1) rotate(0deg)`,
-        opacity: 1,
-        offset: 0.7
-      },
-      {
-        transform: `translate(${deltaX}px, ${deltaY}px) scale(1) rotate(90deg)`,
-        opacity: 1,
-        offset: 0.8
-      },
-      {
-        transform: `translate(${deltaX}px, ${deltaY}px) scale(1) rotate(0deg)`,
-        opacity: 1,
-        offset: 0.9
-      },
-      {
-        transform: `translate(${deltaX}px, ${deltaY}px) scale(0) rotate(0deg)`,
-        opacity: 0,
-        offset: 1
-      }
-    ],
-    {
-      duration: adjustedDuration,
-      easing: 'ease-out'
+    const deckElement = document.querySelector(`[data-game-id="${deck}"]`) as HTMLElement | null;
+    if (!deckElement) {
+      return;
     }
-  );
 
-  await animation.finished;
+    const wand = document.createElement('img');
+    wand.classList.add('wand-tool');
+    wand.src = '/images/board/wand.svg';
+    wand.alt = '';
+    document.body.appendChild(wand);
 
-  this.spawnSparks(deltaX, deltaY, 15);
+    const deckRect = deckElement.getBoundingClientRect();
+    const length = wand.offsetWidth;
+    const thickness = wand.offsetHeight;
 
-  wand.style.display = 'none';
-  wand.style.left = '';
-  wand.style.top = '';
-  wand.style.position = '';
-}
+    // wand.svg is drawn horizontally: handle on the left edge, tip on the
+    // right. Place the handle so that, at the tap angle, the tip lands on
+    // the upper part of the deck.
+    const restAngle = -28;
+    const tapAngle = 14;
+    const tapRad = (tapAngle * Math.PI) / 180;
+    const tip = {
+      x: deckRect.left + deckRect.width * 0.5,
+      y: deckRect.top + deckRect.height * 0.22,
+    };
+    const handleX = tip.x - length * Math.cos(tapRad);
+    const handleY = tip.y - length * Math.sin(tapRad);
 
+    wand.style.left = `${handleX}px`;
+    wand.style.top = `${handleY - thickness / 2}px`;
+
+    const away = `translate(${-length * 0.6}px, ${thickness * 2}px)`;
+    const adjustedDuration = this.animationSettingsService.getAdjustedDuration(duration);
+    const tapOffsets = [0.42, 0.64];
+
+    const animation = wand.animate(
+      [
+        { transform: `${away} rotate(${restAngle - 12}deg)`, opacity: 0, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', offset: 0 },
+        { transform: `translate(0px, 0px) rotate(${restAngle}deg)`, opacity: 1, easing: 'ease-in', offset: 0.28 },
+        { transform: `translate(0px, 0px) rotate(${tapAngle}deg)`, opacity: 1, easing: 'ease-out', offset: tapOffsets[0] },
+        { transform: `translate(0px, 0px) rotate(${restAngle * 0.6}deg)`, opacity: 1, easing: 'ease-in', offset: 0.53 },
+        { transform: `translate(0px, 0px) rotate(${tapAngle}deg)`, opacity: 1, easing: 'ease-out', offset: tapOffsets[1] },
+        { transform: `translate(0px, 0px) rotate(${restAngle}deg)`, opacity: 1, easing: 'ease-in', offset: 0.78 },
+        { transform: `${away} rotate(${restAngle - 12}deg)`, opacity: 0, offset: 1 },
+      ],
+      { duration: adjustedDuration, fill: 'forwards' },
+    );
+
+    // Each tap sends a small flash through the deck.
+    const tapTimers = tapOffsets.map((offset) =>
+      setTimeout(() => {
+        this.spawnSparks(tip.x, tip.y, 4);
+        deckElement.animate(
+          [
+            { transform: 'scale(1)', filter: 'brightness(1)' },
+            { transform: 'scale(0.96)', filter: 'brightness(1.35)', offset: 0.4 },
+            { transform: 'scale(1)', filter: 'brightness(1)' },
+          ],
+          { duration: this.animationSettingsService.getAdjustedDuration(220), easing: 'ease-out' },
+        );
+      }, adjustedDuration * offset),
+    );
+
+    await animation.finished.catch(() => undefined);
+    tapTimers.forEach(clearTimeout);
+    wand.remove();
+
+    await this.spawnSparkles(deckElement, 14);
+  }
+
+  // Mirror of animateAddedCard's ending: a face-down card the size of the
+  // deck rises out from behind it (clip-path hides whatever is still below
+  // the deck's top edge), then swings off toward its owner's hand.
   async animateCardDrawn(deck: string, duration:number, up: boolean): Promise<void> {
     await this.nextFrame();
 
     const deckElement = document.querySelector(`[data-game-id="${deck}"]`) as HTMLElement | null;
-    const cardImageElement = document.querySelector('.card-icon') as HTMLElement | null;
-
-    if (!deckElement || !cardImageElement) {
+    if (!deckElement) {
       return;
     }
 
-    cardImageElement.style.display = 'block';
-    cardImageElement.style.position = 'fixed';
     const deckRect = deckElement.getBoundingClientRect();
-    const startX = deckRect.left + deckRect.width / 2 - cardImageElement.offsetWidth;
-    const startY = deckRect.top + deckRect.height / 2 - cardImageElement.offsetHeight / 2;
+    const width = deckRect.width;
+    const height = deckRect.height;
 
-    cardImageElement.style.left = `${startX}px`;
-    cardImageElement.style.top = `${startY}px`;
-    cardImageElement.style.willChange = 'transform, opacity';
-    cardImageElement.style.transformOrigin = '50% 0%';
+    // Resting spot: same box as the deck, sitting right on top of it.
+    const card = document.createElement('div');
+    card.classList.add('added-card-ghost', 'face-down');
+    card.style.left = `${deckRect.left}px`;
+    card.style.top = `${deckRect.top - height}px`;
+    card.style.width = `${width}px`;
+    card.style.height = `${height}px`;
+    card.style.transformOrigin = '50% 0%';
+    document.body.appendChild(card);
 
-    // Position keeps changing at every offset below (never repeated verbatim
-    // between consecutive keyframes) and the animation uses 'linear' easing,
+    // The first stretch is the card sliding up out of the deck; the rest is
+    // the original draw flight, squeezed into what's left of the timeline.
+    // Position keeps changing at every offset of the flight (never repeated
+    // verbatim between consecutive keyframes) and it uses 'linear' easing,
     // so the browser doesn't decelerate-to-zero and re-accelerate at each
     // keyframe boundary - that combination is what previously made the card
     // look like it "stopped" at each pose instead of flowing between them.
-    const midX = -deckRect.width / 2;
-    const peakY = ( (up ? 1 : -1) * deckRect.height) * 1.15;
+    const emerge = 0.3;
+    const at = (offset: number) => emerge + offset * (1 - emerge);
+    const midX = -width / 2;
+    const peakY = ((up ? 1 : -1) * height) * 1.15;
     const finalY = up ? -1000 : 1000;
+    const shown = 'inset(0px 0px 0px 0px)';
 
-    const animation = cardImageElement.animate(
+    const animation = card.animate(
   [
+    // Hidden behind the deck
     {
-      transform: 'translate(0px, 0px) scale(0.8) rotate(0)',
-      opacity: 1,
+      transform: `translate(0px, ${height}px) rotate(0)`,
+      clipPath: `inset(0px 0px ${height}px 0px)`,
+      easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
       offset: 0
     },
 
-    // Card comes out of the deck, settling upright
+    // Fully out, sitting on top of the deck
     {
-      transform: `translate(0px, ${peakY * 0.5}px) scale(0.92) rotate(0)`,
-      opacity: 1,
-      offset: 0.14
+      transform: 'translate(0px, 0px) rotate(0)',
+      clipPath: shown,
+      easing: 'linear',
+      offset: emerge
+    },
+
+    // Card leaves the deck, settling upright
+    {
+      transform: `translate(0px, ${peakY * 0.5}px) rotate(0)`,
+      clipPath: shown,
+      offset: at(0.14)
     },
     {
-      transform: `translate(${midX * 0.2}px, ${peakY * 0.95}px) scale(1) rotate(25deg)`,
-      opacity: 1,
-      offset: 0.28
+      transform: `translate(${midX * 0.2}px, ${peakY * 0.95}px) rotate(25deg)`,
+      clipPath: shown,
+      offset: at(0.28)
     },
 
     // Drifting sideways, upright
     {
-      transform: `translate(${midX * 0.45}px, ${peakY}px) scale(1) rotate(35deg)`,
-      opacity: 1,
-      offset: 0.42
+      transform: `translate(${midX * 0.45}px, ${peakY}px) rotate(35deg)`,
+      clipPath: shown,
+      offset: at(0.42)
     },
     {
-      transform: `translate(${midX * 0.7}px, ${peakY * 0.85}px) scale(1) rotate(45deg)`,
-      opacity: 1,
-      offset: 0.56
+      transform: `translate(${midX * 0.7}px, ${peakY * 0.85}px) rotate(45deg)`,
+      clipPath: shown,
+      offset: at(0.56)
     },
     {
-      transform: `translate(${midX * 0.9}px, ${peakY * 0.55}px) scale(1) rotate(65deg)`,
-      opacity: 1,
-      offset: 0.7
+      transform: `translate(${midX * 0.9}px, ${peakY * 0.55}px) rotate(65deg)`,
+      clipPath: shown,
+      offset: at(0.7)
     },
 
     // Settling into the exit line
     {
-      transform: `translate(${midX}px, ${peakY * 0.15}px) scale(1) rotate(35deg)`,
+      transform: `translate(${midX}px, ${peakY * 0.15}px) rotate(35deg)`,
+      clipPath: shown,
       opacity: 1,
-      offset: 0.82
+      offset: at(0.82)
     },
     {
-      transform: `translate(${midX}px, ${finalY * 0.35}px) scale(1) rotate(0deg)`,
+      transform: `translate(${midX}px, ${finalY * 0.35}px) rotate(0deg)`,
+      clipPath: shown,
       opacity: 1,
-      offset: 0.92
+      offset: at(0.92)
     },
 
     // Fly away
     {
-      transform: `translate(${midX}px, ${finalY}px) scale(1) rotate(90deg)`,
+      transform: `translate(${midX}px, ${finalY}px) rotate(90deg)`,
+      clipPath: shown,
       opacity: 0,
       offset: 1
     }
   ],
   {
     duration: this.animationSettingsService.getAdjustedDuration(duration),
-    easing: 'linear',
+    fill: 'forwards',
   }
 );
 
-    await animation.finished;
-
-    cardImageElement.style.display = 'none';
-    cardImageElement.style.transform = '';
-    cardImageElement.style.opacity = '';
-    cardImageElement.style.position = '';
-    cardImageElement.style.left = '';
-    cardImageElement.style.top = '';
-    cardImageElement.style.willChange = '';
-    return;
+    await animation.finished.catch(() => undefined);
+    card.remove();
   }
 
 
+  // Own draws: we already know which card it is, so it rises face-up out of
+  // the deck (same clip-path trick as animateCardDrawn), is shown off for a
+  // moment and then flies straight into its slot in the hand, like
+  // animateCardPlayed in reverse. `onEnterHand` adds the card to the hand so
+  // its final slot can be measured; it stays hidden until the ghost lands.
+  async animateCardDrawnToHand(
+    deck: string,
+    playerId: string,
+    cardId: string,
+    imageUrl: string | undefined,
+    duration: number,
+    onEnterHand: () => void,
+  ): Promise<void> {
+    await this.nextFrame();
+
+    const deckElement = document.querySelector(`[data-game-id="${deck}"]`) as HTMLElement | null;
+    if (!deckElement) {
+      onEnterHand();
+      return;
+    }
+
+    const deckRect = deckElement.getBoundingClientRect();
+    const width = deckRect.width;
+    const height = deckRect.height;
+    const homeLeft = deckRect.left;
+    const homeTop = deckRect.top - height;
+
+    const card = document.createElement('div');
+    card.classList.add('added-card-ghost');
+    card.style.left = `${homeLeft}px`;
+    card.style.top = `${homeTop}px`;
+    card.style.width = `${width}px`;
+    card.style.height = `${height}px`;
+    card.style.backgroundImage =
+      `url('/images/cards/${imageUrl ?? ''}'), url('/images/cards/placeholder.webp')`;
+    document.body.appendChild(card);
+
+    // Add the card now and let Angular render it, so the rest of the hand
+    // has already shifted over and the new slot's position is final.
+    onEnterHand();
+    await this.nextFrame();
+    await this.nextFrame();
+
+    const slot = document.querySelector(
+      `[data-hand-id="${playerId}"] [data-game-id="${cardId}"]`
+    ) as HTMLElement | null;
+    if (slot) {
+      slot.style.visibility = 'hidden';
+    }
+
+    const slotRect = slot?.getBoundingClientRect();
+    const dx = slotRect ? slotRect.left + slotRect.width / 2 - (homeLeft + width / 2) : 0;
+    const dy = slotRect ? slotRect.top + slotRect.height / 2 - (homeTop + height / 2) : 0;
+    const endScale = slotRect ? slotRect.height / height : 1;
+
+    const showY = -height * 0.35;
+    const showScale = 1.3;
+    const shown = 'inset(0px 0px 0px 0px)';
+
+    const animation = card.animate(
+      [
+        // Hidden behind the deck
+        {
+          transform: `translate(0px, ${height}px) scale(1)`,
+          clipPath: `inset(0px 0px ${height}px 0px)`,
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          offset: 0,
+        },
+        // Fully out, sitting on top of the deck
+        {
+          transform: 'translate(0px, 0px) scale(1)',
+          clipPath: shown,
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          offset: 0.28,
+        },
+        // Lifted and shown off
+        {
+          transform: `translate(0px, ${showY}px) scale(${showScale})`,
+          clipPath: shown,
+          easing: 'linear',
+          offset: 0.45,
+        },
+        {
+          transform: `translate(0px, ${showY - 6}px) scale(${showScale * 1.03})`,
+          clipPath: shown,
+          easing: 'cubic-bezier(0.55, 0, 0.75, 0.2)',
+          offset: 0.6,
+        },
+        // Into the hand
+        {
+          transform: `translate(${dx}px, ${dy - 14}px) scale(${endScale * 1.08}) rotate(-4deg)`,
+          clipPath: shown,
+          easing: 'ease-out',
+          offset: 0.9,
+        },
+        {
+          transform: `translate(${dx}px, ${dy}px) scale(${endScale}) rotate(0deg)`,
+          clipPath: shown,
+          offset: 1,
+        },
+      ],
+      {
+        duration: this.animationSettingsService.getAdjustedDuration(duration),
+        fill: 'forwards',
+      },
+    );
+
+    await animation.finished.catch(() => undefined);
+
+    if (slot) {
+      slot.style.visibility = '';
+    }
+    // Same as animateCardPlayed: give the real card a frame to show under
+    // the ghost before removing it.
+    requestAnimationFrame(() => requestAnimationFrame(() => card.remove()));
+  }
+
+  // Card 34: the whole screen goes pitch dark except for two white rhombus
+  // eyes staring out, then fades away.
+  async animateCreatureEyes(): Promise<void> {
+    const overlay = document.createElement('div');
+    overlay.classList.add('creature-eyes-overlay');
+    document.body.appendChild(overlay);
+
+    const animation = overlay.animate(
+      [
+        { opacity: 0, transform: 'scale(1.08)', offset: 0 },
+        { opacity: 0.9, transform: 'scale(1.02)', easing: 'linear', offset: 0.2 },
+        { opacity: 0.9, transform: 'scale(1)', easing: 'ease-in', offset: 0.65 },
+        { opacity: 0, transform: 'scale(1)', offset: 1 },
+      ],
+      {
+        duration: this.animationSettingsService.getAdjustedDuration(2200),
+        easing: 'ease-out',
+        fill: 'forwards',
+      },
+    );
+
+    await animation.finished.catch(() => undefined);
+    overlay.remove();
+  }
+
+  // Coin cards: a coin pops up in the middle of the screen, is tossed up
+  // spinning on its X axis (so it reads as flipping end over end), lands
+  // back where it started and fades out.
+  async animateCoinFlip(): Promise<void> {
+    const coin = document.createElement('div');
+    coin.classList.add('coin-flip');
+    document.body.appendChild(coin);
+
+    const toss = -window.innerHeight * 0.3;
+    const at = (y: number, turns: number, scale = 1) =>
+      `perspective(600px) translateY(${y}px) rotateX(${turns * 360}deg) scale(${scale})`;
+
+    const animation = coin.animate(
+      [
+        { transform: at(0, 0, 0.3), opacity: 0, offset: 0 },
+        { transform: at(0, 0), opacity: 1, easing: 'cubic-bezier(0.33, 1, 0.68, 1)', offset: 0.12 },
+        // Going up slows down, coming back down speeds up.
+        { transform: at(toss, 2.5, 1.15), opacity: 1, easing: 'cubic-bezier(0.32, 0, 0.67, 0)', offset: 0.5 },
+        { transform: at(0, 5), opacity: 1, easing: 'ease-out', offset: 0.85 },
+        // Small bounce on landing.
+        { transform: at(-12, 5), opacity: 1, easing: 'ease-in', offset: 0.9 },
+        { transform: at(0, 5), opacity: 0, offset: 1 },
+      ],
+      {
+        duration: this.animationSettingsService.getAdjustedDuration(1150),
+        fill: 'forwards',
+      },
+    );
+
+    await animation.finished.catch(() => undefined);
+    coin.remove();
+  }
+
+  // Card 62: the translucent shadow of a dragon, seen from above, glides
+  // across the screen from left to right. The wrapper carries the flight
+  // path while the inner image squashes vertically to fake wing beats.
+  async animateDragonShadow(): Promise<void> {
+    const shadow = document.createElement('div');
+    shadow.classList.add('dragon-shadow');
+    const img = document.createElement('img');
+    img.src = '/images/effects/dragon_shadow.svg';
+    img.alt = '';
+    shadow.appendChild(img);
+    document.body.appendChild(shadow);
+
+    const width = shadow.offsetWidth;
+    const height = shadow.offsetHeight;
+    const startX = -width;
+    const endX = window.innerWidth;
+    // Enters a bit low and leaves a bit high, with a slight bank.
+    const drift = window.innerHeight * 0.12;
+    const duration = this.animationSettingsService.getAdjustedDuration(2400);
+
+    const flight = shadow.animate(
+      [
+        { transform: `translate(${startX}px, ${-height / 2 + drift}px) rotate(-4deg)` },
+        { transform: `translate(${(startX + endX) / 2}px, ${-height / 2}px) rotate(-6deg)` },
+        { transform: `translate(${endX}px, ${-height / 2 - drift}px) rotate(-3deg)` },
+      ],
+      { duration, easing: 'linear', fill: 'forwards' },
+    );
+
+    const flapDuration = this.animationSettingsService.getAdjustedDuration(700);
+    const flap = img.animate(
+      [
+        { transform: 'scaleY(1)' },
+        { transform: 'scaleY(0.72)', offset: 0.5 },
+        { transform: 'scaleY(1)' },
+      ],
+      { duration: flapDuration, iterations: Math.ceil(duration / flapDuration), easing: 'ease-in-out' },
+    );
+
+    await flight.finished.catch(() => undefined);
+    flap.cancel();
+    shadow.remove();
+  }
+
+  // Custom per-card animations, keyed by the card's serverId. Which of these
+  // block the event queue is decided by the caller (see
+  // GameComponent.cardAnimations).
+  private readonly cardAnimations: Record<string, () => Promise<void>> = {
+    '34': () => this.animateCreatureEyes(),
+    '62': () => this.animateDragonShadow(),
+    '96': () => this.animateCoinFlip(),
+    '98': () => this.animateCoinFlip(),
+    '99': () => this.animateCoinFlip(),
+    '100': () => this.animateCoinFlip(),
+    '101': () => this.animateCoinFlip(),
+    '102': () => this.animateCoinFlip(),
+  };
+
+  playCardAnimation(serverId: string): Promise<void> {
+    return this.cardAnimations[serverId]?.() ?? Promise.resolve();
+  }
+
+// Shows the added card over its origin, then flies it right above the
+// target deck at the deck's own size and slides it down *behind* the deck:
+// a clip-path keeps only the part above the deck's top edge visible, moving
+// in lockstep with the card, so it reads as the card being tucked in.
 async animateAddedCard(
   cardId: string,
   deckEnd: string,
@@ -578,135 +837,112 @@ async animateAddedCard(
 ) {
   await this.nextFrame();
 
-  let origin = document.querySelector(
-    `[data-game-id="${cardOrigin}"]`
-  ) as HTMLElement | null;
-
   const destination = document.querySelector(
     `[data-game-id="${deckEnd}"]`
   ) as HTMLElement | null;
 
-  const cardImageElement = document.querySelector(
-    '.card-icon'
-  ) as HTMLImageElement | null;
+  if (!destination) return;
 
-  if (!destination || !cardImageElement) return;
+  const origin =
+    (document.querySelector(`[data-game-id="${cardOrigin}"]`) as HTMLElement | null) ??
+    destination;
 
-  if(!origin)
-  {
-    origin = destination;
-  }
+  const deckRect = destination.getBoundingClientRect();
+  const originCenter = this.getCenter(origin);
+  // The card ends a bit smaller than the deck so it tucks in neatly.
+  const sizeRatio = 0.82;
+  const width = deckRect.width * sizeRatio;
+  const height = deckRect.height * sizeRatio;
 
-  cardImageElement.style.display = 'block';
-  cardImageElement.style.position = 'fixed';
-  cardImageElement.src = `/images/cards/${cardId}.webp`;
-  cardImageElement.style.willChange = 'transform, opacity';
-  cardImageElement.style.transformOrigin = '50% 0%';
+  // Resting spot: centered on the deck, sitting right on top of it.
+  const homeLeft = deckRect.left + (deckRect.width - width) / 2;
+  const homeTop = deckRect.top - height;
 
-  const destRect = destination.getBoundingClientRect();
-  const originRect = origin.getBoundingClientRect();
+  const card = document.createElement('div');
+  card.classList.add('added-card-ghost');
+  card.style.left = `${homeLeft}px`;
+  card.style.top = `${homeTop}px`;
+  card.style.width = `${width}px`;
+  card.style.height = `${height}px`;
+  card.style.backgroundImage =
+    `url('/images/cards/${cardId}.webp'), url('/images/cards/placeholder.webp')`;
+  document.body.appendChild(card);
 
-  cardImageElement.style.left = `${originRect.left}px`;
-  cardImageElement.style.top = `${originRect.top}px`;
+  const ox = originCenter.x - (homeLeft + width / 2);
+  const oy = originCenter.y - (homeTop + height / 2);
+  // Shown off at the same size as before the card box was shrunk.
+  const showScale = 1.6 / sizeRatio;
+  const lift = height * 0.3;
 
-  const cardRect = cardImageElement.getBoundingClientRect();
-
-  const endX =
-    destRect.left - originRect.left + originRect.width;
-
-  const endY =
-    destRect.top - originRect.top;
-
-  const animation = cardImageElement.animate(
+  const animation = card.animate(
     [
       {
-        transform: 'translate(0px, 0px) scale(0.4) rotate(-10deg)',
+        transform: `translate(${ox}px, ${oy}px) scale(${showScale * 0.3}) rotate(-10deg)`,
+        clipPath: 'inset(0px 0px 0px 0px)',
         opacity: 0,
-        offset: 0
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        offset: 0,
       },
-
       {
-        transform: 'translate(0px, 0px) scale(1.5) rotate(0)',
+        transform: `translate(${ox}px, ${oy}px) scale(${showScale}) rotate(0deg)`,
+        clipPath: 'inset(0px 0px 0px 0px)',
         opacity: 1,
-        offset: 0.2
+        easing: 'linear',
+        offset: 0.18,
       },
-
       {
-        transform: 'translate(0px, 0px) scale(1.5) rotate(0deg)',
+        transform: `translate(${ox}px, ${oy - 6}px) scale(${showScale * 1.03}) rotate(0deg)`,
+        clipPath: 'inset(0px 0px 0px 0px)',
         opacity: 1,
-        offset: 0.6
+        easing: 'cubic-bezier(0.45, 0, 0.25, 1)',
+        offset: 0.45,
       },
-
-      // Move towards destination, swinging while it shrinks and fades
+      // Hovers above the deck at its final size
       {
-        transform: `translate(${endX * 0.15}px, ${endY * 0.15}px)
-                    scale(1) rotate(-10deg)`,
+        transform: `translate(0px, ${-lift}px) scale(1) rotate(0deg)`,
+        clipPath: 'inset(0px 0px 0px 0px)',
         opacity: 1,
-        offset: 0.7
+        easing: 'ease-in-out',
+        offset: 0.68,
       },
+      // Bottom edge touches the deck's top edge
       {
-        transform: `translate(${endX * 0.35}px, ${endY * 0.35}px)
-                    scale(0.9) rotate(-20deg)`,
+        transform: 'translate(0px, 0px) scale(1) rotate(0deg)',
+        clipPath: 'inset(0px 0px 0px 0px)',
         opacity: 1,
-        offset: 0.73
+        easing: 'ease-in',
+        offset: 0.76,
       },
+      // Fully slid down behind the deck
       {
-        transform: `translate(${endX * 0.5}px, ${endY * 0.5}px)
-                    scale(0.8) rotate(-30deg)`,
-        opacity: 0.95,
-        offset: 0.76
+        transform: `translate(0px, ${height}px) scale(1) rotate(0deg)`,
+        clipPath: `inset(0px 0px ${height}px 0px)`,
+        opacity: 1,
+        offset: 1,
       },
-      {
-        transform: `translate(${endX * 0.65}px, ${endY * 0.65}px)
-                    scale(0.7) rotate(-40deg)`,
-        opacity: 0.85,
-        offset: 0.8
-      },
-      {
-        transform: `translate(${endX * 0.78}px, ${endY * 0.78}px)
-                    scale(0.6) rotate(-30deg)`,
-        opacity: 0.7,
-        offset: 0.85
-      },
-      {
-        transform: `translate(${endX * 0.88}px, ${endY * 0.88}px)
-                    scale(0.6) rotate(-20deg)`,
-        opacity: 0.5,
-        offset: 0.9
-      },
-      {
-        transform: `translate(${endX * 0.95}px, ${endY * 0.80}px)
-                    scale(0.6) rotate(-10deg)`,
-        opacity: 0.3,
-        offset: 0.95
-      },
-
-      {
-        transform: `translate(${endX}px, ${endY + originRect.height}px)
-                    scale(0.6) rotate(0deg)`,
-        opacity: 0,
-        offset: 1
-      }
     ],
     {
       duration: this.animationSettingsService.getAdjustedDuration(duration),
-      easing: 'ease-out'
+      fill: 'forwards',
     }
   );
 
-  await animation.finished;
+  await animation.finished.catch(() => undefined);
+  card.remove();
 
-  cardImageElement.src = '/images/cards/reverse_card.svg';
-  cardImageElement.style.display = 'none';
-  cardImageElement.style.transform = '';
-  cardImageElement.style.opacity = '';
-  cardImageElement.style.position = '';
-  cardImageElement.style.left = '';
-  cardImageElement.style.top = '';
-  cardImageElement.style.willChange = '';
+  // The deck settles a little as the card lands inside it.
+  await destination.animate(
+    [
+      { transform: 'translateY(0px) scale(1)' },
+      { transform: 'translateY(3px) scale(1.03, 0.97)', offset: 0.4 },
+      { transform: 'translateY(0px) scale(1)' },
+    ],
+    {
+      duration: this.animationSettingsService.getAdjustedDuration(220),
+      easing: 'ease-out',
+    }
+  ).finished.catch(() => undefined);
 }
-
-
 
   async animateDeckCard(startIcon: string, cardOrigin: string, deckEnd: string, duration: number): Promise<void> {
     await this.nextFrame();
@@ -822,6 +1058,149 @@ async animateSkillEfect(card: string): Promise<void>
   );
 
   await animation.finished;
+}
+
+// Flies a played card out of its owner's hand to the board slot it lands on
+// (a unit dock or the last-spell dock), stopping halfway to show it off.
+// Rival hand cards are face-down with no id in the DOM, so for them the last
+// hand card is used as the origin (the one *ngFor drops when HandSize goes
+// down) and the ghost flips over on the way up to reveal the card.
+// `onLeaveHand` runs once the origin has been measured, so the caller can
+// take the card out of the hand while the ghost covers its old spot.
+async animateCardPlayed(
+  playerId: string,
+  cardId: string,
+  imageUrl: string | undefined,
+  targetDockId: string,
+  isSpell: boolean,
+  onLeaveHand: () => void,
+): Promise<void> {
+  await this.nextFrame();
+
+  const hand = document.querySelector(`[data-hand-id="${playerId}"]`) as HTMLElement | null;
+  const handCards = hand ? Array.from(hand.querySelectorAll('.card')) as HTMLElement[] : [];
+  const sourceElement =
+    (hand?.querySelector(`[data-game-id="${cardId}"]`) as HTMLElement | null) ??
+    handCards[handCards.length - 1] ??
+    null;
+  const targetElement = document.querySelector(
+    `[data-dock-id="${targetDockId}"] .dock`
+  ) as HTMLElement | null;
+
+  if (!sourceElement || !targetElement) {
+    onLeaveHand();
+    return;
+  }
+
+  const faceDown = !sourceElement.hasAttribute('data-game-id');
+  const sourceRect = sourceElement.getBoundingClientRect();
+  const targetRect = targetElement.getBoundingClientRect();
+
+  const ghost = document.createElement('div');
+  ghost.classList.add('played-card-ghost');
+  ghost.style.left = `${sourceRect.left}px`;
+  ghost.style.top = `${sourceRect.top}px`;
+  ghost.style.width = `${sourceRect.width}px`;
+  ghost.style.height = `${sourceRect.height}px`;
+
+  const inner = document.createElement('div');
+  inner.classList.add('played-card-ghost-inner');
+
+  const front = document.createElement('div');
+  front.classList.add('played-card-ghost-face', 'front');
+  front.style.backgroundImage =
+    `url('/images/cards/${imageUrl ?? ''}'), url('/images/cards/placeholder.webp')`;
+
+  const back = document.createElement('div');
+  back.classList.add('played-card-ghost-face', 'back');
+
+  inner.append(front, back);
+  ghost.appendChild(inner);
+  document.body.appendChild(ghost);
+
+  onLeaveHand();
+
+  const start = {
+    x: sourceRect.left + sourceRect.width / 2,
+    y: sourceRect.top + sourceRect.height / 2,
+  };
+  const end = this.getCenter(targetElement);
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+
+  // The last-spell dock is rotated 90deg, so its on-screen box is sideways.
+  const targetHeight = isSpell ? targetRect.width : targetRect.height;
+  const endScale = targetHeight / sourceRect.height;
+  const endRotation = isSpell ? 90 : 0;
+
+  // Showcase spot: a bit past the hand toward the board, lifted off the
+  // table so the card reads clearly before it drops into its slot.
+  const showX = dx * 0.35;
+  const showY = dy * 0.35;
+  const showScale = 1.45;
+  const tilt = dx === 0 ? 0 : Math.sign(dx) * 4;
+
+  const flight = ghost.animate(
+    [
+      {
+        transform: 'translate(0px, 0px) scale(1) rotate(0deg)',
+        filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.4))',
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        offset: 0,
+      },
+      {
+        transform: `translate(${showX}px, ${showY}px) scale(${showScale}) rotate(${-tilt}deg)`,
+        filter: 'drop-shadow(0 22px 22px rgba(0,0,0,0.45)) brightness(1.1)',
+        easing: 'linear',
+        offset: 0.3,
+      },
+      {
+        transform: `translate(${showX}px, ${showY - 6}px) scale(${showScale * 1.03}) rotate(0deg)`,
+        filter: 'drop-shadow(0 24px 24px rgba(0,0,0,0.45)) brightness(1.1)',
+        easing: 'cubic-bezier(0.55, 0, 0.75, 0.2)',
+        offset: 0.62,
+      },
+      {
+        transform: `translate(${dx}px, ${dy - 18}px) scale(${endScale * 1.12}) rotate(${endRotation + tilt}deg)`,
+        filter: 'drop-shadow(0 14px 14px rgba(0,0,0,0.4))',
+        easing: 'ease-in',
+        offset: 0.9,
+      },
+      {
+        transform: `translate(${dx}px, ${dy}px) scale(${endScale}) rotate(${endRotation}deg)`,
+        filter: 'drop-shadow(0 2px 3px rgba(0,0,0,0.4))',
+        offset: 1,
+      },
+    ],
+    {
+      duration: this.animationSettingsService.getAdjustedDuration(1100),
+      fill: 'forwards',
+    },
+  );
+
+  const flip = inner.animate(
+    faceDown
+      ? [
+          { transform: 'rotateY(180deg)', offset: 0 },
+          { transform: 'rotateY(180deg)', offset: 0.08 },
+          { transform: 'rotateY(0deg)', offset: 0.32 },
+          { transform: 'rotateY(0deg)', offset: 1 },
+        ]
+      : [{ transform: 'rotateY(0deg)' }, { transform: 'rotateY(0deg)' }],
+    {
+      duration: this.animationSettingsService.getAdjustedDuration(1100),
+      easing: 'ease-in-out',
+      fill: 'forwards',
+    },
+  );
+
+  const cleanup = () => ghost.remove();
+  await Promise.all([flight.finished, flip.finished]).catch(() => undefined);
+
+  // Keep the ghost up a couple more frames: the caller places the real card
+  // in the dock right after this resolves, and it has to render underneath
+  // before the ghost goes away or the slot flickers empty.
+  requestAnimationFrame(() => requestAnimationFrame(cleanup));
 }
 
 async animateSpellCast(cardId: string): Promise<void> {

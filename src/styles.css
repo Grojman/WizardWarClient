@@ -416,6 +416,125 @@ body {
 .icon-hand-wrench {
   background-image: url("/images/board/hand_wrench.svg");
 }
+/* Card flying from hand to board, see GameAnimationService.animateCardPlayed */
+.played-card-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10001;
+  transform-origin: 50% 50%;
+  perspective: 800px;
+  will-change: transform, filter;
+}
+.played-card-ghost-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+.played-card-ghost-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  image-rendering: pixelated;
+  backface-visibility: hidden;
+}
+.played-card-ghost-face.back {
+  background-color: var(--color-wood-dark);
+  background-image: url("/images/cards/reverse_card.svg");
+  background-size: contain;
+  transform: rotateY(180deg);
+}
+/* See GameAnimationService.animateModifyDeck: pivots on its handle (left) */
+.wand-tool {
+  position: fixed;
+  width: 12rem;
+  height: 1.2rem;
+  pointer-events: none;
+  z-index: 10001;
+  transform-origin: 0% 50%;
+  filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.45));
+  will-change: transform, opacity;
+}
+.deck-sparkle {
+  position: fixed;
+  background-image: url("/images/board/spark.svg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  z-index: 10001;
+  mix-blend-mode: screen;
+  filter: drop-shadow(0 0 6px rgba(255, 230, 140, 0.9));
+}
+/* See GameAnimationService.animateAddedCard */
+.added-card-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10001;
+  border-radius: 10px;
+  background-color: var(--color-wood-dark);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: pixelated;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  transform-origin: 50% 50%;
+  will-change: transform, clip-path;
+}
+.added-card-ghost.face-down {
+  background-image: url("/images/cards/reverse_card.svg");
+  background-size: contain;
+}
+/* Card 34, see GameAnimationService.animateCreatureEyes */
+.creature-eyes-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10002;
+  background-image: url("/images/effects/creature_eyes.svg");
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+}
+/* Coin cards (96, 98-102), see GameAnimationService.animateCoinFlip */
+.coin-flip {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 8rem;
+  height: 8rem;
+  margin: -4rem 0 0 -4rem;
+  pointer-events: none;
+  z-index: 10002;
+  background-image: url("/images/effects/coin.svg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.5));
+  will-change: transform, opacity;
+}
+/* Card 62, see GameAnimationService.animateDragonShadow */
+.dragon-shadow {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  width: 60vw;
+  aspect-ratio: 3 / 2;
+  pointer-events: none;
+  z-index: 10002;
+  will-change: transform;
+}
+.dragon-shadow img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0.4;
+  filter: blur(4px);
+  will-change: transform;
+}
 .impact-burst {
   height: 3rem;
   width: 3rem;

@@ -337,32 +337,27 @@
     }
   }
 
-  .slam-animation {
-    animation: card-slam 0.45s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+  /* Played cards arrive in their dock by flying there (see
+     GameAnimationService.animateCardPlayed), so the dock only has to sell
+     the impact once the card touches down. */
+  .land-animation {
+    animation: card-land 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97);
   }
 
-  @keyframes card-slam {
+  @keyframes card-land {
     0% {
-      opacity: 0;
-      transform: translateY(-70vh) scale(1.35) rotate(-6deg);
+      transform: scale(1.12);
+      filter: brightness(1.4);
     }
 
     55% {
-      opacity: 1;
-      transform: translateY(0) scale(1.18) rotate(2deg);
-    }
-
-    72% {
-      transform: translateY(1%) scale(0.9) rotate(-1deg);
-    }
-
-    86% {
-      transform: translateY(-0.5%) scale(1.05) rotate(0.5deg);
+      transform: scale(0.94);
+      filter: brightness(1.15);
     }
 
     100% {
-      opacity: 1;
-      transform: translateY(0) scale(1) rotate(0deg);
+      transform: scale(1);
+      filter: brightness(1);
     }
   }
 

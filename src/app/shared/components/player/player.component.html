@@ -41,6 +41,7 @@
             <div class="board-row">
                 <app-dock
                 *ngFor="let card of player.Board; index as i"
+                [attr.data-dock-id]="player.Id + '-dock-' + i"
                 [card]="card"
                 [enhanced]="(unitSelected && card === null) || (!visibleHand && card !== null && attackingUnit !== null && card.id !== attackingUnit.id)"
                 [isAttackingCard]="card !== null && card.id === attackingUnit?.id"
@@ -51,6 +52,7 @@
                 [isTarget]="card !== null && attackingUnit !== null"
                 />
                 <app-dock
+                [attr.data-dock-id]="player.Id + '-spell'"
                 [card]="player.LastSpellPlayed"
                 (contextmenu)="onRightClick($event, player.LastSpellPlayed)"
                 (click)="lastSpellClicked()"
@@ -75,6 +77,7 @@
         </div>
         <div class="hand"
         *ngIf="!visibleHand"
+        [attr.data-hand-id]="player.Id"
         >
             <app-card
             *ngFor="let card of [].constructor(player.HandSize); let i = index"
@@ -82,6 +85,7 @@
         </div>
         <div class="hand own-hand"
         *ngIf="visibleHand"
+        [attr.data-hand-id]="player.Id"
         (mouseleave)="hoveredHandIndex = null"
         >
         <app-card
@@ -95,6 +99,7 @@
             (contextmenu)="onRightClick($event, card)"
             [canBeSelected]="true"
             [showEffectActive]="false"
+            [enterAnimation]="''"
         />
         <p class="card-counter subtitle">
             {{ player.HandSize }} / 10

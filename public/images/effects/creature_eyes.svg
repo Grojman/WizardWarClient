@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" fill="#030205"/>
+  <g fill="#ffffff" opacity="0.55" filter="url(#glow)">
+    <polygon points="560,420 650,380 740,420 650,460"/>
+    <polygon points="860,420 950,380 1040,420 950,460"/>
+  </g>
+  <g fill="#ffffff">
+    <polygon points="560,420 650,380 740,420 650,460"/>
+    <polygon points="860,420 950,380 1040,420 950,460"/>
+  </g>
+</svg>

@@ -71,6 +71,12 @@ export class GameStateService {
       player.Health = this.createHealth(player.Health);
     });
 
+    // Snapshot cards arrive as plain JSON. Cards added later come in through
+    // events and go through Card.fromJSON, but a resumed game starts with a
+    // populated board, and without Card's methods (changeHealth/changeDamage)
+    // those units would never update their stats.
+    [state.Me, ...state.Rivals].forEach((player) => this.hydrateCards(player));
+
     if (isResume) {
       return state;
     }
@@ -117,6 +123,12 @@ export class GameStateService {
       player.GlobalEffects = rivalSnapshot.GlobalEffects ?? [];
       player.IsMyTurn = rivalSnapshot.IsMyTurn ?? false;
     });
+  }
+
+  private hydrateCards(player: Player): void {
+    player.Board = (player.Board ?? []).map((card) => (card ? Card.fromJSON(card) : null));
+    player.HandData = (player.HandData ?? []).map((card) => Card.fromJSON(card));
+    player.LastSpellPlayed = player.LastSpellPlayed ? Card.fromJSON(player.LastSpellPlayed) : null;
   }
 
   createHealth(value: Health | number): Health {

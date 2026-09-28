@@ -162,15 +162,3 @@ gap: 1rem;
     font-size: small;
   }
 }
-.card-icon
-{
-  background-color: var(--color-wood-dark);
-  aspect-ratio: 5 / 7;
-  height: 15vh;
-  image-rendering: pixelated;
-  border-radius: 10px;
-}
-.wand-icon
-{
-  transform-origin: 50% 50%;
-}
