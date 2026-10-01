@@ -12,6 +12,9 @@ import { SettingsComponent } from '../../shared/components/settings/settings.com
 import { Message } from '../../models/message.model';
 import { GameCardCheckComponent } from '../../shared/components/game-card-check/game-card-check.component';
 import { GameAnimationService } from '../../core/services/game-animation.service';
+import { AnimationFxService } from '../../core/services/animation-fx.service';
+import { CardMovementAnimationService } from '../../core/services/card-movement-animation.service';
+import { CardEffectAnimationService } from '../../core/services/card-effect-animation.service';
 import { GameStateService } from '../../core/services/game-state.service';
 
 import { SPELL, UNIT } from '../../core/config/game-data-config';
@@ -39,25 +42,14 @@ export class GameComponent implements OnInit, OnDestroy {
 
   cardsWithEffect = ["34", "96", "98", "99", "100", "101", "102"];
 
-  // Cards (same serverIds as cardsWithEffect) with a custom animation when
-  // played, implemented in GameAnimationService.playCardAnimation. `async`
-  // lets the remaining events play alongside it; otherwise they wait for it.
-  cardAnimations: { id: string, async: boolean }[] = [
-    { id: "34", async: false },
-    { id: "62", async: true },
-    { id: "96", async: false },
-    { id: "98", async: false },
-    { id: "99", async: false },
-    { id: "100", async: false },
-    { id: "101", async: false },
-    { id: "102", async: false },
-  ];
-
   constructor(
     private ws : WebsocketService,
     private router : Router,
     private gameStateService: GameStateService,
     private animationService: GameAnimationService,
+    private fx: AnimationFxService,
+    private cardMovement: CardMovementAnimationService,
+    private cardEffects: CardEffectAnimationService,
     private audioService: AudioService,
     private seriesStateService: SeriesStateService,
     private gameSessionStorage: GameSessionStorageService,
@@ -123,7 +115,7 @@ export class GameComponent implements OnInit, OnDestroy {
 
   private shakeIfGlobalEffectSource(source: string | undefined): void {
     if (this.isGlobalEffectSource(source)) {
-      this.animationService.shakeElement(source!);
+      this.fx.shakeElement(source!);
     }
   }
   
@@ -382,20 +374,20 @@ async animateCardDrawn(deckEnd: string, up: boolean, duration: number = 1000)
 
 async animateAddCard(cardId: string, cardOrigin: string, deckEnd: string, duration: number = 1300)
 {
-  await this.animationService.animateAddedCard(cardId,deckEnd, cardOrigin, duration)
+  await this.cardMovement.animateAddedCard(cardId,deckEnd, cardOrigin, duration)
   // await this.createAnimationDeckCardsAmount(".icon-hand-card", cardOrigin, deckEnd, duration)
 }
 
 async animateModifyDeck(deckEnd: string, duration: number = 1100)
 {
-  await this.animationService.animateModifyDeck(deckEnd, duration);
+  await this.cardMovement.animateModifyDeck(deckEnd, duration);
   // await this.createAnimationDeckCardsAmount(".icon-hand-wrench", cardOrigin, deckEnd, duration)
 }
 
 async createAnimationDeckCardsAmount(deckEnd: string, duration: number, up: boolean)
 {
-  await this.animationService.animateCardDrawn(deckEnd, duration, up);
-  // await this.animationService.animateDeckCard(startIcon, cardOrigin, deckEnd, duration);
+  await this.cardMovement.animateCardDrawn(deckEnd, duration, up);
+  // await this.cardMovement.animateDeckCard(startIcon, cardOrigin, deckEnd, duration);
 }
 
 
@@ -458,7 +450,7 @@ changeHealthAnimationDuration: number = 500;
           const drawn = Card.fromJSON(event.Card);
           this.audioService.playSfx('/audio/card_drawn.mp3', true);
           if (this.isUser(player.Id)) {
-            await this.animationService.animateCardDrawnToHand(
+            await this.cardMovement.animateCardDrawnToHand(
               this.getDeckId(player.Id),
               player.Id,
               drawn.id,
@@ -492,7 +484,7 @@ changeHealthAnimationDuration: number = 500;
 
         if (card) {
           card.changeHealth(event.Amount);
-          this.animationService.spawnFloatingNumber(card.id, event.Amount, 'health');
+          this.fx.spawnFloatingNumber(card.id, event.Amount, 'health');
         }
         break;
         case "UnitDamageChanged":
@@ -505,7 +497,7 @@ changeHealthAnimationDuration: number = 500;
 
         if (ard) {
           ard.changeDamage(event.Amount);
-          this.animationService.spawnFloatingNumber(ard.id, event.Amount, 'attack');
+          this.fx.spawnFloatingNumber(ard.id, event.Amount, 'attack');
         }
         break;
         case "UnitDeath":
@@ -524,7 +516,8 @@ changeHealthAnimationDuration: number = 500;
         case "UnitPlayed":
         var player = this.getPlayer(event.PlayerSource);
         const unit = Card.fromJSON(event.Unit);
-        await this.animationService.animateCardPlayed(
+        await this.cardEffects.playCardIntroAnimation(unit.serverId);
+        await this.cardMovement.animateCardPlayed(
           player.Id,
           unit.id,
           unit.imageUrl,
@@ -535,13 +528,14 @@ changeHealthAnimationDuration: number = 500;
         this.audioService.playSfx('/audio/unit_played.mp3', true);
         this.gameStateService.placeCardOnBoard(player, unit, event.BoardPosition);
         this.checkCard(unit.serverId);
-        await this.playCardAnimation(unit.serverId);
+        await this.playCardAnimation(unit.serverId, unit.id);
         break;
 
         case "SpellPlayed":
         var player = this.getPlayer(event.PlayerSource);
         const spell = Card.fromJSON(event.Spell);
-        await this.animationService.animateCardPlayed(
+        await this.cardEffects.playCardIntroAnimation(spell.serverId);
+        await this.cardMovement.animateCardPlayed(
           player.Id,
           spell.id,
           spell.imageUrl,
@@ -553,7 +547,7 @@ changeHealthAnimationDuration: number = 500;
         this.gameStateService.setLastSpellPlayed(player, spell);
         await this.animationService.animateSpellCast(event.Spell.id);
         this.checkCard(event.Spell.serverId);
-        await this.playCardAnimation(event.Spell.serverId);
+        await this.playCardAnimation(event.Spell.serverId, event.Spell.id);
         break;
 
         case "AddedCardToDeck":
@@ -583,25 +577,18 @@ checkCard(serverId: string)
   }
 }
 
-async playCardAnimation(serverId: string)
+playCardAnimation(serverId: string, cardId: string): Promise<void>
 {
-  const cardAnimation = this.cardAnimations.find(n => n.id === serverId);
-  if (!cardAnimation) return;
-
-  const animation = this.animationService.playCardAnimation(serverId);
-  if (!cardAnimation.async)
-  {
-    await animation;
-  }
+  return this.cardEffects.playCardAnimation(serverId, cardId);
 }
   
 nextFrame(): Promise<void>
 {
-  return this.animationService.nextFrame();
+  return this.fx.nextFrame();
 }
 
 getCenter(el: HTMLElement) {
-  return this.animationService.getCenter(el);
+  return this.fx.getCenter(el);
 }
 
 findElement(id: string): HTMLElement{

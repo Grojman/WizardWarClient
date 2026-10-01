@@ -74,6 +74,61 @@
 {
   display: flex;
   width: 100%;
+  position: relative;
+  /* Own stacking context so the ashes (z-index: -1) sit above the table
+     but below everything else on this player's side. */
+  isolation: isolate;
+}
+/* Card 29, see PlayerComponent.hasAshes. A smaller, faded patch that slowly
+   drifts; a second copy (::after) drifts the other way so it swirls. */
+.ashes-layer
+{
+  position: absolute;
+  inset: 12% 18%;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(1.03);
+  filter: blur(4px);
+  transition: opacity 900ms ease-out, transform 900ms ease-out, filter 900ms ease-out;
+}
+.ashes-layer::before,
+.ashes-layer::after
+{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("/images/effects/ashes.svg");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  filter: saturate(0.3) brightness(1.15);
+}
+.ashes-layer.visible::before
+{
+  animation: ashes-drift 11s ease-in-out infinite alternate;
+}
+.ashes-layer.visible::after
+{
+  opacity: 0.45;
+  animation: ashes-drift 14s ease-in-out -5s infinite alternate-reverse;
+}
+.ashes-layer.visible
+{
+  opacity: 0.45;
+  transform: scale(1);
+  filter: blur(0.5px);
+}
+@keyframes ashes-drift {
+  0%   { translate: -2% 1%;  scale: 1;    rotate: -0.6deg; }
+  50%  { translate: 1.5% -1.5%; scale: 1.04; rotate: 0.4deg; }
+  100% { translate: 2.5% 1.5%; scale: 0.98; rotate: 0.8deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ashes-layer.visible::before,
+  .ashes-layer.visible::after
+  {
+    animation: none;
+  }
 }
 .long
 {
@@ -169,4 +224,119 @@
   bottom: 0;
   color: white;
   font-size: xx-large;
+}
+
+/* Card 19, see PlayerComponent.hasColorDisplacement. Applied per dock rather
+   than on .board-row so the row keeps its preserve-3d context. */
+.color-displacement-defs
+{
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+.board-row.color-displaced > app-dock
+{
+  filter: var(--color-displacement-filter);
+}
+
+/* Card 13_2, see PlayerComponent.syncCrowns */
+.health-anchor
+{
+  position: relative;
+}
+.crown
+{
+  position: absolute;
+  left: 50%;
+  top: -2.2rem;
+  width: 5.5rem;
+  aspect-ratio: 200 / 130;
+  margin-left: -2.75rem;
+  pointer-events: none;
+  z-index: 2;
+  background-image: url("/images/effects/crown.svg");
+  background-size: 100% 100%;
+  filter: drop-shadow(0 4px 4px rgba(0, 0, 0, 0.5));
+  /* Stacked crowns sit on top of each other; `translate` composes with the
+     crown-drop `transform` instead of replacing it. */
+  translate: 0 calc(var(--stack, 0) * -1.9rem);
+  z-index: calc(2 + var(--stack, 0));
+  animation: crown-drop 700ms cubic-bezier(0.3, 0, 0.4, 1) both;
+}
+@keyframes crown-drop {
+  0%   { transform: translateY(-6rem) rotate(-18deg); opacity: 0; }
+  30%  { opacity: 1; }
+  65%  { transform: translateY(0.3rem) rotate(4deg); }
+  80%  { transform: translateY(-0.4rem) rotate(-2deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+.crown.crown-broken
+{
+  background-image: none;
+  animation: none;
+}
+/* Each shard shows its own slice of the crown image and falls its own way. */
+.crown-shard
+{
+  position: absolute;
+  inset: 0;
+  background-image: url("/images/effects/crown.svg");
+  background-size: 100% 100%;
+  animation: crown-shard-fall 1100ms cubic-bezier(0.5, 0, 0.9, 0.6) forwards;
+}
+.shard-1 { clip-path: polygon(0 0, 34% 0, 30% 55%, 22% 100%, 0 100%); --dx: -2.6rem; --rot: -70deg; }
+.shard-2 { clip-path: polygon(34% 0, 52% 0, 48% 60%, 44% 100%, 22% 100%, 30% 55%); --dx: -0.8rem; --rot: 35deg; animation-delay: 60ms; }
+.shard-3 { clip-path: polygon(52% 0, 72% 0, 70% 45%, 66% 100%, 44% 100%, 48% 60%); --dx: 0.9rem; --rot: -40deg; animation-delay: 30ms; }
+.shard-4 { clip-path: polygon(72% 0, 100% 0, 100% 100%, 66% 100%, 70% 45%); --dx: 2.4rem; --rot: 80deg; animation-delay: 90ms; }
+@keyframes crown-shard-fall {
+  0%   { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+  12%  { transform: translate(calc(var(--dx) * 0.15), -0.3rem) rotate(calc(var(--rot) * 0.1)); opacity: 1; }
+  70%  { opacity: 1; }
+  100% { transform: translate(var(--dx), 7rem) rotate(var(--rot)); opacity: 0; }
+}
+
+/* Spell 11, see PlayerComponent.syncRatTails */
+.effects-anchor
+{
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 50vh;
+  /* Tails sit at z-index -1: behind the effects panel, above the table. */
+  isolation: isolate;
+}
+.rat-tails
+{
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+/* The tail image hangs down from its base (transform-origin); rotating it
+   ±90deg makes it stick out sideways from behind the panel's edge. */
+.rat-tail
+{
+  position: absolute;
+  width: 1.5rem;
+  aspect-ratio: 60 / 240;
+  background-image: url("/images/effects/rat_tail.svg");
+  background-size: 100% 100%;
+  transform-origin: 30% 0;
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.45));
+  /* Slide out sideways from behind the panel, then keep swaying. */
+  animation:
+    rat-tail-emerge 900ms cubic-bezier(0.2, 0.8, 0.3, 1.2) var(--delay, 0ms) both,
+    rat-tail-sway var(--sway, 2.6s) ease-in-out calc(var(--delay, 0ms) + 900ms) infinite alternate;
+}
+.rat-tail.left  { left: 1rem;  --side: 90deg;  --hidden-x: 5rem; }
+.rat-tail.right { right: 1rem; --side: -90deg; --hidden-x: -5rem; }
+.rat-tail.flip  { transform: scaleX(-1); }
+@keyframes rat-tail-emerge {
+  from { translate: var(--hidden-x) 0; rotate: calc(var(--side) + var(--tilt, 0deg)); }
+  to   { translate: 0 0; rotate: calc(var(--side) + var(--tilt, 0deg)); }
+}
+@keyframes rat-tail-sway {
+  from { rotate: calc(var(--side) + var(--tilt, 0deg) - 8deg); }
+  to   { rotate: calc(var(--side) + var(--tilt, 0deg) + 8deg); }
 }

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 130">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff1a8"/>
+      <stop offset="0.35" stop-color="#f5c542"/>
+      <stop offset="0.75" stop-color="#d89a1c"/>
+      <stop offset="1" stop-color="#9c6508"/>
+    </linearGradient>
+    <linearGradient id="band" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe27a"/>
+      <stop offset="1" stop-color="#b87a0e"/>
+    </linearGradient>
+    <radialGradient id="ruby" cx="0.35" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#ffb3b3"/>
+      <stop offset="0.4" stop-color="#e0182d"/>
+      <stop offset="1" stop-color="#7a0612"/>
+    </radialGradient>
+    <radialGradient id="sapphire" cx="0.35" cy="0.35" r="0.7">
+      <stop offset="0" stop-color="#bfe0ff"/>
+      <stop offset="0.4" stop-color="#1f6fe0"/>
+      <stop offset="1" stop-color="#0a2a6e"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#6b4204" stroke-width="4" stroke-linejoin="round">
+    <!-- points -->
+    <path fill="url(#gold)" d="M 14 96 L 8 30 L 50 64 L 72 14 L 100 56 L 128 14 L 150 64 L 192 30 L 186 96 Z"/>
+    <!-- band -->
+    <rect x="12" y="92" width="176" height="28" rx="6" fill="url(#band)"/>
+    <!-- tips -->
+    <circle cx="8" cy="28" r="8" fill="#ffe27a"/>
+    <circle cx="72" cy="12" r="8" fill="#ffe27a"/>
+    <circle cx="128" cy="12" r="8" fill="#ffe27a"/>
+    <circle cx="192" cy="28" r="8" fill="#ffe27a"/>
+    <path fill="#ffe27a" d="M 100 30 L 110 44 L 100 58 L 90 44 Z"/>
+  </g>
+  <!-- jewels -->
+  <g stroke="#3a1a02" stroke-width="2.5">
+    <ellipse cx="100" cy="106" rx="11" ry="9" fill="url(#ruby)"/>
+    <ellipse cx="54" cy="106" rx="8" ry="7" fill="url(#sapphire)"/>
+    <ellipse cx="146" cy="106" rx="8" ry="7" fill="url(#sapphire)"/>
+    <path fill="url(#ruby)" d="M 100 66 L 110 78 L 100 90 L 90 78 Z"/>
+  </g>
+  <g fill="#fff8d6" opacity="0.9">
+    <circle cx="26" cy="106" r="3.5"/><circle cx="76" cy="106" r="3.5"/>
+    <circle cx="124" cy="106" r="3.5"/><circle cx="174" cy="106" r="3.5"/>
+  </g>
+  <!-- shine -->
+  <path d="M 20 99 L 180 99" stroke="#fff6c4" stroke-width="3" opacity="0.8"/>
+</svg>

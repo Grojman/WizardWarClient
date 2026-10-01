@@ -416,7 +416,7 @@ body {
 .icon-hand-wrench {
   background-image: url("/images/board/hand_wrench.svg");
 }
-/* Card flying from hand to board, see GameAnimationService.animateCardPlayed */
+/* Card flying from hand to board, see CardMovementAnimationService.animateCardPlayed */
 .played-card-ghost {
   position: fixed;
   pointer-events: none;
@@ -447,7 +447,7 @@ body {
   background-size: contain;
   transform: rotateY(180deg);
 }
-/* See GameAnimationService.animateModifyDeck: pivots on its handle (left) */
+/* See CardMovementAnimationService.animateModifyDeck: pivots on its handle (left) */
 .wand-tool {
   position: fixed;
   width: 12rem;
@@ -469,7 +469,7 @@ body {
   mix-blend-mode: screen;
   filter: drop-shadow(0 0 6px rgba(255, 230, 140, 0.9));
 }
-/* See GameAnimationService.animateAddedCard */
+/* See CardMovementAnimationService.animateAddedCard */
 .added-card-ghost {
   position: fixed;
   pointer-events: none;
@@ -488,7 +488,7 @@ body {
   background-image: url("/images/cards/reverse_card.svg");
   background-size: contain;
 }
-/* Card 34, see GameAnimationService.animateCreatureEyes */
+/* Card 34, see CardEffectAnimationService.animateCreatureEyes */
 .creature-eyes-overlay {
   position: fixed;
   inset: 0;
@@ -499,7 +499,42 @@ body {
   background-position: center;
   opacity: 0;
 }
-/* Coin cards (96, 98-102), see GameAnimationService.animateCoinFlip */
+/* Card 51, see CardEffectAnimationService.animateFlexArms */
+.flex-arm {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10002;
+  will-change: transform, opacity;
+}
+.flex-arm-image {
+  width: 100%;
+  height: 100%;
+  background-image: url("/images/effects/flex_arm.svg");
+  background-size: contain;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.45));
+  /* Soften the cut shoulder where it meets the card edge. */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 12%);
+  mask-image: linear-gradient(to right, transparent 0%, #000 12%);
+}
+/* Card 140, see CardEffectAnimationService.animateLightSplit */
+.white-light-glow,
+.white-light-sphere {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10002;
+  border-radius: 50%;
+  will-change: transform, opacity;
+}
+.white-light-glow {
+  background: radial-gradient(circle, #ffffff 0%, rgba(255, 255, 255, 0.85) 30%, rgba(255, 255, 255, 0) 70%);
+  mix-blend-mode: screen;
+}
+.white-light-sphere {
+  background: radial-gradient(circle at 40% 40%, #ffffff 0%, #ffffff 45%, rgba(230, 240, 255, 0.9) 65%, rgba(255, 255, 255, 0) 100%);
+  box-shadow: 0 0 18px 8px rgba(255, 255, 255, 0.8), 0 0 40px 16px rgba(210, 230, 255, 0.45);
+}
+/* Coin cards (96, 98-102), see CardEffectAnimationService.animateCoinFlip */
 .coin-flip {
   position: fixed;
   left: 50%;
@@ -516,7 +551,7 @@ body {
   filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.5));
   will-change: transform, opacity;
 }
-/* Card 62, see GameAnimationService.animateDragonShadow */
+/* Card 62, see CardEffectAnimationService.animateDragonShadow */
 .dragon-shadow {
   position: fixed;
   left: 0;

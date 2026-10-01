@@ -1,6 +1,30 @@
 <div class="player-content"
 [class.dead]="player.Health.displayHealth <= 0"
 >
+    <!-- Card 19, see PlayerComponent.hasColorDisplacement -->
+    <svg class="color-displacement-defs" *ngIf="hasColorDisplacement" aria-hidden="true">
+        <filter [attr.id]="colorDisplacementFilterId" color-interpolation-filters="sRGB"
+        x="-10%" y="-10%" width="120%" height="120%">
+            <feColorMatrix in="SourceGraphic" type="matrix" result="red"
+            values="1 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 1 0" />
+            <feOffset in="red" result="red-shifted" dx="4" dy="0">
+                <animate attributeName="dx" values="4;-3;6;-2;4" dur="2.2s" repeatCount="indefinite" />
+                <animate attributeName="dy" values="0;2;-1;1;0" dur="3.1s" repeatCount="indefinite" />
+            </feOffset>
+            <feColorMatrix in="SourceGraphic" type="matrix" result="green"
+            values="0 0 0 0 0  0 1 0 0 0  0 0 0 0 0  0 0 0 1 0" />
+            <feColorMatrix in="SourceGraphic" type="matrix" result="blue"
+            values="0 0 0 0 0  0 0 0 0 0  0 0 1 0 0  0 0 0 1 0" />
+            <feOffset in="blue" result="blue-shifted" dx="-4" dy="0">
+                <animate attributeName="dx" values="-4;3;-6;2;-4" dur="2.2s" repeatCount="indefinite" />
+                <animate attributeName="dy" values="0;-2;1;-1;0" dur="3.1s" repeatCount="indefinite" />
+            </feOffset>
+            <feBlend in="red-shifted" in2="green" mode="screen" result="red-green" />
+            <feBlend in="red-green" in2="blue-shifted" mode="screen" />
+        </filter>
+    </svg>
+    <div class="ashes-layer" [class.visible]="hasAshes" aria-hidden="true"></div>
+    <div class="effects-anchor">
     <div class="effects-section">
         <h3 class="effects-title subtitle">{{ 'GAME_SECTION_EFFECTS' | translate }}</h3>
         <div class="effects" [style.--effect-leave-ms.ms]="effectLeaveMs">
@@ -15,6 +39,19 @@
             </p>
         </div>
     </div>
+    <div class="rat-tails" *ngIf="ratTails.length" aria-hidden="true">
+        <div class="rat-tail"
+        *ngFor="let tail of ratTails; trackBy: trackById"
+        [class.left]="tail.side === 'left'"
+        [class.right]="tail.side === 'right'"
+        [class.flip]="tail.flip"
+        [style.top.%]="tail.top"
+        [style.--tilt.deg]="tail.tilt"
+        [style.--sway.s]="tail.sway"
+        [style.--delay.ms]="tail.delay"
+        ></div>
+    </div>
+    </div>
     <div class="info-section"
     [class.reverse]="reverseOrder"
     [class.long]="long"
@@ -26,19 +63,37 @@
                 [isMe]="visibleHand"
                 [health]="player.Health"
                 ></app-turn-waves>
-                <app-health
-                [health]="player.Health"
-                [rival]="!visibleHand"
-                [class.own-health]="visibleHand"
-                [attr.data-game-id]="player.Id"
-                (click)="playerTargetSelected()"
-                [enhanced]="showHealthAsTarget"
-                ></app-health>
+                <div class="health-anchor">
+                    <app-health
+                    [health]="player.Health"
+                    [rival]="!visibleHand"
+                    [class.own-health]="visibleHand"
+                    [attr.data-game-id]="player.Id"
+                    (click)="playerTargetSelected()"
+                    [enhanced]="showHealthAsTarget"
+                    ></app-health>
+                    <div class="crown"
+                    *ngFor="let crown of crowns; trackBy: trackById"
+                    [class.crown-broken]="crown.state === 'breaking'"
+                    [style.--stack]="crown.stack"
+                    aria-hidden="true"
+                    >
+                        <ng-container *ngIf="crown.state === 'breaking'">
+                            <div class="crown-shard shard-1"></div>
+                            <div class="crown-shard shard-2"></div>
+                            <div class="crown-shard shard-3"></div>
+                            <div class="crown-shard shard-4"></div>
+                        </ng-container>
+                    </div>
+                </div>
                 <p class="player-name">
                     {{ player.Name }}
                 </p>
             </div>
-            <div class="board-row">
+            <div class="board-row"
+            [class.color-displaced]="hasColorDisplacement"
+            [style.--color-displacement-filter]="'url(#' + colorDisplacementFilterId + ')'"
+            >
                 <app-dock
                 *ngFor="let card of player.Board; index as i"
                 [attr.data-dock-id]="player.Id + '-dock-' + i"

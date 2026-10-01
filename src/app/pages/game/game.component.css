@@ -30,7 +30,13 @@
   pointer-events: none;
   z-index: 9999;
   overflow: visible;
-  transform: rotateX(10deg);
+  /* Children are placed with viewport coords from getBoundingClientRect(),
+     which already include the table's tilt, so this layer must not be
+     transformed itself (nor live inside .game-layout, whose perspective
+     would make it the containing block instead of the viewport).
+     perspective only affects children's translateZ (the projectile arc);
+     anything at z=0 still lands exactly where it's placed. */
+  perspective: 1000px;
 }
 .reverse
 {

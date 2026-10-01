@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 240">
+  <defs>
+    <linearGradient id="tail" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#c77f86"/>
+      <stop offset="0.45" stop-color="#f0b3b3"/>
+      <stop offset="1" stop-color="#a8646c"/>
+    </linearGradient>
+  </defs>
+  <!-- tapered S-curve, thick at the base (top) -->
+  <path fill="url(#tail)" stroke="#6e3a40" stroke-width="2.5" stroke-linejoin="round" d="
+    M 18 0
+    C 18 40, 40 60, 40 100
+    C 40 140, 16 160, 20 200
+    C 22 220, 30 232, 34 238
+    C 30 236, 18 224, 14 202
+    C 8 162, 32 140, 30 100
+    C 28 64, 8 44, 6 0 Z"/>
+  <!-- ring segments -->
+  <g fill="none" stroke="#9a5560" stroke-width="1.6" stroke-linecap="round" opacity="0.75">
+    <path d="M 8 14 Q 13 18 18 14"/><path d="M 10 30 Q 16 35 21 30"/>
+    <path d="M 15 46 Q 21 51 27 46"/><path d="M 21 62 Q 27 67 33 62"/>
+    <path d="M 26 78 Q 32 83 38 78"/><path d="M 29 94 Q 34 99 39 94"/>
+    <path d="M 29 110 Q 34 115 39 110"/><path d="M 27 126 Q 32 131 37 126"/>
+    <path d="M 23 142 Q 28 147 33 142"/><path d="M 19 158 Q 24 162 28 158"/>
+    <path d="M 16 174 Q 20 178 24 174"/><path d="M 16 190 Q 19 193 22 190"/>
+    <path d="M 18 206 Q 21 209 24 206"/>
+  </g>
+  <!-- highlight -->
+  <path d="M 13 6 C 14 40, 33 62, 34 100" fill="none" stroke="#ffe0de" stroke-width="2.5" stroke-linecap="round" opacity="0.6"/>
+</svg>

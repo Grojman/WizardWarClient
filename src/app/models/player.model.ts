@@ -11,6 +11,8 @@ import { ChromaticColorName } from "../core/config/chromatic-colors";
 export interface GlobalEffect
 {
     Id: string,
+    // Untranslated description key, e.g. "CARD_11_GLOBAL_EFFECT".
+    Key: string,
     Text: string,
     Color: ChromaticColorName | null,
 }

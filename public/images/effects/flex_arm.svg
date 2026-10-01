@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f2b98a"/>
+      <stop offset="0.55" stop-color="#e09a68"/>
+      <stop offset="1" stop-color="#b8714a"/>
+    </linearGradient>
+    <radialGradient id="bulge" cx="0.45" cy="0.35" r="0.6">
+      <stop offset="0" stop-color="#fbd7b4"/>
+      <stop offset="1" stop-color="#fbd7b4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g stroke="#5a2a12" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+    <!-- arm silhouette: shoulder (left edge) -> bicep -> forearm up -> elbow -> tricep -->
+    <path fill="url(#skin)" d="
+      M 4 116
+      C 22 96, 38 70, 74 70
+      C 104 70, 118 88, 120 106
+      C 116 88, 110 70, 112 50
+      L 156 44
+      C 164 74, 172 110, 164 142
+      C 156 166, 128 172, 100 168
+      C 70 164, 36 172, 4 164 Z"/>
+    <!-- fist -->
+    <rect x="102" y="10" width="60" height="46" rx="18" fill="#eaa877"/>
+    <path fill="none" stroke-width="3.5" d="M 116 12 L 116 30 M 131 11 L 131 30 M 146 12 L 146 30"/>
+    <path fill="#f2b98a" stroke-width="4" d="M 100 30 C 96 44, 108 54, 124 50 C 120 42, 112 36, 100 30 Z"/>
+  </g>
+  <!-- bicep highlight and muscle definition -->
+  <ellipse cx="72" cy="94" rx="40" ry="20" fill="url(#bulge)"/>
+  <g fill="none" stroke="#8a4a26" stroke-linecap="round">
+    <path stroke-width="3.5" d="M 36 122 C 60 132, 92 130, 116 112"/>
+    <path stroke-width="3" d="M 132 70 C 140 92, 142 118, 136 140"/>
+    <path stroke-width="2.5" d="M 52 146 C 74 152, 100 152, 126 148"/>
+    <path stroke-width="3" d="M 26 102 C 34 116, 34 136, 24 154"/>
+    <path stroke-width="2.5" d="M 88 74 C 92 84, 90 96, 82 104"/>
+    <path stroke-width="2.5" d="M 158 84 C 152 96, 150 106, 154 118"/>
+  </g>
+  <!-- vein -->
+  <path fill="none" stroke="#b86a4a" stroke-width="2.5" stroke-linecap="round" d="M 148 58 C 144 76, 152 92, 146 110 C 142 122, 148 132, 144 142"/>
+  <!-- shine -->
+  <path fill="none" stroke="#fff3e6" stroke-width="4" stroke-linecap="round" opacity="0.8" d="M 50 84 C 62 76, 80 75, 94 80"/>
+</svg>

@@ -22,6 +22,46 @@ const EFFECT_LEAVE_MS = 400;
 const WAVE_RANGE = 4;
 const WAVE_MAX_LIFT_VH = 3;
 
+// While at least one unit with this serverId is on a player's board, that
+// player's side of the table is covered in ashes.
+const ASHES_CARD_ID = '29';
+
+// While at least one unit with this serverId is on a player's board, a crown
+// sits on that player's health; it shatters when the last one leaves.
+const CROWN_CARD_ID = '13_2';
+// Must match the .crown-shard animation duration in the stylesheet.
+const CROWN_BREAK_MS = 1100;
+
+// While at least one unit with this serverId is on a player's board, that
+// player's board gets a color-displacement (RGB split) filter.
+const COLOR_DISPLACEMENT_CARD_ID = '19';
+// Each PlayerComponent renders its own SVG filter, so ids must be unique.
+let colorDisplacementFilterSeq = 0;
+
+// Rat tails stick out from the sides of the effects panel of a player who
+// has this global effect (granted by spell 11), RAT_TAILS_PER_EFFECT more
+// for each copy of the effect.
+const RAT_TAILS_EFFECT_KEY = 'CARD_11_GLOBAL_EFFECT';
+const RAT_TAILS_PER_EFFECT = 3;
+
+interface Crown {
+  id: number;
+  state: 'on' | 'breaking';
+  // Position in the stack, 0 sitting on the health.
+  stack: number;
+}
+
+interface RatTail {
+  id: number;
+  side: 'left' | 'right';
+  // % of the effects panel's height.
+  top: number;
+  tilt: number;
+  sway: number;
+  delay: number;
+  flip: boolean;
+}
+
 @Component({
   selector: 'app-player',
   standalone: false,
@@ -96,7 +136,95 @@ export class PlayerComponent implements DoCheck, OnDestroy {
   // instead, which zone.js already runs after every websocket message.
   private lastEffectsRef?: GlobalEffect[];
 
+  // Derived from the board itself (not from play/death events) so several
+  // copies, deaths, and reconnect snapshots all resolve correctly: the ashes
+  // only go away once no copy of the card is left on the board.
+  get hasAshes(): boolean {
+    return this.hasOnBoard(ASHES_CARD_ID);
+  }
+
+  get hasColorDisplacement(): boolean {
+    return this.hasOnBoard(COLOR_DISPLACEMENT_CARD_ID);
+  }
+
+  readonly colorDisplacementFilterId = `color-displacement-${++colorDisplacementFilterSeq}`;
+
+  // One set of tails per active spell-11 effect; kept as a stable array
+  // (see syncRatTails) so existing tails don't replay their entrance when
+  // another set is added.
+  ratTails: RatTail[] = [];
+
+  // One crown per copy of card 13_2 on the board, stacked on top of each
+  // other. A 'breaking' crown keeps its shards on screen while they fall
+  // apart after its unit has left the board.
+  crowns: Crown[] = [];
+  private crownSeq = 0;
+  private crownBreakTimers = new Set<ReturnType<typeof setTimeout>>();
+
+  private hasOnBoard(serverId: string): boolean {
+    return this.player?.Board?.some((card) => card?.serverId === serverId) ?? false;
+  }
+
+  private countOnBoard(serverId: string): number {
+    return this.player?.Board?.filter((card) => card?.serverId === serverId).length ?? 0;
+  }
+
+  // Adds a crown on top of the stack for each new copy, and shatters the top
+  // ones when copies leave.
+  private syncCrowns(): void {
+    const wanted = this.countOnBoard(CROWN_CARD_ID);
+    const standing = this.crowns.filter((c) => c.state === 'on');
+
+    for (let i = standing.length; i < wanted; i++) {
+      this.crowns = [...this.crowns, { id: ++this.crownSeq, state: 'on', stack: i }];
+    }
+
+    for (const crown of standing.slice(wanted)) {
+      crown.state = 'breaking';
+      const timer = setTimeout(() => {
+        this.crowns = this.crowns.filter((c) => c !== crown);
+        this.crownBreakTimers.delete(timer);
+      }, CROWN_BREAK_MS);
+      this.crownBreakTimers.add(timer);
+    }
+  }
+
+  private syncRatTails(): void {
+    const wanted =
+      (this.player?.GlobalEffects?.filter((e) => e.Key === RAT_TAILS_EFFECT_KEY).length ?? 0) *
+      RAT_TAILS_PER_EFFECT;
+    if (wanted === this.ratTails.length) return;
+
+    if (wanted < this.ratTails.length) {
+      this.ratTails = this.ratTails.slice(0, wanted);
+      return;
+    }
+
+    const added: RatTail[] = [];
+    for (let i = this.ratTails.length; i < wanted; i++) {
+      const batchIndex = i % RAT_TAILS_PER_EFFECT;
+      const round = Math.floor(i / 2);
+      added.push({
+        id: i,
+        // Alternate sides, spread down the panel, each new pair a bit lower.
+        side: i % 2 === 0 ? 'left' : 'right',
+        top: 18 + ((round * 23) % 64),
+        tilt: ((i * 37) % 21) - 10,
+        sway: 2.3 + ((i * 13) % 9) / 10,
+        delay: batchIndex * 150,
+        flip: i % 3 === 2,
+      });
+    }
+    this.ratTails = [...this.ratTails, ...added];
+  }
+
+  trackById(_index: number, item: { id: number }): number {
+    return item.id;
+  }
+
   ngDoCheck(): void {
+    this.syncCrowns();
+    this.syncRatTails();
     const effects = this.player?.GlobalEffects;
     if (effects !== this.lastEffectsRef) {
       this.lastEffectsRef = effects;
@@ -106,6 +234,7 @@ export class PlayerComponent implements DoCheck, OnDestroy {
 
   ngOnDestroy(): void {
     this.leavingTimers.forEach((timer) => clearTimeout(timer));
+    this.crownBreakTimers.forEach((timer) => clearTimeout(timer));
   }
 
   trackEffect(_index: number, effect: DisplayedEffect): string {

@@ -61,8 +61,8 @@ function createParticles(): WaveParticle[] {
 
 /**
  * Decorative particle swarm that permanently dances around a player's health
- * container. It must be a sibling of that player's `<app-health>`, both
- * direct children of a `position: relative` container (see
+ * container, orbiting its bottom-center. It must be a direct child of a
+ * `position: relative` container that also holds that player's `<app-health>` (see
  * player.component.html/css) — it locates that sibling itself and tracks its
  * position/size via ResizeObserver, the same way the old table-wide version
  * tracked `.player-slot`s, so it re-centers itself if the layout shifts.
@@ -121,19 +121,37 @@ export class TurnWavesComponent implements AfterViewInit, OnDestroy {
     this.updatePosition();
   }
 
+  // The barrel image itself, wherever app-health sits inside the container
+  // (it may be wrapped, e.g. by the crown's .health-anchor).
   private healthElement(): HTMLElement | null {
-    return this.host.nativeElement.parentElement?.querySelector<HTMLElement>(':scope > app-health') ?? null;
+    return (
+      this.host.nativeElement.parentElement?.querySelector<HTMLElement>(
+        'app-health .rival-health-background, app-health .player-health-background',
+      ) ?? null
+    );
   }
 
-  // Centers the swarm on its sibling health element, in the same positioned
-  // container both live in.
+  // Centers the swarm on the bottom-center (the base) of the health barrel.
+  // Offsets are summed up the offsetParent chain rather than read from
+  // getBoundingClientRect so the table's 3D tilt doesn't skew them.
   private updatePosition(): void {
     const target = this.healthElement();
-    if (!target) return;
+    const container = this.host.nativeElement.parentElement;
+    if (!target || !container) return;
+
+    let x = target.offsetWidth / 2;
+    let y = target.offsetHeight;
+    let el: HTMLElement | null = target;
+    while (el && el !== container) {
+      x += el.offsetLeft;
+      y += el.offsetTop;
+      el = el.offsetParent as HTMLElement | null;
+    }
+    if (el !== container) return;
 
     const host = this.host.nativeElement;
-    host.style.setProperty('--wave-x', `${target.offsetLeft + target.offsetWidth / 2}px`);
-    host.style.setProperty('--wave-y', `${target.offsetTop + target.offsetHeight / 2}px`);
+    host.style.setProperty('--wave-x', `${x}px`);
+    host.style.setProperty('--wave-y', `${y}px`);
   }
 
   knockbackScale(): number {
