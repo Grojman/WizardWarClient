@@ -203,6 +203,23 @@
   
         </h2>
       </div>
+      <div class="player-count-select" *ngIf="showPrivatePlayerCount()">
+        <span class="text">
+          <i class="fa-solid fa-users"></i>
+          {{ 'HOME_SECTION_PRIVATE_PLAYERS' | translate }}
+        </span>
+        <button
+          type="button"
+          *ngFor="let count of playerCountOptions"
+          class="btn btn-gold"
+          [class.active]="privateMatchPlayers === count"
+          [disabled]="creatingPrivate || privateMatchPlayers === count"
+          (click)="privateMatchPlayers = count"
+        >
+          {{ count }}
+        </button>
+      </div>
+
       <div class="pending-indicator" *ngIf="searching || searchingBot || creatingPrivate">
         <span class="spinner"></span>
         <span>

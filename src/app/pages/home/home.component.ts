@@ -355,6 +355,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   readonly playerCountOptions: number[] = [2, 3, 4];
 
+  // Player count picked on deck-select when creating a private match. Kept
+  // apart from numberOfPlayers so it doesn't leak into online search/bot games.
+  privateMatchPlayers: number = 2;
+
   // Live count of connected players, pushed unprompted by the server on
   // every connect/disconnect (see GameManager.BroadcastPlayerCount).
   onlinePlayerCount: number | null = null;
@@ -747,12 +751,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.searching || this.searchingBot;
   }
 
+  // Only plain private matches let the host choose the player count — best-of-3
+  // series are always 1v1 (server rejects anything else).
+  showPrivatePlayerCount(): boolean {
+    return this.selectedGameOption?.id === 'pr' && this.matchMode !== 'BestOfThree';
+  }
+
   createPrivateMatch() {
     this.creatingPrivate = true;
     this.ws.send({
       "$type": 'CreatePrivateMatchAction',
       DeckId: this.selectedDeck?.id ?? -1,
-      NumberOfPlayers: this.numberOfPlayers,
+      NumberOfPlayers: this.matchMode === 'BestOfThree' ? 2 : this.privateMatchPlayers,
       Format: this.matchMode
     });
   }
