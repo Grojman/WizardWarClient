@@ -1,14 +1,14 @@
 <div class="settings-container overlay-backdrop" (click)="close()" *ngIf="isOpen">
-  <div class="settings-panel" (click)="$event.stopPropagation()">
-    <div class="settings-header">
-      <span class="title">{{ 'SETTINGS_TITLE' | translate }}</span>
-      <button class="close-btn btn-icon" type="button" (click)="close()">
+  <div class="panel modal-panel settings-panel" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="title">{{ 'SETTINGS_TITLE' | translate }}</h2>
+      <button class="btn-icon modal-close" type="button" (click)="close()">
         ✕
       </button>
     </div>
     <div class="settings-content">
       <div class="setting-group">
-        <label class="setting-label">{{ 'SETTINGS_LANGUAGE' | translate }}</label>
+        <h3 class="subtitle modal-subtitle">{{ 'SETTINGS_LANGUAGE' | translate }}</h3>
         <div class="speed-options">
           <button
             *ngFor="let l of languages"
@@ -21,22 +21,22 @@
         </div>
       </div>
       <div class="setting-group">
-        <label class="setting-label">{{ 'SETTINGS_ANIMATION_SPEED' | translate }}</label>
-        <p class="current-speed">{{ 'SETTINGS_CURRENT_LABEL' | translate }} {{ getCurrentSpeedLabel() }}</p>
+        <h3 class="subtitle modal-subtitle">{{ 'SETTINGS_ANIMATION_SPEED' | translate }}</h3>
+        <p class="text modal-text current-speed">{{ 'SETTINGS_CURRENT_LABEL' | translate }} {{ getCurrentSpeedLabel() | translate }}</p>
         <div class="speed-options">
           <button
             *ngFor="let option of speedOptions"
             class="speed-btn"
             [class.active]="option.value === currentSpeedMultiplier"
             (click)="changeSpeed(option.value)"
-            [title]="option.description"
+            [title]="option.description | translate"
           >
-            {{ option.label }}
+            {{ option.label | translate }}
           </button>
         </div>
       </div>
       <div class="setting-group">
-        <label class="setting-label">{{ 'SETTINGS_FONT_SIZE' | translate }}</label>
+        <h3 class="subtitle modal-subtitle">{{ 'SETTINGS_FONT_SIZE' | translate }}</h3>
         <div class="font-option" *ngFor="let option of fontOptions">
           <div class="font-sample" [ngClass]="option.sampleClass">{{ option.label | translate }}</div>
           <input
@@ -47,15 +47,45 @@
             [value]="fontScales[option.key]"
             (input)="setFontScale(option.key, +$any($event.target).value)"
           />
-          <span>{{ (fontScales[option.key] * 100) | number:'1.0-0' }}%</span>
+          <span class="text modal-text">{{ (fontScales[option.key] * 100) | number:'1.0-0' }}%</span>
         </div>
         <button class="speed-btn" type="button" (click)="resetFontScales()">
           {{ 'SETTINGS_FONT_RESET' | translate }}
         </button>
       </div>
       <div class="setting-group">
-        <label class="setting-label">{{ 'SETTINGS_MUSIC' | translate }}</label>
-        <label class="checkbox-label">
+        <h3 class="subtitle modal-subtitle">{{ 'SETTINGS_CURSOR' | translate }}</h3>
+        <div class="cursor-picker">
+          <button
+            class="speed-btn cursor-arrow"
+            type="button"
+            (click)="cycleCursor(-1)"
+            [title]="'SETTINGS_CURSOR_PREVIOUS' | translate"
+            [attr.aria-label]="'SETTINGS_CURSOR_PREVIOUS' | translate"
+          >
+            ‹
+          </button>
+          <div class="cursor-current" aria-live="polite">
+            <div class="cursor-previews">
+              <img [src]="cursorImage(currentCursor, 'default')" alt="" width="32" height="32" />
+              <img [src]="cursorImage(currentCursor, 'pointer')" alt="" width="32" height="32" />
+            </div>
+            <span class="text modal-text">{{ currentCursor.labelKey | translate }}</span>
+          </div>
+          <button
+            class="speed-btn cursor-arrow"
+            type="button"
+            (click)="cycleCursor(1)"
+            [title]="'SETTINGS_CURSOR_NEXT' | translate"
+            [attr.aria-label]="'SETTINGS_CURSOR_NEXT' | translate"
+          >
+            ›
+          </button>
+        </div>
+      </div>
+      <div class="setting-group">
+        <h3 class="subtitle modal-subtitle">{{ 'SETTINGS_MUSIC' | translate }}</h3>
+        <label class="text modal-text checkbox-label">
           <input
             type="checkbox"
             [checked]="musicEnabled"
@@ -71,11 +101,11 @@
           [value]="musicVolume"
           (input)="setMusicVolume(+$any($event.target).value)"
         />
-        <span>{{ (musicVolume * 100) | number:'1.0-0' }}%</span>
+        <span class="text modal-text">{{ (musicVolume * 100) | number:'1.0-0' }}%</span>
       </div>
       <div class="setting-group">
-        <label class="setting-label">{{ 'SETTINGS_SOUND_EFFECTS' | translate }}</label>
-        <label class="checkbox-label">
+        <h3 class="subtitle modal-subtitle">{{ 'SETTINGS_SOUND_EFFECTS' | translate }}</h3>
+        <label class="text modal-text checkbox-label">
           <input
             type="checkbox"
             [checked]="sfxEnabled"
@@ -91,7 +121,7 @@
           [value]="sfxVolume"
           (input)="setSfxVolume(+$any($event.target).value)"
         />
-        <span>{{ (sfxVolume * 100) | number:'1.0-0' }}%</span>
+        <span class="text modal-text">{{ (sfxVolume * 100) | number:'1.0-0' }}%</span>
       </div>
     </div>
   </div>

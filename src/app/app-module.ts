@@ -34,6 +34,8 @@ import { TeamComponent } from './pages/team/team.component';
 import { SeriesComponent } from './pages/series/series.component';
 import { PrivacyComponent } from './pages/privacy/privacy.component';
 import { CookieConsentComponent } from './shared/components/cookie-consent/cookie-consent.component';
+import { BannerTextComponent } from './shared/components/banner-text/banner-text.component';
+import { TutorialComponent } from './pages/tutorial/tutorial.component';
 import { TranslatePipe } from './shared/pipes/translate.pipe';
 import { ServiceWorkerModule } from '@angular/service-worker';
 
@@ -64,6 +66,8 @@ import { ServiceWorkerModule } from '@angular/service-worker';
     SeriesComponent,
     PrivacyComponent,
     CookieConsentComponent,
+    BannerTextComponent,
+    TutorialComponent,
     TranslatePipe,
   ],
   imports: [

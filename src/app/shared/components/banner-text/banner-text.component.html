@@ -1,0 +1,19 @@
+<div
+  class="banner-overlay"
+  *ngIf="visible"
+  [class.interactive]="waitForClick"
+  [class.leaving]="leaving"
+  (click)="onClick()"
+>
+  <ng-container *ngFor="let id of [showId]">
+    <div class="banner-ribbon" [ngClass]="'variant-' + variant">
+      <div class="banner-glow"></div>
+      <p class="banner-text title">{{ text }}</p>
+      <p class="banner-subtitle text" *ngIf="subtitle">{{ subtitle }}</p>
+    </div>
+    <p class="banner-continue text" *ngIf="waitForClick && continueHint">
+      {{ continueHint }}
+      <i class="fa-solid fa-angles-right"></i>
+    </p>
+  </ng-container>
+</div>

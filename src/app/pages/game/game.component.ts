@@ -25,6 +25,7 @@ import { SeriesStateService } from '../../core/services/series-state.service';
 import { GameSessionStorageService } from '../../core/services/game-session-storage.service';
 import { TranslationService } from '../../core/services/translation.service';
 import { ChromaticColorName } from '../../core/config/chromatic-colors';
+import { BannerTextComponent } from '../../shared/components/banner-text/banner-text.component';
 
 //TODO: HAY QUE CONTROLAR LOS NUEVOS DOS EVENTOS
 
@@ -192,7 +193,6 @@ export class GameComponent implements OnInit, OnDestroy {
       this.scrollToCenter();
     }
 
-    this.syncPlayerTargets();
     this.applyTurnAndEffects(this.storedGameState);
   }
 
@@ -255,14 +255,22 @@ export class GameComponent implements OnInit, OnDestroy {
       this.pendingEndGame = content;
       return;
     }
-    this.endGame(content?.winner);
+    this.endGame(content?.winner, content?.defeats);
   }
 
   private handleErrorMessage(content: any): void {
     this.errorModal.open(content?.message ?? this.translation.translate('ERR_UNEXPECTED'));
   }
 
+  // In-game errors (an action the server couldn't apply) are not fatal: the
+  // server resyncs everyone right after, so the player stays in the match.
+  // Leaving here used to drop the stored game id too, which made it look like
+  // the player got kicked with no way back in.
   onErrorClosed(): void {
+    if (this.gameState.Me.Id !== '') {
+      return;
+    }
+
     this.gameSessionStorage.markInactive();
     this.gameSessionStorage.removeGameId();
     this.router.navigateByUrl('/');
@@ -296,16 +304,71 @@ export class GameComponent implements OnInit, OnDestroy {
     }));
   }
 
-  private syncPlayerTargets(): void {
-    this.firstime = this.gameStateService.syncPlayerTargets(this.gameState, this.firstime, (id) => this.getPlayer(id));
+  // Display names for a player's targets, comma separated (a string rather
+  // than an array so the binding is stable between change-detection passes).
+  // Ids that don't resolve yet are skipped instead of falling back to the
+  // local player.
+  targetNamesOf(player: Player): string {
+    return player.TargetPlayers
+      .map((id) => this.getSafePlayer(id)?.Name)
+      .filter((name): name is string => !!name)
+      .join(', ');
+  }
+
+  isHunted(player: Player): boolean {
+    return !!this.gameState.HuntedPlayer && this.gameState.HuntedPlayer === player.Id;
   }
 
   private applyTurnAndEffects(snapshot: Game | null): void {
+    const wasMyTurn = this.gameState.Me.IsMyTurn;
     this.gameStateService.applyTurnAndEffects(this.gameState, snapshot);
     if (this.gameState.Me.IsMyTurn)
     {
       this.audio.playSfx('audio/ding.mp3', false)
     }
+
+    // Only on the turn actually coming to us: abilities don't end the turn,
+    // so several snapshots in a row can all say it's still ours.
+    if (this.gameState.Me.IsMyTurn && !wasMyTurn)
+    {
+      this.pendingTurnBanner = true;
+      // The game_events of this same action arrive right behind the
+      // snapshot; give them a moment so the banner shows once they've
+      // played out (see handleGameEvents) instead of over them.
+      setTimeout(() => this.showPendingTurnBanner(), 300);
+    }
+    else if (!this.pendingTurnBanner)
+    {
+      this.syncTurnOrbs();
+    }
+  }
+
+  private pendingTurnBanner = false;
+
+  // Player whose health orbs (app-turn-waves) are shown as active. It follows
+  // the snapshot's turn holder, except when the turn comes to us: then it
+  // waits for the "your turn" banner, so the orbs change together with it
+  // instead of while the previous action is still being animated.
+  turnOrbsPlayerId: string | null = null;
+
+  private syncTurnOrbs(): void
+  {
+    const holder = [this.gameState.Me, ...this.gameState.Rivals].find((p) => p.IsMyTurn);
+    this.turnOrbsPlayerId = holder?.Id ?? null;
+  }
+
+  private showPendingTurnBanner(): void
+  {
+    if (!this.pendingTurnBanner || this.isAnimating || this.eventQueue.length > 0) return;
+    if (!this.gameState.Me.IsMyTurn || this.gameOver) {
+      this.pendingTurnBanner = false;
+      this.syncTurnOrbs();
+      return;
+    }
+
+    this.pendingTurnBanner = false;
+    this.syncTurnOrbs();
+    this.turnBanner.show(this.translation.translate('GAME_SECTION_YOUR_TURN'), { variant: 'mine', duration: 900 });
   }
 
 getTargetElement(
@@ -367,29 +430,15 @@ async animateAttack(
   );
 }
 
-async animateCardDrawn(deckEnd: string, up: boolean, duration: number = 1000)
-{
-  await this.createAnimationDeckCardsAmount(deckEnd, duration, up)
-}
-
 async animateAddCard(cardId: string, cardOrigin: string, deckEnd: string, duration: number = 1300)
 {
   await this.cardMovement.animateAddedCard(cardId,deckEnd, cardOrigin, duration)
-  // await this.createAnimationDeckCardsAmount(".icon-hand-card", cardOrigin, deckEnd, duration)
 }
 
 async animateModifyDeck(deckEnd: string, duration: number = 1100)
 {
   await this.cardMovement.animateModifyDeck(deckEnd, duration);
-  // await this.createAnimationDeckCardsAmount(".icon-hand-wrench", cardOrigin, deckEnd, duration)
 }
-
-async createAnimationDeckCardsAmount(deckEnd: string, duration: number, up: boolean)
-{
-  await this.cardMovement.animateCardDrawn(deckEnd, duration, up);
-  // await this.cardMovement.animateDeckCard(startIcon, cardOrigin, deckEnd, duration);
-}
-
 
 async createProyectile(source: string, target: string, optionalTarget:string = "", amount: number = 0, sourcePlayerId: string = "")
 {
@@ -413,7 +462,6 @@ getDeckId(id: string): string {
   }
 }
 
-firstime = true;
 unreadNotificationCounter: number = 0;
 changeHealthAnimationDuration: number = 500;
 
@@ -423,8 +471,7 @@ changeHealthAnimationDuration: number = 500;
       switch (event.$type) {
         case "TargetPlayerChanged":
           var player = this.getPlayer(event.PlayerSource);
-          var newTarget = this.getPlayer(event.NewTarget);
-          player.TargetPlayer = newTarget.Name;
+          this.gameStateService.setTargets(player, event.NewTargets ?? [event.NewTarget]);
         break;
         case "PlayerDeath":
           var player = this.getPlayer(event.PlayerSource)
@@ -449,19 +496,15 @@ changeHealthAnimationDuration: number = 500;
           var player = this.getPlayer(event.PlayerSource);
           const drawn = Card.fromJSON(event.Card);
           this.audioService.playSfx('/audio/card_drawn.mp3', true);
-          if (this.isUser(player.Id)) {
-            await this.cardMovement.animateCardDrawnToHand(
-              this.getDeckId(player.Id),
-              player.Id,
-              drawn.id,
-              drawn.imageUrl,
-              1100,
-              () => this.gameStateService.addCardToHand(player, drawn),
-            );
-          } else {
-            await this.animateCardDrawn(this.getDeckId(player.Id), true);
-            this.gameStateService.addCardToHand(player, drawn);
-          }
+          await this.cardMovement.animateCardDrawnToHand(
+            this.getDeckId(player.Id),
+            player.Id,
+            drawn.id,
+            drawn.imageUrl,
+            1100,
+            () => this.gameStateService.addCardToHand(player, drawn),
+            !this.isUser(player.Id),
+          );
           if(event.FromDeck)
           {
             this.gameStateService.updateDeckAmount(player, -1);
@@ -627,7 +670,6 @@ animationLayer: HTMLElement | null = null;
 unitSelected: boolean = false;
 attackingUnit: Card | null = null;
 singleActionEvent: boolean = false;
-targetSelected = false;
 
 floatingMessages: FloatingMessage[] = [];
 
@@ -676,8 +718,10 @@ async handleGameEvents(events: any[]) {
   if (this.pendingEndGame) {
     const content = this.pendingEndGame;
     this.pendingEndGame = null;
-    this.endGame(content?.winner);
+    this.endGame(content?.winner, content?.defeats);
   }
+
+  this.showPendingTurnBanner();
 }
 
 checkForConCurrency(type: string, source: string): boolean {
@@ -770,18 +814,14 @@ attackingUnitSelected(card: Card | null)
   }
 
   this.attackingUnit = this.attackingUnit?.id === card?.id ? null : card;
-  this.targetSelected = false;
-}
-
-targetSel() {
-  console.log('se ha hecho click')
-  this.targetSelected = true;
 }
 
 rivalTargetSelected(rival: Player)
 {
   if(!this.gameState.Me.IsMyTurn) return;
-  
+
+  // Targets are assigned by the server each round (see the hunted-player
+  // rotation server-side), so clicking a rival only ever means attacking it.
   if(this.attackingUnit)
   {
     this.safeSend({
@@ -791,15 +831,8 @@ rivalTargetSelected(rival: Player)
     "TargetType": "PLAYER",
     "PlayerTarget" : rival.Id
   })
-  } else if (this.targetSelected)
-  {
-    this.safeSend({
-      "$type" : "ChangeTarget",
-      "NewTarget" : rival.Id
-    })
-    this.targetSelected = false;
   }
-  
+
 
   this.attackingUnit = null;
 }
@@ -848,6 +881,9 @@ cardCheck!: GameCardCheckComponent;
 @ViewChild('errorModal')
 errorModal!: AlertModalComponent;
 
+@ViewChild('turnBanner')
+turnBanner!: BannerTextComponent;
+
 
 // Deliberately not routed through safeSend: conceding must work at any moment,
 // even mid-animation or on the rival's turn. The server answers with end_game.
@@ -873,8 +909,32 @@ leaveGame()
   this.router.navigateByUrl(this.isSeriesRound ? "/series" : "/");
 }
 
-endGame(winner: string)
+private gameOver = false;
+// One line per knocked-out player. playerName is null for my own defeat,
+// which uses the "You lost..." texts instead of "<name> lost...".
+defeats: { playerName: string | null; key: string }[] = [];
+
+// Mirrors the server's DefeatReason enum (PlayerState.cs).
+private static readonly DEFEAT_REASON_KEYS: Record<string, string> = {
+  NoHealth: 'NO_HEALTH',
+  OutOfCards: 'OUT_OF_CARDS',
+  Surrender: 'SURRENDER',
+  Disconnect: 'DISCONNECT',
+};
+
+endGame(winner: string, defeats?: { playerId: string; reason: string }[] | null)
 {
+  this.gameOver = true;
+  this.defeats = (defeats ?? [])
+    .filter((d) => GameComponent.DEFEAT_REASON_KEYS[d.reason])
+    .map((d) => {
+      const isMe = d.playerId === this.storedGameState.Me.Id;
+      const suffix = GameComponent.DEFEAT_REASON_KEYS[d.reason];
+      return {
+        playerName: isMe ? null : this.getSafePlayer(d.playerId)?.Name ?? '',
+        key: isMe ? `GAME_SECTION_DEFEAT_${suffix}` : `GAME_SECTION_DEFEAT_RIVAL_${suffix}`,
+      };
+    });
   const player = this.getPlayer(winner);
 
   this.winnerboard.nativeElement

@@ -9,6 +9,7 @@ import { StatsComponent } from './pages/stats/stats.component';
 import { SeriesComponent } from './pages/series/series.component';
 import { TeamComponent } from './pages/team/team.component';
 import { PrivacyComponent } from './pages/privacy/privacy.component';
+import { TutorialComponent } from './pages/tutorial/tutorial.component';
 import { gameAccessGuard } from './core/guards/game-access.guard';
 import { matchLockGuard } from './core/guards/match-lock.guard';
 
@@ -73,6 +74,17 @@ const routes: Routes = [
     data: {
       titleKey: 'TITLE_TEAM',
       description: 'Conoce al equipo y colaboradores detrás de El Bar de los Magos.',
+    },
+  },
+  {
+    path: 'tutorial',
+    component: TutorialComponent,
+    canActivate: [matchLockGuard],
+    title: 'Tutorial — El Bar de los Magos',
+    data: {
+      titleKey: 'TITLE_TUTORIAL',
+      description:
+        'Aprende a jugar a El Bar de los Magos con un tutorial interactivo: vida, mano, mazo, mesa, rondas, hechizos, unidades y habilidades.',
     },
   },
   {

@@ -1,0 +1,172 @@
+<div class="game-layout">
+  <div class="table-container"
+    (mousedown)="onMouseDown($event)"
+    [class.reverse]="gameState.Rivals.length === 1"
+  >
+    <div class="player-slot me">
+      <app-player
+        [player]="gameState.Me"
+        [visibleHand]="true"
+        [isAnimating]="isAnimating"
+        (onDeckSelected)="deckSelected()"
+        (onCardRightClick)="onRightClick($event.event, $event.card, gameState.Me)"
+        (onDockSelected)="dockSelected($event)"
+        (onAttackingUnitSelected)="attackingUnitSelected($event)"
+        (onLastSpellClicked)="lastSpellClicked()"
+        (onCardSelected)="cardSelected($event)"
+        [selectedCard]="selectedCard"
+        [unitSelected]="unitSelected"
+        [attackingUnit]="attackingUnit"
+        [showTarget]="false"
+        [targetNames]="''"
+        [hunted]="false"
+        [long]="false"
+      ></app-player>
+    </div>
+    <div class="player-slot rival" *ngFor="let player of gameState.Rivals">
+      <app-player
+        [player]="player"
+        [visibleHand]="false"
+        [isAnimating]="isAnimating"
+        [attackingUnit]="attackingUnit"
+        [showHealthAsTarget]="attackingUnit !== null"
+        (onCardRightClick)="onRightClick($event.event, $event.card, player)"
+        (onDockSelected)="rivalBoardCardSelected(player, player.Board[$event])"
+        (onPlayerTargetSelected)="rivalTargetSelected()"
+        [showTarget]="false"
+        [targetNames]="''"
+        [hunted]="false"
+        [long]="false"
+        [reverseOrder]="true"
+      ></app-player>
+    </div>
+  </div>
+</div>
+<div class="animation-layer">
+  <div class="proyectile" style="display: none;"></div>
+  <div class="icon-hand" style="display: none;"></div>
+  <div class="icon-hand-card" style="display: none;"></div>
+  <div class="icon-hand-wrench" style="display: none;"></div>
+</div>
+<div class="action-buttons">
+  <p class="turn-text">
+    <span>
+      {{ 'GAME_SECTION_TURN' | translate }} {{ gameState.CurrentTurn }}
+    </span>
+    <span class="draw-icon" *ngIf="gameState.CurrentTurn % 2 !== 0"
+      [title]="'GAME_SECTION_TURN_PLAYER' | translate"
+    >
+      <i class="fa-solid fa-copy"></i>
+      <i class="fa-solid fa-plus"></i>
+    </span>
+  </p>
+  <button class="notification-button btn btn-gold btn-action" data-tutorial="chat" (click)="openChat()">
+    <i class="fa-solid fa-comments"></i>
+    <p class="notification-counter" *ngIf="unreadNotificationCounter !== 0">
+      {{ unreadNotificationCounter }}
+    </p>
+  </button>
+  <button class="btn btn-gold btn-action" data-tutorial="settings" (click)="openSettings()">
+    <i class="fa-solid fa-gear"></i>
+  </button>
+  <button class="btn btn-gold btn-action" data-tutorial="help" (click)="openHelp()">
+    <i class="fa-solid fa-question"></i>
+  </button>
+  <button
+    class="btn btn-gold btn-action"
+    data-tutorial="surrender"
+    (click)="surrenderModal.open()"
+    [title]="'GAME_SECTION_SURRENDER' | translate"
+    [attr.aria-label]="'GAME_SECTION_SURRENDER' | translate"
+  >
+    <i class="fa-solid fa-flag"></i>
+  </button>
+</div>
+
+<!-- Tutorial spotlight: dims the table except for the highlighted holes
+and shows the step's description. -->
+<div class="tutorial-layer" *ngIf="spotlight">
+  <div class="tutorial-blocker" *ngIf="spotlight.blocking"></div>
+  <svg class="tutorial-dim" *ngIf="spotlight.dim" width="100%" height="100%" aria-hidden="true">
+    <defs>
+      <mask id="tutorial-spotlight-mask">
+        <rect width="100%" height="100%" fill="white" />
+        <rect
+          *ngFor="let hole of holes"
+          [attr.x]="hole.x"
+          [attr.y]="hole.y"
+          [attr.width]="hole.width"
+          [attr.height]="hole.height"
+          rx="14"
+          fill="black"
+        />
+      </mask>
+    </defs>
+    <rect width="100%" height="100%" class="tutorial-dim-fill" mask="url(#tutorial-spotlight-mask)" />
+  </svg>
+  <div
+    class="tutorial-ring"
+    *ngFor="let hole of holes"
+    [class.action]="!spotlight.blocking"
+    [style.left.px]="hole.x"
+    [style.top.px]="hole.y"
+    [style.width.px]="hole.width"
+    [style.height.px]="hole.height"
+  ></div>
+  <div
+    class="tutorial-box panel"
+    [ngClass]="'placement-' + boxPlacement"
+    [class.action]="!spotlight.blocking"
+    [class.nudge]="nudging"
+  >
+    <h2 class="tutorial-box-title subtitle">
+      <i class="fa-solid" [ngClass]="spotlight.blocking ? 'fa-book-open' : 'fa-hand-pointer'"></i>
+      {{ t(spotlight.textKey + '_TITLE') }}
+    </h2>
+    <p class="tutorial-box-text text">{{ t(spotlight.textKey + '_TEXT') }}</p>
+    <p class="tutorial-box-warning text" *ngIf="nudging">
+      <i class="fa-solid fa-circle-exclamation"></i>
+      {{ t('WRONG_ACTION') }}
+    </p>
+    <button *ngIf="spotlight.blocking" class="btn btn-gold tutorial-next" (click)="next()">
+      {{ t('NEXT') }}
+      <i class="fa-solid fa-angles-right"></i>
+    </button>
+  </div>
+</div>
+
+<button class="btn btn-secondary tutorial-skip" *ngIf="!finished" (click)="leaveTutorial()">
+  <i class="fa-solid fa-door-open"></i>
+  {{ t('SKIP') }}
+</button>
+
+<div class="tutorial-finish overlay-blur" *ngIf="finished">
+  <div class="tutorial-finish-panel panel">
+    <i class="fa-solid fa-hat-wizard tutorial-finish-icon"></i>
+    <h2 class="title">{{ t('FINISH_TITLE') }}</h2>
+    <p class="text">{{ t('FINISH_TEXT') }}</p>
+    <div class="tutorial-finish-buttons">
+      <button class="btn btn-gold" (click)="leaveTutorial()">
+        <i class="fa-solid fa-house"></i>
+        {{ t('FINISH_HOME') }}
+      </button>
+      <button class="btn btn-secondary" (click)="replayTutorial()">
+        <i class="fa-solid fa-rotate-left"></i>
+        {{ t('FINISH_REPLAY') }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<app-banner-text #banner></app-banner-text>
+<app-game-card-check #gamecheck (closed)="onCardCheckClosed()"></app-game-card-check>
+<app-chat #chat (onMessageSent)="onMessageSent($event)"></app-chat>
+<app-settings #settings></app-settings>
+<app-help #helpwindow></app-help>
+<app-confirm-modal
+  #surrenderModal
+  titleKey="GAME_SECTION_SURRENDER_CONFIRM_TITLE"
+  messageKey="GAME_SECTION_SURRENDER_CONFIRM_MESSAGE"
+  confirmKey="GAME_SECTION_SURRENDER"
+  (confirmed)="leaveTutorial()"
+></app-confirm-modal>

@@ -167,6 +167,13 @@ export class WebsocketService {
       return;
     }
 
+    // The tutorial runs entirely on the client, so a missing server must not
+    // kick the player out of it: keep retrying quietly in the background.
+    if (this.router.url.startsWith('/tutorial')) {
+      this.reconnectTimer = setTimeout(() => this.connect(), runtimeConfig.reconnectDelayMs);
+      return;
+    }
+
     this.router.navigate(['/error']);
   }
 

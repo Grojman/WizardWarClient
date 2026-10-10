@@ -3,6 +3,7 @@ import { WebsocketService } from './core/services/websocket.service';
 import { LanguageSettingsService } from './core/services/language.service';
 import { SeoService } from './core/services/seo.service';
 import { FontSettingsService } from './core/services/font-settings.service';
+import { CursorSettingsService } from './core/services/cursor-settings.service';
 
 
 @Component({
@@ -20,6 +21,8 @@ export class App {
     private seo: SeoService,
     // Injected only so the saved font scales are applied from the first page.
     private fontSettings: FontSettingsService,
+    // Same for the saved custom cursor.
+    private cursorSettings: CursorSettingsService,
   )
   {
     this.ws.connect();

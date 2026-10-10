@@ -704,6 +704,13 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
+  // The tutorial runs fully on the client, so it's reachable any time
+  // except while the server still holds us in an unfinished match.
+  startTutorial(): void {
+    if (this.hasActiveMatch) return;
+    this.router.navigateByUrl('/tutorial');
+  }
+
   continueMatch(): void {
     if (!this.hasActiveMatch || this.activeMatchChecking) return;
 

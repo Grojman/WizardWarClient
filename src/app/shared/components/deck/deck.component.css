@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
+  cursor: var(--cursor-pointer, pointer);
   width: 8rem;
   transition: all 0.2s ease-in-out;
   border: 2px solid transparent;
@@ -107,4 +107,25 @@
      has no empty sides (animations use this box as the deck's position). */
   width: auto;
   aspect-ratio: 277 / 443;
+}
+
+.deck-difficulty {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+.difficulty-icon {
+  width: 1rem;
+  height: 1.4rem;
+  background-image: url("/images/cards/reverse_card.svg");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: grayscale(1) brightness(0.55);
+  opacity: 0.5;
+}
+.difficulty-icon.filled {
+  filter: drop-shadow(0 0 3px black);
+  opacity: 1;
 }

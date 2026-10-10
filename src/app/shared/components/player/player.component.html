@@ -59,7 +59,7 @@
         <div class="board-section">
             <div class="player-info">
                 <app-turn-waves
-                [active]="player.IsMyTurn"
+                [active]="turnActive ?? player.IsMyTurn"
                 [isMe]="visibleHand"
                 [health]="player.Health"
                 ></app-turn-waves>
@@ -121,13 +121,15 @@
         class="player-deck"
         [small]="true"
         [deck]="player.Deck"
+        [showEmptyCount]="true"
         [gameId]="player.Id + '-deck'"
         (click)="deckSelected()"
         ></app-deck>
-        <p class="target-player" *ngIf="showTarget">
-            {{ 'GAME_SECTION_TARGET_PLAYER' | translate }}
+        <p class="target-player" *ngIf="showTarget" [title]="'GAME_SECTION_TARGET_RULES' | translate">
+            <span class="hunted-badge" *ngIf="hunted">{{ 'GAME_SECTION_HUNTED' | translate }}</span>
+            {{ (player.TargetPlayers.length > 1 ? 'GAME_SECTION_TARGET_PLAYERS' : 'GAME_SECTION_TARGET_PLAYER') | translate }}
             <br>
-            <span>{{ player.TargetPlayer }}</span>
+            <span>{{ targetNames }}</span>
         </p>
         </div>
         <div class="hand"

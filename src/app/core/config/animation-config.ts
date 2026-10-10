@@ -10,11 +10,11 @@ export interface AnimationSpeedOption {
 }
 
 export const ANIMATION_SPEED_OPTIONS: AnimationSpeedOption[] = [
-  { label: 'Very Slow', value: 1.5, description: 'Slow and relaxed animations' },
-  { label: 'Slow', value: 1.2, description: 'Slower animations' },
-  { label: 'Normal', value: 1.0, description: 'Default animation speed' },
-  { label: 'Fast', value: 0.75, description: 'Faster animations' },
-  { label: 'Very Fast', value: 0.5, description: 'Very fast animations' },
+  { label: 'SETTINGS_SPEED_VERY_SLOW', value: 1.5, description: 'SETTINGS_SPEED_VERY_SLOW_DESC' },
+  { label: 'SETTINGS_SPEED_SLOW', value: 1.2, description: 'SETTINGS_SPEED_SLOW_DESC' },
+  { label: 'SETTINGS_SPEED_NORMAL', value: 1.0, description: 'SETTINGS_SPEED_NORMAL_DESC' },
+  { label: 'SETTINGS_SPEED_FAST', value: 0.75, description: 'SETTINGS_SPEED_FAST_DESC' },
+  { label: 'SETTINGS_SPEED_VERY_FAST', value: 0.5, description: 'SETTINGS_SPEED_VERY_FAST_DESC' },
 ];
 
 /**

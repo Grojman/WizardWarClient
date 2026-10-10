@@ -4,17 +4,18 @@
   [style.--knock-y]="health?.shakeY ?? 0"
   [style.--knock-scale]="knockbackScale()"
 >
-  <div class="wave" *ngFor="let p of particles">
+  <div class="wave" *ngFor="let p of particles"
+    [class.reverse]="p.orbitReverse"
+    [style.--orbit-time.s]="orbitTimeFor(p)"
+    [style.--orbit-phase.s]="p.orbitPhaseSeconds"
+  >
     <div class="wave-knock"
       [style.--knock-distance.px]="p.knockbackDistance"
       [style.--knock-delay.ms]="p.knockbackDelayMs"
     >
       <div class="wave-scale" [class.active]="active">
         <div class="wave-orbit"
-          [class.reverse]="p.orbitReverse"
           [style.--radius.px]="p.orbitRadius"
-          [style.--orbit-time.s]="orbitTimeFor(p)"
-          [style.--orbit-phase.s]="p.orbitPhaseSeconds"
         >
           <div class="wave-shape"
             [class.active]="active"

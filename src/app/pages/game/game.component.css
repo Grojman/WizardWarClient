@@ -42,6 +42,12 @@
 {
   flex-direction: column-reverse !important;
 }
+/* 3+ players: your own board (and the hand right under it) always goes last,
+   after every rival's, instead of first. */
+.me-last > .player-slot.me
+{
+  order: 1;
+}
 .table-container {
   background-image: url("/images/board/board.webp");
   background-position: center;
@@ -130,6 +136,11 @@ gap: 1rem;
   margin: 0 0 20px;
   font-size: 1.3rem;
   line-height: 1.5;
+}
+.winner-board p.defeat-reason {
+  margin-top: -8px;
+  font-size: 1.1rem;
+  color: #ff8a80;
 }
 .winner-name {
   color: #ffd54a;

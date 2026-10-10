@@ -22,6 +22,7 @@
           [deck]="deck"
           [small]="true"
           [selected]="isRivalPick(deck)"
+          [showDifficulty]="true"
           [unavailable]="(isUnavailable(deck) || this.seriesState.snapshot!.rival.status === 'hidden') && !isRivalPick(deck)"
           [infoUp]="true" />
       </div>
@@ -96,6 +97,7 @@
           [deck]="deck"
           [small]="true"
           [selected]="isYourPick(deck)"
+          [showDifficulty]="true"
           (click)="selectDeck(deck)"
           [unavailable]="(isUnavailable(deck) || this.seriesState.snapshot!.you.status === 'hidden') && !isYourPick(deck)"
           [infoUp]="true" />

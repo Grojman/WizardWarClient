@@ -12,6 +12,7 @@ export class GameStateService {
     return {
       Me: {
         TargetPlayer: '',
+        TargetPlayers: [],
         Id: '',
         IsMyTurn: false,
         LastSpellPlayed: null,
@@ -31,6 +32,7 @@ export class GameStateService {
       Rivals: [
         {
           TargetPlayer: '',
+          TargetPlayers: [],
           IsMyTurn: false,
           LastSpellPlayed: null,
           Id: '',
@@ -50,6 +52,7 @@ export class GameStateService {
       ],
       CurrentTurn: 0,
       IsReconnect: false,
+      HuntedPlayer: null,
       Id: ''
     };
   }
@@ -93,18 +96,12 @@ export class GameStateService {
     return state;
   }
 
-  syncPlayerTargets(gameState: Game, firstTime: boolean, getPlayer: (id: string) => Player): boolean {
-    if (!firstTime) {
-      return firstTime;
-    }
-
-    gameState.Me.TargetPlayer = getPlayer(gameState.Me.TargetPlayer).Name;
-
-    gameState.Rivals.forEach((player) => {
-      player.TargetPlayer = getPlayer(player.TargetPlayer).Name;
-    });
-
-    return false;
+  // Targets are decided by the server every round, so the latest snapshot is
+  // always authoritative (TargetPlayerChanged events only keep them right
+  // between snapshots).
+  setTargets(player: Player, targets: string[] | null | undefined): void {
+    player.TargetPlayers = (targets ?? []).filter((id) => !!id);
+    player.TargetPlayer = player.TargetPlayers[0] ?? '';
   }
 
   applyTurnAndEffects(gameState: Game, snapshot: Game | null): void {
@@ -112,7 +109,9 @@ export class GameStateService {
 
     gameState.Me.GlobalEffects = currentSnapshot.Me?.GlobalEffects ?? [];
     gameState.Me.IsMyTurn = currentSnapshot.Me?.IsMyTurn ?? false;
+    this.setTargets(gameState.Me, currentSnapshot.Me?.TargetPlayers);
     gameState.CurrentTurn = currentSnapshot.CurrentTurn;
+    gameState.HuntedPlayer = currentSnapshot.HuntedPlayer ?? null;
 
     gameState.Rivals.forEach((player, index) => {
       const rivalSnapshot = currentSnapshot.Rivals?.[index];
@@ -122,6 +121,7 @@ export class GameStateService {
 
       player.GlobalEffects = rivalSnapshot.GlobalEffects ?? [];
       player.IsMyTurn = rivalSnapshot.IsMyTurn ?? false;
+      this.setTargets(player, rivalSnapshot.TargetPlayers);
     });
   }
 

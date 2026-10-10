@@ -126,6 +126,20 @@ export class PlayerComponent implements DoCheck, OnDestroy {
   @Input()
   showTarget: boolean = false;
 
+  // Names of the players this one currently targets, comma separated (see
+  // Player.TargetPlayers).
+  @Input()
+  targetNames: string = '';
+
+  // Whether this is the round's hunted player in a 3+ player game.
+  @Input()
+  hunted: boolean = false;
+
+  // Overrides player.IsMyTurn for the health orbs (app-turn-waves), so the
+  // game can delay them until the turn banner shows. null = follow IsMyTurn.
+  @Input()
+  turnActive: boolean | null = null;
+
   displayedEffects: DisplayedEffect[] = [];
   private leavingTimers = new Map<string, ReturnType<typeof setTimeout>>();
   // Tracks the last-seen GlobalEffects array *reference*. GameStateService

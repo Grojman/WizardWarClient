@@ -6,9 +6,14 @@
   height: 0;
   overflow: visible;
   pointer-events: none;
-  z-index: 0;
+  /* No z-index (nor anything else creating a stacking context) on the host or
+     .wave-group: each .wave's own z-index has to compete directly with the
+     health barrel's (.health-anchor, z-index 1 — see player.component.css)
+     for a particle to pass in front of / behind it. */
   --wave-x: 50%;
   --wave-y: 50%;
+  /* How far above the barrel's base the orbit is centered. */
+  --wave-lift: 1.75rem;
   --orbit-flatten: 0.55;
 }
 .wave-group {
@@ -19,7 +24,25 @@
   position: absolute;
   top: 0;
   left: 0;
-  transform: translate(var(--wave-x), var(--wave-y));
+  transform: translate(var(--wave-x), calc(var(--wave-y) - var(--wave-lift)));
+  /* Same duration/phase/direction as .wave-orbit below, so the depth flips
+     exactly when the particle crosses the orbit's left/right ends. */
+  animation: wave-depth var(--orbit-time, 8s) linear infinite;
+  animation-delay: calc(var(--orbit-phase, 0s) * -1);
+}
+.wave.reverse,
+.wave.reverse .wave-orbit {
+  animation-direction: reverse;
+}
+/* First half of the orbit (0-180deg) is its lower, nearer side on the tilted
+   table: in front of the barrel. Second half goes around the back. */
+@keyframes wave-depth {
+  0%, 49.99% {
+    z-index: 2;
+  }
+  50%, 100% {
+    z-index: 0;
+  }
 }
 .wave-group.wave-knockback .wave-knock {
   animation: wave-knockback 420ms var(--knock-delay, 0ms) both;
@@ -34,9 +57,6 @@
 .wave-orbit {
   animation: wave-orbit var(--orbit-time, 8s) linear infinite;
   animation-delay: calc(var(--orbit-phase, 0s) * -1);
-}
-.wave-orbit.reverse {
-  animation-direction: reverse;
 }
 @keyframes wave-orbit {
   from {
@@ -91,6 +111,7 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .wave,
   .wave-orbit,
   .wave-shape,
   .wave-group.wave-knockback .wave-knock {

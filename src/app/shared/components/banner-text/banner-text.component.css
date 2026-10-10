@@ -1,0 +1,173 @@
+.banner-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10050;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  pointer-events: none;
+}
+.banner-overlay.interactive {
+  pointer-events: auto;
+  cursor: var(--cursor-pointer, pointer);
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.25) 70%);
+  animation: banner-fade-in 0.3s ease both;
+}
+.banner-overlay.leaving {
+  animation: banner-fade-out 0.35s ease both;
+}
+
+.banner-ribbon {
+  --ribbon-color: 211 154 66;
+  position: relative;
+  width: 100vw;
+  padding: 1.25rem 2rem;
+  text-align: center;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    rgb(var(--ribbon-color) / 0) 0%,
+    rgb(20 12 4 / 0.88) 18%,
+    rgb(20 12 4 / 0.92) 50%,
+    rgb(20 12 4 / 0.88) 82%,
+    rgb(var(--ribbon-color) / 0) 100%
+  );
+  border-top: 2px solid rgb(var(--ribbon-color) / 0.8);
+  border-bottom: 2px solid rgb(var(--ribbon-color) / 0.8);
+  box-shadow: 0 0 40px rgb(var(--ribbon-color) / 0.35);
+  animation: banner-ribbon-in 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.banner-ribbon.variant-mine {
+  --ribbon-color: 55 130 255;
+}
+.banner-ribbon.variant-rival {
+  --ribbon-color: 235 45 60;
+}
+
+/* Turn banners (mine/rival): borderless and quicker than the narration ones,
+   so they don't get in the way every turn. */
+.banner-ribbon.variant-mine,
+.banner-ribbon.variant-rival {
+  border: none;
+  box-shadow: none;
+  animation-duration: 0.3s;
+}
+.variant-mine .banner-text,
+.variant-rival .banner-text {
+  animation-duration: 0.35s;
+  animation-delay: 0.05s;
+}
+.variant-mine .banner-glow,
+.variant-rival .banner-glow {
+  animation-duration: 0.6s;
+  animation-delay: 0.1s;
+}
+
+/* Light sweeping across the ribbon once it lands. */
+.banner-glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgb(var(--ribbon-color) / 0.45) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  animation: banner-sweep 1.1s 0.25s ease-out both;
+  pointer-events: none;
+}
+
+.banner-text {
+  position: relative;
+  margin: 0;
+  font-size: 4rem;
+  color: #fff;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgb(var(--ribbon-color) / 0.9), 0 3px 6px rgba(0, 0, 0, 0.8);
+  animation: banner-text-in 0.6s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.banner-subtitle {
+  position: relative;
+  margin: 0.75rem auto 0;
+  max-width: 60rem;
+  font-size: 1.6rem;
+  line-height: 1.4;
+  color: #f3e6cf;
+  animation: banner-text-in 0.6s 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.banner-continue {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--color-gold);
+  animation: banner-pulse 1.4s 0.6s ease-in-out infinite both;
+}
+
+@keyframes banner-ribbon-in {
+  from {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  to {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+@keyframes banner-text-in {
+  from {
+    transform: translateX(-3rem);
+    opacity: 0;
+    letter-spacing: 0.5em;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes banner-sweep {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes banner-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes banner-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes banner-fade-out {
+  to {
+    opacity: 0;
+    transform: translateY(-1rem);
+  }
+}
+
+@media (max-width: 900px) {
+  .banner-text {
+    font-size: 2.2rem;
+  }
+  .banner-subtitle {
+    font-size: 1rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .banner-ribbon,
+  .banner-text,
+  .banner-subtitle,
+  .banner-glow,
+  .banner-continue {
+    animation: none;
+  }
+}

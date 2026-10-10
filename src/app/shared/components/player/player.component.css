@@ -215,6 +215,18 @@
   text-align: center;
   width: 10rem;
   max-width: 10rem;
+  cursor: help;
+}
+.hunted-badge
+{
+  display: block;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  font-size: large;
+  color: #ffd54a;
+  border: 2px solid #ffd54a;
+  border-radius: 8px;
+  background: rgba(120, 0, 0, 0.6);
 }
 .card-counter
 {
@@ -244,6 +256,9 @@
 .health-anchor
 {
   position: relative;
+  /* Sits between the two depths app-turn-waves particles alternate between
+     (0 behind, 2 in front), so they look like they orbit around the barrel. */
+  z-index: 1;
 }
 .crown
 {

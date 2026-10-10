@@ -7,6 +7,10 @@ export interface Deck {
   description: string;
 
   cardAmount: number;
+
+  // 1 = easy, 2 = medium, 3 = hard (server's DeckDifficulty). Only sent with
+  // the deck list used to pick a deck; absent on in-game decks.
+  difficulty?: number;
 }
 
 // Synthetic entry shown first wherever the player picks a deck: choosing it

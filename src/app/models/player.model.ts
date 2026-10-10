@@ -29,5 +29,9 @@ export interface Player
     GlobalEffects: GlobalEffect[],
     IsMyTurn: boolean,
     LastSpellPlayed: (Card | null),
+    // Ids of the players this one's effects aim at (see the server's
+    // TargetGroup). TargetPlayer is the first of them, '' if none. Only the
+    // hunted player of a 3+ player game has more than one.
     TargetPlayer: string,
+    TargetPlayers: string[],
 }

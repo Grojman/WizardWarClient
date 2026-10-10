@@ -18,6 +18,10 @@
     <h1 class="title">
       <span class="capital-letter">W</span> izard Bar
     </h1>
+    <h2>
+      The 
+      Card Game
+    </h2>
   </div>
 
   <p class="online-player-count" *ngIf="onlinePlayerCount !== null">
@@ -26,7 +30,7 @@
   </p>
 
   <div class="home-sections">
-    <p class="home-section" [class.selected]="s.selected" [class.disabled]="sectionsBlocked()" *ngFor="let s of sections" (click)="sectionSelected(s)"
+    <p class="home-section" [class.game-mode]="s.id === 'pr' || s.id === 'bo3'" [class.selected]="s.selected" [class.disabled]="sectionsBlocked()" *ngFor="let s of sections" (click)="sectionSelected(s)"
     (mouseenter)="playCrack($event)"
     >
       {{ s.name | translate }}
@@ -123,7 +127,23 @@
     </div>
 
     <div class="banner-content how-to-play" [class.show]="selectedSection.id === 'htp'">
-      <app-help [isModel]="false"></app-help>
+      <h2 class="title tutorial-title">
+        <i class="fa-solid fa-graduation-cap title-icon"></i>
+        {{ 'HOME_SECTION_TUTORIAL_TITLE' | translate }}
+      </h2>
+      <p class="text description">
+        {{ 'HOME_SECTION_TUTORIAL_TEXT' | translate }}
+      </p>
+      <button
+        type="button"
+        class="btn btn-gold game-type tutorial-button"
+        [disabled]="!!hasActiveMatch"
+        (click)="startTutorial()"
+        (mouseenter)="playButtonHover($event)"
+      >
+        <i class="fa-solid fa-play"></i>
+        {{ 'HOME_SECTION_TUTORIAL_PLAY' | translate }}
+      </button>
     </div>
   
     <!-- Shown instead of the root stage above whenever the server still has us
@@ -248,6 +268,7 @@
           *ngFor="let deck of decksForSelection"
           [deck]="deck"
           [selected]="deck === selectedDeck"
+          [showDifficulty]="true"
           (click)="selectDeck(deck)"
           class="deck-item hover-grow"
           [class.disabled]="!username || anyActionPending() || creatingPrivate"

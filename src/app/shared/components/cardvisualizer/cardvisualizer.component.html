@@ -22,16 +22,16 @@
         </p>
         <hr class="divider" *ngIf="card.families?.length !== 0">
         <p
-        *ngIf="card.description"
-        class="card-description"
-        [innerHTML]="updateParser()"
-        >
-        </p>
-        <p
         *ngIf="card.conditionTarget"
         class="card-condition-progress"
         >
             {{ 'CARD_CONDITION_PROGRESS' | translate }} {{ card.conditionProgress }} / {{ card.conditionTarget }}
+        </p>
+        <p
+        *ngIf="card.description"
+        class="card-description"
+        [innerHTML]="updateParser()"
+        >
         </p>
     </div>
     <div class="has-scroll-fade" *ngIf="showScrollFade"

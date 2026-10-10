@@ -133,7 +133,7 @@ body {
   color: var(--text-color);
   text-decoration: none;
   font-weight: bold;
-  cursor: pointer;
+  cursor: var(--cursor-pointer, pointer);
   transition: 0.3s;
   font-family: "Text Font 2";
 }
@@ -141,7 +141,7 @@ body {
 .btn:disabled { opacity: 0.2; cursor: not-allowed; transform: none; }
 .btn.active:disabled {
   opacity: 1;
-  cursor: default;
+  cursor: var(--cursor-default, default);
   transform: scale(1.2);
   box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5), 0 0 10px var(--color-gold);
 }
@@ -186,7 +186,7 @@ body {
   background: transparent;
   border: none;
   color: var(--text-color);
-  cursor: pointer;
+  cursor: var(--cursor-pointer, pointer);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -223,6 +223,63 @@ body {
   color: var(--text-color);
   display: flex;
   flex-direction: column;
+}
+/* Shared look for the modal windows (HelpComponent, SettingsComponent):
+   panel, header with its close button, titles, subtitles, text and inputs. */
+.modal-panel {
+  max-height: 90vh;
+  max-width: 50vw;
+  overflow-y: auto;
+  padding: 2rem;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+}
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  align-self: stretch;
+  gap: 1rem;
+}
+.modal-header .title {
+  font-size: 3rem;
+  text-align: center;
+  margin: 0;
+}
+.modal-close {
+  flex-shrink: 0;
+  color: #a0a0a0;
+  font-size: 4rem;
+  padding: 0;
+}
+.modal-close:hover {
+  color: #ffffff;
+}
+.modal-panel .modal-section-title {
+  text-align: center;
+}
+.modal-panel .modal-subtitle {
+  font-size: 2rem;
+  text-align: center;
+  margin: 0;
+}
+.modal-panel .modal-text {
+  font-size: 1.5rem;
+  margin: 0;
+}
+.modal-panel input[type="range"],
+.modal-panel input[type="checkbox"] {
+  accent-color: var(--color-gold);
+}
+.modal-panel hr {
+  background-color: white;
+}
+@media (max-width: 900px) {
+  .modal-panel {
+    max-width: 95vw;
+    padding: 1rem;
+  }
 }
 .hover-grow { transition: transform 0.3s; }
 .hover-grow:hover { transform: scale(1.05); }
@@ -642,4 +699,33 @@ body {
     0 0 6px rgba(171, 17, 0, 0.9),
     0 0 18px rgba(171, 17, 0, 0.55),
     0 2px 0 rgba(40, 0, 0, 0.8);
+}
+/* Custom cursor (see CursorSettingsService, which sets both variables on
+   :root). Everything inherits the default one; anything clickable gets the
+   pointer one. Components that set their own cursor use the same variables. */
+html,
+body {
+  cursor: var(--cursor-default, auto);
+}
+a[href],
+button:not(:disabled),
+select,
+summary,
+label:has(input[type="checkbox"], input[type="radio"]),
+input[type="checkbox"],
+input[type="radio"],
+input[type="range"],
+[role="button"],
+app-dock,
+app-deck,
+app-health,
+.own-hand app-card {
+  cursor: var(--cursor-pointer, pointer);
+}
+input:not([type]),
+input[type="text"],
+input[type="number"],
+input[type="search"],
+textarea {
+  cursor: text;
 }

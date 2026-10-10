@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, EventEmitter, HostListener, Output } from '@angular/core';
 import { Card } from '../../../models/card.model';
 import { ChromaticColorName } from '../../../core/config/chromatic-colors';
 
@@ -20,9 +20,14 @@ export class GameCardCheckComponent {
     this.isOpen = true;
   }
 
+  // Lets the tutorial know when the player leaves the inspection.
+  @Output()
+  closed = new EventEmitter<void>();
+
   close()
   {
     this.isOpen = false;
+    this.closed.emit();
   }
 
   @HostListener('document:keydown.escape')

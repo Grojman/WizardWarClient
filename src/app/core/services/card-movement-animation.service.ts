@@ -155,129 +155,14 @@ export class CardMovementAnimationService {
     requestAnimationFrame(() => requestAnimationFrame(cleanup));
   }
 
-  // Mirror of animateAddedCard's ending: a face-down card the size of the
-  // deck rises out from behind it (clip-path hides whatever is still below
-  // the deck's top edge), then swings off toward its owner's hand.
-  async animateCardDrawn(deck: string, duration: number, up: boolean): Promise<void> {
-    await this.fx.nextFrame();
-
-    const deckElement = document.querySelector(`[data-game-id="${deck}"]`) as HTMLElement | null;
-    if (!deckElement) {
-      return;
-    }
-
-    const deckRect = deckElement.getBoundingClientRect();
-    const width = deckRect.width;
-    const height = deckRect.height;
-
-    // Resting spot: same box as the deck, sitting right on top of it.
-    const card = document.createElement('div');
-    card.classList.add('added-card-ghost', 'face-down');
-    card.style.left = `${deckRect.left}px`;
-    card.style.top = `${deckRect.top - height}px`;
-    card.style.width = `${width}px`;
-    card.style.height = `${height}px`;
-    card.style.transformOrigin = '50% 0%';
-    document.body.appendChild(card);
-
-    // The first stretch is the card sliding up out of the deck; the rest is
-    // the original draw flight, squeezed into what's left of the timeline.
-    // Position keeps changing at every offset of the flight (never repeated
-    // verbatim between consecutive keyframes) and it uses 'linear' easing,
-    // so the browser doesn't decelerate-to-zero and re-accelerate at each
-    // keyframe boundary - that combination is what previously made the card
-    // look like it "stopped" at each pose instead of flowing between them.
-    const emerge = 0.3;
-    const at = (offset: number) => emerge + offset * (1 - emerge);
-    const midX = -width / 2;
-    const peakY = (up ? 1 : -1) * height * 1.15;
-    const finalY = up ? -1000 : 1000;
-    const shown = 'inset(0px 0px 0px 0px)';
-
-    const animation = card.animate(
-      [
-        // Hidden behind the deck
-        {
-          transform: `translate(0px, ${height}px) rotate(0)`,
-          clipPath: `inset(0px 0px ${height}px 0px)`,
-          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
-          offset: 0,
-        },
-
-        // Fully out, sitting on top of the deck
-        {
-          transform: 'translate(0px, 0px) rotate(0)',
-          clipPath: shown,
-          easing: 'linear',
-          offset: emerge,
-        },
-
-        // Card leaves the deck, settling upright
-        {
-          transform: `translate(0px, ${peakY * 0.5}px) rotate(0)`,
-          clipPath: shown,
-          offset: at(0.14),
-        },
-        {
-          transform: `translate(${midX * 0.2}px, ${peakY * 0.95}px) rotate(25deg)`,
-          clipPath: shown,
-          offset: at(0.28),
-        },
-
-        // Drifting sideways, upright
-        {
-          transform: `translate(${midX * 0.45}px, ${peakY}px) rotate(35deg)`,
-          clipPath: shown,
-          offset: at(0.42),
-        },
-        {
-          transform: `translate(${midX * 0.7}px, ${peakY * 0.85}px) rotate(45deg)`,
-          clipPath: shown,
-          offset: at(0.56),
-        },
-        {
-          transform: `translate(${midX * 0.9}px, ${peakY * 0.55}px) rotate(65deg)`,
-          clipPath: shown,
-          offset: at(0.7),
-        },
-
-        // Settling into the exit line
-        {
-          transform: `translate(${midX}px, ${peakY * 0.15}px) rotate(35deg)`,
-          clipPath: shown,
-          opacity: 1,
-          offset: at(0.82),
-        },
-        {
-          transform: `translate(${midX}px, ${finalY * 0.35}px) rotate(0deg)`,
-          clipPath: shown,
-          opacity: 1,
-          offset: at(0.92),
-        },
-
-        // Fly away
-        {
-          transform: `translate(${midX}px, ${finalY}px) rotate(90deg)`,
-          clipPath: shown,
-          opacity: 0,
-          offset: 1,
-        },
-      ],
-      {
-        duration: this.animationSettingsService.getAdjustedDuration(duration),
-        fill: 'forwards',
-      },
-    );
-
-    await animation.finished.catch(() => undefined);
-    card.remove();
-  }
-
-  // Own draws: we already know which card it is, so it rises face-up out of
-  // the deck (same clip-path trick as animateCardDrawn), is shown off for a
-  // moment and then flies straight into its slot in the hand, like
-  // animateCardPlayed in reverse. `onEnterHand` adds the card to the hand so
-  // its final slot can be measured; it stays hidden until the ghost lands.
+  // The card rises out from behind the deck (a clip-path hides whatever is
+  // still below the deck's top edge), is shown off for a moment and then
+  // flies straight into its slot in the hand, like animateCardPlayed in
+  // reverse. Rival draws are `faceDown`: we don't know which card it is, so
+  // the ghost shows the card reverse, and since rival hand cards have no id in
+  // the DOM the last hand card (the one *ngFor just added) is the target.
+  // `onEnterHand` adds the card to the hand so its final slot can be
+  // measured; it stays hidden until the ghost lands.
   async animateCardDrawnToHand(
     deck: string,
     playerId: string,
@@ -285,6 +170,7 @@ export class CardMovementAnimationService {
     imageUrl: string | undefined,
     duration: number,
     onEnterHand: () => void,
+    faceDown: boolean = false,
   ): Promise<void> {
     await this.fx.nextFrame();
 
@@ -306,7 +192,11 @@ export class CardMovementAnimationService {
     card.style.top = `${homeTop}px`;
     card.style.width = `${width}px`;
     card.style.height = `${height}px`;
-    card.style.backgroundImage = `url('/images/cards/${imageUrl ?? ''}'), url('/images/cards/placeholder.webp')`;
+    if (faceDown) {
+      card.classList.add('face-down');
+    } else {
+      card.style.backgroundImage = `url('/images/cards/${imageUrl ?? ''}'), url('/images/cards/placeholder.webp')`;
+    }
     document.body.appendChild(card);
 
     // Add the card now and let Angular render it, so the rest of the hand
@@ -315,9 +205,11 @@ export class CardMovementAnimationService {
     await this.fx.nextFrame();
     await this.fx.nextFrame();
 
-    const slot = document.querySelector(
-      `[data-hand-id="${playerId}"] [data-game-id="${cardId}"]`,
-    ) as HTMLElement | null;
+    const hand = document.querySelector(`[data-hand-id="${playerId}"]`) as HTMLElement | null;
+    const handCards = hand ? (Array.from(hand.querySelectorAll('.card')) as HTMLElement[]) : [];
+    const slot = faceDown
+      ? (handCards[handCards.length - 1] ?? null)
+      : (hand?.querySelector(`[data-game-id="${cardId}"]`) as HTMLElement | null);
     if (slot) {
       slot.style.visibility = 'hidden';
     }

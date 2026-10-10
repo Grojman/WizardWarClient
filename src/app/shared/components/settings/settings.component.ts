@@ -5,6 +5,8 @@ import { AudioSettingsService } from '../../../core/services/audio-settings-serv
 import { LanguageSettingsService } from '../../../core/services/language.service';
 import { LANGUAGE_OPTIONS } from '../../../core/config/language-config';
 import { FontSettingsService } from '../../../core/services/font-settings.service';
+import { CursorSettingsService } from '../../../core/services/cursor-settings.service';
+import { CursorOption, cursorImage } from '../../../core/config/cursor-config';
 import {
   DEFAULT_FONT_SCALES,
   FONT_SCALE_MAX,
@@ -29,8 +31,17 @@ export class SettingsComponent implements OnInit {
   private animationSettingsService: AnimationSettingsService,
   private audioSettings: AudioSettingsService,
   protected languageService: LanguageSettingsService,
-  private fontSettings: FontSettingsService
+  private fontSettings: FontSettingsService,
+  private cursorSettings: CursorSettingsService
 ) {}
+
+  // Filled from CursorSettingsService in ngOnInit (BehaviorSubject emits right away).
+  currentCursor!: CursorOption;
+  cursorImage = cursorImage;
+
+  cycleCursor(step: 1 | -1): void {
+    this.cursorSettings.cycle(step);
+  }
 
   fontScaleMin = FONT_SCALE_MIN;
   fontScaleMax = FONT_SCALE_MAX;
@@ -94,7 +105,7 @@ export class SettingsComponent implements OnInit {
    */
   getCurrentSpeedLabel(): string {
     const option = this.speedOptions.find(opt => opt.value === this.currentSpeedMultiplier);
-    return option ? option.label : 'Unknown';
+    return option ? option.label : '';
   }
 
     // Valores actuales
@@ -113,6 +124,10 @@ export class SettingsComponent implements OnInit {
     this.sfxEnabled = this.audioSettings.isSfxEnabled();
 
     this.currentSpeedMultiplier = this.animationSettingsService.getSpeedMultiplier();
+
+    this.cursorSettings.current$.subscribe(cursor => {
+      this.currentCursor = cursor;
+    });
 
     this.fontSettings.scales$.subscribe(scales => {
       this.fontScales = scales;

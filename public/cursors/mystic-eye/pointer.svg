@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <!-- Wide-open, glowing eye. Hotspot: pupil (16,16). -->
+  <g stroke="#f6e27a" stroke-width="1.4" stroke-linecap="round">
+    <path d="M16 1.5v3M7.5 4.5l1.6 2.6M24.5 4.5l-1.6 2.6M2.5 10l2.6 1.4M29.5 10l-2.6 1.4"/>
+  </g>
+  <path d="M1.5 17Q16 3 30.5 17Q16 31 1.5 17Z" fill="#241238" stroke="#f6e27a" stroke-width="1.6" stroke-linejoin="round"/>
+  <circle cx="16" cy="17" r="7.5" fill="#f6e27a" fill-opacity="0.35"/>
+  <circle cx="16" cy="17" r="6" fill="#19c3b5" stroke="#1b1020" stroke-width="1"/>
+  <circle cx="16" cy="17" r="2.8" fill="#0b0612"/>
+  <circle cx="18" cy="14.8" r="1.2" fill="#ffffff"/>
+</svg>

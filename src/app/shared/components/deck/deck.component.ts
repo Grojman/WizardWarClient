@@ -24,6 +24,18 @@ export class DeckComponent implements OnDestroy {
   @Input()
   unavailable = false;
 
+  // In-game decks keep showing the count when it reaches 0; deck pickers
+  // (e.g. the synthetic random deck, always 0) hide it.
+  @Input()
+  showEmptyCount = false;
+
+  // Deck pickers show the difficulty (one card icon per level, colored up to
+  // deck.difficulty) under the name; in-game decks don't.
+  @Input()
+  showDifficulty = false;
+
+  readonly difficultyLevels = [1, 2, 3];
+
   // Put on the image itself (not the host) so animations measuring
   // [data-game-id] get the drawn deck, without the name or border around it.
   @Input()

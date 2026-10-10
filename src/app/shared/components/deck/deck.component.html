@@ -23,7 +23,7 @@
         {{ deck.description }}
       </p>
       <p
-      *ngIf="deck.cardAmount"
+      *ngIf="deck.cardAmount || showEmptyCount"
       >
         {{ 'DECK_SECTION_CARDS' | translate }} {{ deck.cardAmount }}
       </p>
@@ -34,4 +34,16 @@
   >
     {{ deck.name | translate }}
   </p>
+  <div class="deck-difficulty"
+  *ngIf="showDifficulty && deck.difficulty"
+  role="img"
+  [title]="('DECK_DIFFICULTY_LABEL' | translate) + ' ' + ('DECK_DIFFICULTY_' + deck.difficulty | translate)"
+  [attr.aria-label]="('DECK_DIFFICULTY_LABEL' | translate) + ' ' + ('DECK_DIFFICULTY_' + deck.difficulty | translate)"
+  >
+    <span
+    *ngFor="let level of difficultyLevels"
+    class="difficulty-icon"
+    [class.filled]="level <= deck.difficulty"
+    ></span>
+  </div>
 </div>
