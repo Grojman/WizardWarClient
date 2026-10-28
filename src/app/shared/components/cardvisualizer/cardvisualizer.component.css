@@ -187,7 +187,7 @@ hr
     font-weight: 700;
     color: #f9a825;
 }
-@media( max-width: 900px)
+@media (max-width: 900px), (max-height: 500px)
 {
     .card-description,
     .card-families,

@@ -355,3 +355,80 @@
   from { rotate: calc(var(--side) + var(--tilt, 0deg) - 8deg); }
   to   { rotate: calc(var(--side) + var(--tilt, 0deg) + 8deg); }
 }
+
+@media (max-width: 900px), (max-height: 500px)
+{
+  .effects-anchor,
+  .effects-section
+  {
+    max-height: 40vh;
+  }
+  .effects-section
+  {
+    padding: 0 0.5rem 0.5rem 0.75rem;
+  }
+  .effects-title
+  {
+    margin: 0.75rem 0 0.25rem;
+  }
+  .effects
+  {
+    gap: 0.25rem;
+  }
+  .effect
+  {
+    font-size: 0.7rem;
+  }
+  .player-info
+  {
+    gap: 0.25rem;
+  }
+  .player-name
+  {
+    width: 4rem;
+    max-width: 4rem;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .hand
+  {
+    min-height: var(--card-height);
+  }
+  .hand app-card
+  {
+    margin-left: -1rem;
+  }
+  .card-counter
+  {
+    right: 0.5rem;
+  }
+  .separator
+  {
+    margin: 0 4px;
+    border-width: 1px;
+  }
+  .target-player
+  {
+    font-size: 0.8rem;
+    width: 5rem;
+    max-width: 5rem;
+    margin: 0;
+  }
+  .hunted-badge
+  {
+    margin-bottom: 0.25rem;
+    padding: 0.1rem 0.25rem;
+    font-size: 0.7rem;
+  }
+  .crown
+  {
+    top: -1.2rem;
+    width: 3rem;
+    margin-left: -1.5rem;
+    translate: 0 calc(var(--stack, 0) * -1rem);
+  }
+  .rat-tail
+  {
+    width: 0.8rem;
+  }
+}

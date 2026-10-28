@@ -275,7 +275,7 @@ body {
 .modal-panel hr {
   background-color: white;
 }
-@media (max-width: 900px) {
+@media (max-width: 900px), (max-height: 500px) {
   .modal-panel {
     max-width: 95vw;
     padding: 1rem;
@@ -319,9 +319,11 @@ body {
       display: flex;
     }
 }
-@media (max-width: 900px) {
+/* Phones: portrait ones get the rotate-phone screen, so this mostly targets
+   landscape phones (also the ones wider than 900px, via max-height). */
+@media (max-width: 900px), (max-height: 500px) {
   :root {
-    --card-height: 5rem;
+    --card-height: clamp(3.75rem, 18vh, 6rem);
   }
   .deck-image{
     height: 4rem !important;
@@ -344,7 +346,7 @@ body {
   }
   .hand
   {
-    min-height: none !important;
+    min-height: 0 !important;
   }
   .health-wrapper > div
   {
@@ -409,7 +411,7 @@ body {
   .hand
   {
     margin: 0;
-    min-height: none !important;
+    min-height: 0 !important;
   }
   .card-counter
   {
@@ -421,7 +423,10 @@ body {
   }
 .rival-health-background,
 .player-health-background{
-  width: 4rem !important;
+  /* Same 7:11 shape as the desktop barrel, centered, so the life number
+     (and the turn waves, centered on this box) sit in the middle of it. */
+  width: calc(4rem * 7 / 11) !important;
+  background-position: center !important;
 }
   .life-text
   {

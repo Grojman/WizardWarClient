@@ -121,3 +121,14 @@
     transition-duration: 0.01s;
   }
 }
+@media (max-width: 900px), (max-height: 500px) {
+  /* The barrel is ~4rem tall here instead of 11rem. Orbit radius and particle
+     size come in px from the component, so shrink them with `scale` (it
+     composes with .wave-scale's own transform). */
+  :host {
+    --wave-lift: 0.75rem;
+  }
+  .wave-scale {
+    scale: 0.45;
+  }
+}

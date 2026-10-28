@@ -374,3 +374,31 @@
     background-position: center;
     background-repeat:  no-repeat;
   }
+@media (max-width: 900px), (max-height: 500px)
+{
+  .card
+  {
+    border-radius: 6px;
+    box-shadow: 2px 1px 3px 2px rgba(0, 0, 0, 0.3);
+  }
+  .card-front > *:not(.cannot-play)
+  {
+    font-size: 0.7rem;
+  }
+  .card-name
+  {
+    border-radius: 6px 6px 0 0;
+  }
+  .card-art
+  {
+    border-radius: 6px 6px 0 0;
+  }
+  .card-info > p
+  {
+    padding: 0.15rem 0.4rem;
+  }
+  .selected
+  {
+    transform: translateY(-1.25rem);
+  }
+}

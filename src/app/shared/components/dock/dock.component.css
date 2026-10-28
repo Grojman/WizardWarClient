@@ -32,3 +32,11 @@
     display: flex;
     margin: auto;
 }
+@media (max-width: 900px), (max-height: 500px)
+{
+    /* Just a bit bigger than the card it holds (see --card-height). */
+    .dock
+    {
+        height: calc(var(--card-height) + 0.5rem);
+    }
+}

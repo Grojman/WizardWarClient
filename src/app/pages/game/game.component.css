@@ -171,11 +171,64 @@ gap: 1rem;
   margin: 0;
   font-size: large;
 }
-@media(max-width: 900px)
+@media (max-width: 900px), (max-height: 500px)
 {
+  .game-layout
+  {
+    margin-left: 0;
+  }
+  .table-container
+  {
+    gap: 0.25rem;
+  }
+  /* column-reverse packs the slots at the bottom; keep them at the top. */
+  .table-container.reverse
+  {
+    justify-content: flex-end;
+  }
+  .player-slot
+  {
+    padding-bottom: 0.25rem;
+  }
+  .action-buttons
+  {
+    top: 0.25rem;
+    left: -0.25rem;
+    gap: 0.25rem;
+    align-items: flex-start;
+  }
   .action-buttons > *
   {
-    padding: 0.25rem;
-    font-size: small;
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+  }
+  .turn-text
+  {
+    margin: 0;
+    font-size: 0.8rem;
+  }
+  .notification-counter
+  {
+    padding: 0.1rem 0.35rem;
+    font-size: 0.7rem;
+  }
+  .winner-overlay
+  {
+    padding-top: 1rem;
+  }
+  .winner-board
+  {
+    min-width: 0;
+    max-width: 90vw;
+    padding: 1rem;
+  }
+  .winner-board p
+  {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+  }
+  .winner-name
+  {
+    font-size: 1.1rem;
   }
 }
